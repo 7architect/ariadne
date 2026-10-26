@@ -29,6 +29,10 @@ class JoinReplayHorizonExpired(PostgresProtocolError):
     """The requested checkpoint needs mailbox evidence already summarized."""
 
 
+class JoinRetirementBusy(PostgresProtocolError):
+    """A live invocation temporarily pins join history needed for retirement."""
+
+
 @dataclass(frozen=True)
 class JoinRetentionOutcome:
     operation_id: str
@@ -449,7 +453,7 @@ class PostgresJoinRetention:
                 revision_id,
                 participant_id,
             ):
-                raise PostgresProtocolError("join retirement has an active invocation")
+                raise JoinRetirementBusy("join retirement has an active invocation")
             has_regional_authority = await conn.fetchval(
                 "SELECT to_regclass('regional_recovery_workers_v1') IS NOT NULL"
             )

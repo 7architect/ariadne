@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from postgres_barrier_coordinator import PostgresBarrierCoordinator, Revision, decoded
 from postgres_checkpoint_retention import PostgresCheckpointRetention
 from postgres_control_plane import PostgresControlPlane
-from postgres_join_retention import PostgresJoinRetention
+from postgres_join_retention import JoinRetirementBusy, PostgresJoinRetention
 from postgres_stream_v2 import PostgresProtocolError, PostgresStream
 from postgres_streaming_retention import PostgresStreamingRetention
 
@@ -215,12 +215,12 @@ class PostgresPrefectMaintenance:
         control_run_id: str,
         leader_id: str,
         leader_epoch: int,
-    ) -> int:
+    ) -> tuple[int, bool]:
         # The first snapshot cannot retire its own mailbox/log evidence.  A
         # second completed snapshot at the same or a newer frontier is the
         # initial durable anchor.
         if await self._live_completed_count() < 2:
-            return owner_epoch
+            return owner_epoch, True
         for participant in self.revision.participant_manifest:
             owner_epoch = await self.coordinator.claim_coordinator(
                 self.revision.revision_id,
@@ -230,11 +230,18 @@ class PostgresPrefectMaintenance:
                 lease_seconds=coordinator_lease_seconds,
             )
             participant_id = participant["participant_id"]
-            await self.join_retention.retire_latest(
-                self.revision.revision_id,
-                participant_id,
-                f"prefect-join-retire:{checkpoint_id}:{participant_id}",
-            )
+            try:
+                await self.join_retention.retire_latest(
+                    self.revision.revision_id,
+                    participant_id,
+                    f"prefect-join-retire:{checkpoint_id}:{participant_id}",
+                )
+            except JoinRetirementBusy:
+                # A client turn owns a durable invocation until its terminal
+                # write commits.  It is a temporary retention pin, not a
+                # failed checkpoint.  Keep the completed checkpoint and retry
+                # its exact retirement operation after the invocation clears.
+                return owner_epoch, False
         owner_epoch = await self.coordinator.claim_coordinator(
             self.revision.revision_id,
             self.revision.graph_version,
@@ -263,7 +270,7 @@ class PostgresPrefectMaintenance:
             leader_id=leader_id,
             leader_epoch=leader_epoch,
         )
-        return owner_epoch
+        return owner_epoch, True
 
     async def run(
         self,
@@ -317,7 +324,7 @@ class PostgresPrefectMaintenance:
                 and latest_completed != last_retired_checkpoint_id
                 and await self._live_completed_count() >= 2
             ):
-                coordinator_epoch = await self._retire(
+                coordinator_epoch, retired = await self._retire(
                     coordinator_owner,
                     coordinator_epoch,
                     latest_completed,
@@ -327,7 +334,11 @@ class PostgresPrefectMaintenance:
                     leader_id,
                     leader_epoch,
                 )
-                last_retired_checkpoint_id = latest_completed
+                if retired:
+                    last_retired_checkpoint_id = latest_completed
+                else:
+                    await asyncio.sleep(poll_seconds)
+                    continue
             frontier = await self._source_frontier(source)
             needs_data_checkpoint = frontier - last_cut >= checkpoint_interval_records
             tail_age = await self._oldest_uncheckpointed_age(source, last_cut)
@@ -371,7 +382,7 @@ class PostgresPrefectMaintenance:
                 last_cut = await self._last_completed_cut(source)
                 if fault is not None:
                     fault("after_checkpoint")
-                coordinator_epoch = await self._retire(
+                coordinator_epoch, retired = await self._retire(
                     coordinator_owner,
                     coordinator_epoch,
                     checkpoint_id,
@@ -381,7 +392,10 @@ class PostgresPrefectMaintenance:
                     leader_id,
                     leader_epoch,
                 )
-                last_retired_checkpoint_id = checkpoint_id
+                if retired:
+                    last_retired_checkpoint_id = checkpoint_id
+                else:
+                    await asyncio.sleep(poll_seconds)
                 continue
             await asyncio.sleep(poll_seconds)
 

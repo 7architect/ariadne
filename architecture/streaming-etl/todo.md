@@ -1,14 +1,14 @@
 # Streaming ETL task registry
 
 This registry slices the [ADR graph](adr/README.md) into delivery tasks. Task
-completion does not make an ADR `accepted`; production acceptance evidence must
-be linked back to the ADR.
+completion does not make an ADR `accepted`; evidence for every criterion in
+the declared ADR scope must be linked back to it.
 
 Delivery states are separate from ADR statuses. Sizes assume `S` ≤ 2 engineer
 days, `M` = 3–4 days, and `L` ≈ one engineer week. `H` and `M` denote high and
 medium delivery risk.
 
-## Protocol epoch 2 — through R4-B integration — target 90%, earned 90%
+## Protocol epoch 2 — short experimental delivery — target 100%, earned 100%
 
 The previous source/checkpoint/sink contract is superseded. Historical tasks
 remain below as evidence but do not count toward the current target.
@@ -28,6 +28,8 @@ remain below as evidence but do not count toward the current target.
 | R3-B DAG recovery and bounded history | `done` | DS-031a…d | Routed joins, regional recovery/takeover, retained-horizon refusal, bounded retirement and Principal PASS earned 75%. |
 | R4-A control-plane authority | `done` | DS-040a…d | Actual HTTP lifecycle/tenant/leader authority, full native activation checks, bounded admissions and Principal PASS earned 83%. |
 | R4-B Prefect and operations | `done` | DS-041a…d | Actual SDK/API, fenced replacement, continuous maintenance, operational drill, 139-test gate and Principal PASS earned 90%. |
+| R5-A release and schema recovery | `done` | DS-050a…d | Frozen 159-test gate and architecture review earn 95% for selected migration, signed schema recovery and runbook scope. |
+| R5-B short release acceptance | `done` | DS-051a…d | 164-test gate, actual capacity/catch-up, selected worker boundary and 7 independent hostile controls close the declared short experimental delivery at 100%. |
 
 Sprint R0 exit: DS-001, DS-002, DS-003a…c, DS-004S/a/b, DS-005a…d,
 DS-006a…c, and DS-007 pass; only then does earned readiness become
@@ -41,7 +43,8 @@ HA/load and generator/replacement hostile gate on 2026-10-24. The 55% R2-B
 gate was followed by the PostgreSQL coordinator gate on 2026-10-25. R3-A now
 earned 64%; R3-B subsequently passed 93/93 frozen-source tests and independent
 Principal review, earning 75%. R4-A then passed 110/110 frozen-source tests and
-Principal review, earning 83%. Prefect integration and release work remain.
+Principal review, earning 83%. R4-B then earned 90%, R5-A earned 95%, and
+the final R5-B gate completed the agreed short experimental delivery at 100%.
 Evidence: [R4-A report](evidence/postgres-r4a-candidate2-2026-10-25.json) and
 [Principal PASS](evidence/postgres-r4a-principal-2026-10-25.json).
 
@@ -63,6 +66,8 @@ defines the gating policy.
 | DS-011a…d | [ADR-0006](adr/ADR-0006-durable-channels-and-state.md), [ADR-0007](adr/ADR-0007-backpressure-and-high-load.md) |
 | DS-040a…d, DS-041a…d | [ADR-0001](adr/ADR-0001-runtime-boundary.md), [ADR-0010](adr/ADR-0010-platform-durable-yield-channel.md) |
 | DS-007 | [ADR-0008](adr/ADR-0008-architecture-role-charter.md), [ADR-0009](adr/ADR-0009-failure-injection-evidence.md) |
+| DS-050a…d | [ADR-0026](adr/ADR-0026-release-compatibility-and-disaster-recovery.md) |
+| DS-051a…d | [ADR-0027](adr/ADR-0027-short-acceptance-and-separate-long-soak.md), [ADR-0029](adr/ADR-0029-short-capacity-calibration-and-release-scope.md) |
 | DS-009 | [ADR-0011](adr/ADR-0011-yield-completion-and-client-effects.md), future multi-output ADR |
 
 ### W1–W2 / R0-A — subprocess durability — target 3%
@@ -208,22 +213,27 @@ Exit: real Prefect server/worker E2E, server restart, and alert drill pass.
 
 | ID | State | Depends | Risk / size | Deliverable and acceptance criteria |
 | --- | --- | --- | --- | --- |
-| **DS-050a** | `progress` | DS-041a…d | H / M | Rolling and mixed-version compatibility. As a system, I keep monotonic cursors or reject the rollout. |
-| **DS-050b** | `blocked` | DS-050a | H / M | Schema migration and rollback policy. As a developer, I can migrate or receive a deterministic incompatibility error. |
-| **DS-050c** | `blocked` | DS-050a | H / L | Process, node, network, and object-store fault campaign. As a user, I got the published recovery behavior under infrastructure faults. |
-| **DS-050d** | `blocked` | DS-050b…c | M / M | Backup/restore, drain, and tested runbook. As an operator, I can recover without cursor regression or stale writes. |
+| **DS-050a** | `done` | DS-041a…d | H / M | Rolling and mixed-version compatibility. As a system, I keep monotonic cursors or reject the rollout. |
+| **DS-050b** | `done` | DS-050a | H / M | Schema migration and rollback policy. As a developer, I can migrate or receive a deterministic incompatibility error. |
+| **DS-050c** | `done` | DS-050a | H / L | Process, node, network, and object-store fault campaign. As a user, I got the published recovery behavior under infrastructure faults. |
+| **DS-050d** | `done` | DS-050b…c | M / M | Backup/restore, drain, and tested runbook. As an operator, I can recover without cursor regression or stale writes. |
 
 Exit: old/new workers, coordinator failover, storage remount, and missing/corrupt
 artifact controls pass.
+
+Evidence: [R5-A full candidate](evidence/postgres-r5a-candidate-2026-10-26.json),
+[architecture review](evidence/postgres-r5a-architecture-review-2026-10-26.json),
+and [recovery runbook](recovery_runbook.md). This selected schema-recovery gate
+earns 95%; it does not claim whole-cluster DR, zero RPO or general worker isolation.
 
 ### W40–W42 / R5-B — soak, capacity and release — target 100%
 
 | ID | State | Depends | Risk / size | Deliverable and acceptance criteria |
 | --- | --- | --- | --- | --- |
-| **DS-051a** | `blocked` | DS-050a…d | H / L | Short declared acceptance profile with injected failures and stalled branches under [ADR-0027](adr/ADR-0027-short-acceptance-and-separate-long-soak.md). As a system, I got no unexplained loss, cursor regression, mixed cut, or stale write in the measured run. |
-| **DS-051b** | `blocked` | DS-051a, DS-011a…d | H / M | Capacity/catch-up validation. As an operator, I can predict disk exhaustion and recovery time from the DS-011c model. |
-| **DS-051c** | `blocked` | DS-051a | M / M | Security and credential-boundary review. As a system, workers cannot forge storage authority. |
-| **DS-051d** | `blocked` | DS-051a…c | H / S | Final Principal acceptance and ADR evidence graph. As a user, I got the published guarantee and measured limits with no missing evidence link. |
+| **DS-051a** | `done` | DS-050a…d | H / L | Short declared acceptance profile with injected failures and stalled branches under [ADR-0027](adr/ADR-0027-short-acceptance-and-separate-long-soak.md). As a system, I got no unexplained loss, cursor regression, mixed cut, or stale write in the measured run. |
+| **DS-051b** | `done` | DS-051a, DS-011a…d | H / M | Capacity/catch-up validation under [ADR-0029](adr/ADR-0029-short-capacity-calibration-and-release-scope.md). As an operator, I can compare independent calibration with later recovery and inspect conditional headroom estimates, distinguishing logical admission credits from physical disk/WAL behavior. |
+| **DS-051c** | `done` | DS-051a | M / M | Security and credential-boundary review. As a system, workers cannot forge storage authority. |
+| **DS-051d** | `done` | DS-051a…c | H / S | Final Principal acceptance and ADR evidence graph. As a user, I got the published guarantee and measured limits with no missing evidence link. |
 
 Separate nonblocking follow-up: **DS-052a** — `progress` — actual 72-hour soak, with its own workload, faults, resource and invariant evidence. The user directed use of the three existing self-hosted runners; the CI chain and deterministic reviewer are being configured under [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) and the [operator guide](soak_ci.md). It carries no percentage in the current delivery; the user selected short acceptance now in [ADR-0027](adr/ADR-0027-short-acceptance-and-separate-long-soak.md). A short smoke is not a long-duration PASS.
 
@@ -551,3 +561,16 @@ After their contracts freeze, barrier/join, fencing, and subprocess work can run
 in parallel. Executable and TLA+ models can also run in parallel, as can channel
 and state-backend experiments. SDK and server work can overlap only after the
 serialized protocol is stable.
+
+## Final short delivery evidence
+
+The [164-test final gate](evidence/postgres-r5b-final2-2026-10-26.json) and
+[7 independent controls](evidence/postgres-r5b-independent-controls-review-2026-10-26.json)
+close DS-051a…d. [ADR-0029](adr/ADR-0029-short-capacity-calibration-and-release-scope.md)
+publishes the workload, conditional forecasts, fixes, rejected trials and
+limits. This is 100% of the agreed short experimental implementation, not a
+claim of production completeness. DS-052a, hosted runner availability and
+broader technical-ADR production criteria remain separate open work.
+
+Final sign-off: [architecture review](evidence/postgres-r5b-architecture-review-2026-10-26.json)
+and [documentation graph](evidence/adr-graph-final-2026-10-26.json).

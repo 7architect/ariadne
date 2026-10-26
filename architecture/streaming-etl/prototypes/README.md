@@ -92,7 +92,10 @@ tenant capabilities, native graph identity, bounded source admissions,
 leadership and drain/cancel to the existing stream authority. See
 [ADR-0024](../adr/ADR-0024-control-plane-authority-and-lifecycle.md).
 
-R4-B is in progress. `prefect_stream_adapter.py` and
+R4-B earned **90%** with its
+[139-test report](../evidence/postgres-r4b-candidate3-2026-10-25.json) and
+[independent review](../evidence/postgres-r4b-principal-2026-10-25.json).
+`prefect_stream_adapter.py` and
 `postgres_prefect_attempts.py` run actual Prefect 3 flow/task actors and fenced
 replacement attempts over the same logical stream. The selected server runs
 its event services: disabling them prevents persisted task-run observations.
@@ -109,15 +112,40 @@ capacity-return drill; `test_postgres_operations_browser.py` runs Chromium
 against real HTTP/SQL and checks drain, mobile layout and credential cleanup.
 Independent `postgres_prefect_attempt_oracle.py` and
 `postgres_prefect_maintenance_oracle.py` verify authority and retirement.
-Scope and open acceptance are in
+Scope and acceptance are in
 [ADR-0025](../adr/ADR-0025-prefect-adapter-and-operational-projections.md).
+
+R5-A earned **95%** for the selected migration/session and signed schema-recovery
+scope, with a [159-test candidate](../evidence/postgres-r5a-candidate-2026-10-26.json)
+and [architecture review](../evidence/postgres-r5a-architecture-review-2026-10-26.json).
+`postgres_release_authority.py`, `postgres_restore_registry.py` and
+`postgres_schema_backup.py` implement the selected version, quiesce, exported
+snapshot, source-retirement and exclusive target-activation protocol. Use the
+[recovery runbook](../recovery_runbook.md) for exact procedure and limits.
+
+The successor short gate adds actual stalled-branch capacity calibration and
+independent predictions in `test_postgres_capacity_acceptance.py`. It also tests
+retry of join retirement while an invocation is live and uses public future
+completion callbacks instead of repeated server-backed state polling. Scope,
+rejected trials and remaining final acceptance are in
+[ADR-0029](../adr/ADR-0029-short-capacity-calibration-and-release-scope.md).
+The [72-hour CI campaign](../soak_ci.md) remains separate and unpassed; its
+workload must not be described as 72 hours of native Prefect execution.
+
+R5-B now closes the selected short experimental delivery: the
+[complete final gate](../evidence/postgres-r5b-final2-2026-10-26.json) passes
+164/164 tests, and the [independent controls](../evidence/postgres-r5b-independent-controls-review-2026-10-26.json)
+pass 7/7. The gate has no source drift or unclosed-socket warnings. Technical
+ADRs with broader production criteria remain open. The
+[environment inventory](../evidence/postgres-short-acceptance-environment-2026-10-26.json)
+records the actual runtime and pinned image identities.
 
 The current release harness discovers all PostgreSQL tests and hashes both
 Python and HTML sources. Run it after the static review closes; a candidate
 report does not itself award readiness:
 
 ```shell
-python postgres_release_gate_harness.py --phase R4-B --output ../evidence/postgres-r4b-local.json
+python postgres_release_gate_harness.py --phase R5-B --output ../evidence/postgres-r5b-local.json
 ```
 
 ## Historical protocol epoch 1 (retained evidence)

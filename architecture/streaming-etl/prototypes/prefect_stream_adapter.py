@@ -175,6 +175,43 @@ def _secret(name: str) -> str:
     return value
 
 
+class _FutureCompletionWatcher:
+    """Observe a Prefect future without polling its server-backed state."""
+
+    def __init__(self, future: Any):
+        self.future = future
+        self._loop = asyncio.get_running_loop()
+        self._done = asyncio.Event()
+        self._state = None
+        self._waited = False
+        future.add_done_callback(self._notify)
+
+    def _notify(self, _future: Any) -> None:
+        try:
+            self._loop.call_soon_threadsafe(self._done.set)
+        except RuntimeError:
+            # A late callback after flow-loop shutdown has no observer left.
+            pass
+
+    @property
+    def done(self) -> bool:
+        return self._done.is_set()
+
+    async def wait_done(self) -> None:
+        await self._done.wait()
+
+    def final_state_if_done(self):
+        if not self.done:
+            return None
+        if not self._waited:
+            # The completion callback proves the wrapped execution finished.
+            # wait() populates Prefect's final-state cache without a server poll.
+            self.future.wait()
+            self._state = self.future.state
+            self._waited = True
+        return self._state
+
+
 async def _open(config: PrefectStreamAdapterConfig):
     stream = await PostgresStream.connect_existing(
         _secret(config.dsn_env), config.schema
@@ -887,41 +924,54 @@ async def prefect_stream_flow(
             if config.maintenance_enabled
             else None
         )
+        source_watcher = _FutureCompletionWatcher(source_future)
+        operator_watchers = [
+            _FutureCompletionWatcher(actor_future) for actor_future in operator_futures
+        ]
+        maintenance_watcher = (
+            _FutureCompletionWatcher(maintenance_future)
+            if maintenance_future is not None
+            else None
+        )
 
         def raise_actor_failure() -> None:
             if heartbeat.done():
                 heartbeat.result()
-            for actor_future in operator_futures:
-                actor_state = actor_future.state
+            for actor_future, watcher in zip(
+                operator_futures, operator_watchers, strict=True
+            ):
+                actor_state = watcher.final_state_if_done()
                 if actor_state is not None and (
                     actor_state.is_failed() or actor_state.is_crashed()
                 ):
                     actor_future.result()
-            if maintenance_future is not None:
-                maintenance_state = maintenance_future.state
+            if maintenance_future is not None and maintenance_watcher is not None:
+                maintenance_state = maintenance_watcher.final_state_if_done()
                 if maintenance_state is not None and (
                     maintenance_state.is_failed() or maintenance_state.is_crashed()
                 ):
                     maintenance_future.result()
 
-        while source_future.state is None or not source_future.state.is_final():
+        while not source_watcher.done:
             raise_actor_failure()
-            await asyncio.sleep(0.02)
+            try:
+                await asyncio.wait_for(source_watcher.wait_done(), 0.02)
+            except TimeoutError:
+                pass
+        source_state = source_watcher.final_state_if_done()
+        if source_state is None:
+            raise RuntimeError("completed source future has no final state")
         if heartbeat.done():
             heartbeat.result()
         control_after_source = await control.project_run(
             admin_token, run_id=config.control_run_id
         )
-        source_cancelled = source_future.state is not None and (
-            source_future.state.is_cancelled()
-        )
+        source_cancelled = source_state.is_cancelled()
         if source_cancelled or (
             control_after_source["control"]["lifecycle"] == "CANCELLED"
         ):
             terminal = "CANCELLED"
-        elif source_future.state is not None and (
-            source_future.state.is_failed() or source_future.state.is_crashed()
-        ):
+        elif source_state.is_failed() or source_state.is_crashed():
             source_future.result()
             raise AssertionError("unreachable source failure")
         elif config.terminal_mode == "DRAIN":

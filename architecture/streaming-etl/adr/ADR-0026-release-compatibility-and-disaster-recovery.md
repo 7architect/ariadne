@@ -1,6 +1,6 @@
 # ADR-0026: Release compatibility and disaster recovery
 
-- Status: `progress`
+- Status: `accepted`
 - Date: 2026-10-25
 - Owners: ETL Architect / HighLoad Principal, runtime maintainers
 - Depends on: [ADR-0023](ADR-0023-bounded-retention-and-replay-horizons.md), [ADR-0024](ADR-0024-control-plane-authority-and-lifecycle.md), [ADR-0025](ADR-0025-prefect-adapter-and-operational-projections.md)
@@ -22,7 +22,7 @@ cutover, and recovery against independently checked durable authority can keep
 upgrades and restores inside the existing protocol. Rejecting an unsupported
 combination before DATA is a valid result; silently accepting it is not.
 
-## Proposed solution for discussion
+## Decision and agreement
 
 Keep all experiments outside Prefect core. Use actual PostgreSQL connections,
 real process loss and an actual dump/restore or isolated physical copy. Declare
@@ -89,11 +89,16 @@ isolated PostgreSQL pair, never the shared test primary or another task's data.
 
 ## Agreement and evidence
 
-ETL/HighLoad Principal reviewed the proposal on 2026-10-25. The direction is
+Architecture review completed on 2026-10-25. The direction was
 agreed for planning, with dependent implementation blocked until R4-B closes.
 No R5-A readiness is earned by this proposal.
-The actual 72-hour soak belongs to DS-051a and cannot be replaced by simulated
-clock advancement, a shorter load test or an expectation of future success.
+The original plan assigned the actual 72-hour soak to DS-051a and did not allow
+simulated clock advancement, a shorter load test or expected future success to
+replace it. This assignment is superseded by the explicit user decision in
+[ADR-0027](ADR-0027-short-acceptance-and-separate-long-soak.md): DS-051a is now
+the short declared acceptance profile, and DS-052a is the separate nonblocking
+72-hour campaign under [ADR-0028](ADR-0028-self-hosted-soak-ci-and-reviewer.md).
+A shorter result still cannot be reported as a passed long soak.
 
 The agreed release design uses a durable release head, migration ledger and
 runtime sessions. A live session binds epoch/schema/features/runtime identity;
@@ -155,7 +160,28 @@ makes that backup non-reactivatable elsewhere in this selected profile. Registry
 unavailability fails closed. This is a deliberate availability limit and not a
 general distributed failover protocol.
 
-## Failure modes and consequences
+## Short acceptance composition
+
+The [recovery runbook](../recovery_runbook.md) links the exact commands,
+quiesce/export/finalize/restore/grant/resume procedure, failure responses and
+selected-profile limitations to their executable tests.
+
+The release gate combines independent real profiles. Migration and session
+fencing tests exercise the release authority. Schema export/restore tests
+exercise the signed grant, exact recovery cuts, target integrity and source
+retirement. Socket/connection tests exercise unknown publication outcomes.
+The actual Prefect 100-document test measures native task cardinality and
+bounded storage on its R4 attempt fixture. It does not itself install release
+authority or perform a backup. Closed-network worker isolation is another
+separately measured profile. Passing the combined suite must not be described
+as one end-to-end execution containing every one of these boundaries.
+
+Repeated schema restore supports a healthy new generation quiescing, exporting
+and receiving its own new bound grant. Each generation rotates the actual
+physical source scope; the prior hot grant witness moves to one rolling archive.
+That does not permit reassignment of a consumed grant after losing its target.
+
+## Consequences
 
 Direct DDL remains a privileged administrative action. A compatibility check
 inside a trusted Python client is not a hostile-worker security boundary.
@@ -164,3 +190,18 @@ split authority; it must be rejected operationally and by the selected fence.
 Backup recovery may replay client effects already visible externally. Those
 effects still require client-owned idempotency under
 [ADR-0011](ADR-0011-yield-completion-and-client-effects.md).
+
+## Accepted short-scope evidence
+
+The [final architecture review](../evidence/postgres-r5b-architecture-review-2026-10-26.json)
+confirms completion of this selected migration/session/schema-recovery scope.
+
+The [complete successor gate](../evidence/postgres-r5b-final2-2026-10-26.json)
+passes 164/164 tests with no source drift, synchronous PostgreSQL durability,
+and no unclosed-socket warnings. The
+[independent controls](../evidence/postgres-r5b-independent-controls-review-2026-10-26.json)
+pass 7/7 hostile checks with unchanged sources. The
+[environment inventory](../evidence/postgres-short-acceptance-environment-2026-10-26.json)
+records actual dependency and image versions. Acceptance is limited to the
+selected experimental scope in this ADR; it does not establish general
+production readiness or a passed 72-hour campaign.

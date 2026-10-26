@@ -1,0 +1,34 @@
+test_nonpositive_calibrated_net_rate_is_not_a_prediction (test_postgres_capacity_acceptance.CapacityPredictionTests.test_nonpositive_calibrated_net_rate_is_not_a_prediction) ... ok
+test_prediction_uses_prior_calibration_not_target_outcome (test_postgres_capacity_acceptance.CapacityPredictionTests.test_prediction_uses_prior_calibration_not_target_outcome) ... ok
+test_pending_state_is_never_polled_and_failure_still_propagates (test_postgres_capacity_acceptance.FutureCompletionWatcherTests.test_pending_state_is_never_polled_and_failure_still_propagates) ... ok
+test_active_invocation_keeps_exact_checkpoint_for_retry (test_postgres_capacity_acceptance.MaintenanceBusyRegressionTests.test_active_invocation_keeps_exact_checkpoint_for_retry) ... ok
+test_live_stall_saturates_then_branch_catches_up_with_source_open (test_postgres_capacity_acceptance.PostgresCapacityAcceptanceTests.test_live_stall_saturates_then_branch_catches_up_with_source_open) ... 14:18:11.013 | WARNING | asyncio - Executing <Task pending name='Task-50' coro=<run_flow_async() running at /workspace/ariadne/src/prefect/flow_engine.py:2132> created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/tasks.py:420> took 0.179 seconds
+14:18:11.110 | INFO    | prefect.engine - View at http://127.0.0.1:57179/runs/flow-run/6d6193ae-c343-449d-afc4-344b6bcd2324
+14:18:11.264 | INFO    | Flow run 'amethyst-trogon' - Beginning flow run 'amethyst-trogon' for flow 'durable-stream-flow'
+14:18:11.283 | INFO    | Flow run 'amethyst-trogon' - View at http://127.0.0.1:57179/runs/flow-run/6d6193ae-c343-449d-afc4-344b6bcd2324
+R5_DRAFT_MEASUREMENT_JSON={"baseline": {"accepted": 10, "branch_completed": 9, "logical_json_bytes": 592046, "logical_rows": 147, "max_admission_bytes": 1000000, "max_admission_records": 4, "max_bytes": 1000000, "max_records": 4, "physical_relation_bytes": 4866048, "time": 25574.291769609, "total_partition_used_bytes": 262144, "total_partition_used_records": 4, "used_admission_bytes": 131072, "used_admission_records": 2, "used_bytes": 131072, "used_records": 2, "wal_bytes": 6517796248}, "calibration_peak": {"accepted": 3, "branch_completed": 1, "logical_json_bytes": 554495, "logical_rows": 83, "max_admission_bytes": 1000000, "max_admission_records": 4, "max_bytes": 1000000, "max_records": 4, "physical_relation_bytes": 3096576, "time": 25556.839672403, "total_partition_used_bytes": 393216, "total_partition_used_records": 6, "used_admission_bytes": 196608, "used_admission_records": 3, "used_bytes": 196608, "used_records": 3, "wal_bytes": 6516335432}, "calibration_recovered": {"accepted": 4, "branch_completed": 4, "logical_json_bytes": 1098251, "logical_rows": 129, "max_admission_bytes": 1000000, "max_admission_records": 4, "max_bytes": 1000000, "max_records": 4, "physical_relation_bytes": 3489792, "time": 25559.781676757, "total_partition_used_bytes": 524288, "total_partition_used_records": 8, "used_admission_bytes": 262144, "used_admission_records": 4, "used_bytes": 262144, "used_records": 4, "wal_bytes": 6516515744}, "name": "prefect_two_branch_capacity_catchup_short", "peak": {"accepted": 12, "branch_completed": 9, "logical_json_bytes": 860583, "logical_rows": 161, "max_admission_bytes": 1000000, "max_admission_records": 4, "max_bytes": 1000000, "max_records": 4, "physical_relation_bytes": 5144576, "time": 25576.243482412, "total_partition_used_bytes": 458752, "total_partition_used_records": 7, "used_admission_bytes": 262144, "used_admission_records": 4, "used_bytes": 262144, "used_records": 4, "wal_bytes": 6518108768}, "status": "pressure_observed_before_release", "target_backlog_records": 1}
+14:18:53.066 | INFO    | Task run 'durable-stream-source-94c' - Finished in state Completed()
+14:18:53.933 | INFO    | Task run 'durable-stream-operator-0ce' - Finished in state Completed()
+14:18:53.952 | INFO    | Task run 'durable-stream-operator-459' - Finished in state Completed()
+14:18:54.903 | INFO    | Task run 'durable-stream-maintenance-57d' - Finished in state Completed()
+14:18:55.002 | INFO    | Flow run 'amethyst-trogon' - Finished in state Completed()
+FAIL
+
+======================================================================
+FAIL: test_live_stall_saturates_then_branch_catches_up_with_source_open (test_postgres_capacity_acceptance.PostgresCapacityAcceptanceTests.test_live_stall_saturates_then_branch_catches_up_with_source_open)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/ariadne/architecture/streaming-etl/prototypes/test_postgres_capacity_acceptance.py", line 441, in test_live_stall_saturates_then_branch_catches_up_with_source_open
+    self.assertLessEqual(
+AssertionError: 1.0247409336698745 not less than or equal to 1.0
+
+----------------------------------------------------------------------
+Ran 5 tests in 63.874s
+
+FAILED (failures=1)

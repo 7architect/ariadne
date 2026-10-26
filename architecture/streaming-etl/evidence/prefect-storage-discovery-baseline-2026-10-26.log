@@ -1,0 +1,73 @@
+14:07:22.474 | INFO    | prefect.engine - View at http://127.0.0.1:45761/runs/flow-run/339d0a6c-826f-4700-b450-1d965c516fd8
+14:07:22.836 | INFO    | Flow run 'comical-pudu' - Beginning flow run 'comical-pudu' for flow 'protocol-probe'
+14:07:22.868 | INFO    | Flow run 'comical-pudu' - View at http://127.0.0.1:45761/runs/flow-run/339d0a6c-826f-4700-b450-1d965c516fd8
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py:443: ResourceWarning: unclosed <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52512), raddr=('127.0.0.1', 45761)>
+  def __enter__(self):
+Object allocated at (most recent call last):
+  File "/tmp/ariadne-prefect-socket-probe-deep.py", lineno 33
+    asyncio.run(main())
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py", lineno 195
+    return runner.run(main)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py", lineno 118
+    return self._loop.run_until_complete(task)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", lineno 678
+    self.run_forever()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", lineno 645
+    self._run_once()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", lineno 1999
+    handle._run()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/events.py", lineno 88
+    self._context.run(self._callback, *self._args)
+  File "/tmp/ariadne-prefect-socket-probe-deep.py", lineno 23
+    state = await protocol_probe(return_state=True)
+  File "/workspace/ariadne/src/prefect/flow_engine.py", lineno 2134
+    async with engine.run_context():
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", lineno 210
+    return await anext(self.gen)
+  File "/workspace/ariadne/src/prefect/flow_engine.py", lineno 2062
+    async with self.setup_run_context():
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", lineno 210
+    return await anext(self.gen)
+  File "/workspace/ariadne/src/prefect/flow_engine.py", lineno 1817
+    result_store = get_result_store().update_for_flow(self.flow, _sync=True)
+  File "/workspace/ariadne/src/prefect/_internal/compatibility/async_dispatch.py", lineno 94
+    return fn(*args, **kwargs)
+  File "/workspace/ariadne/src/prefect/results.py", lineno 551
+    default_storage = _get_default_result_storage()
+  File "/workspace/ariadne/src/prefect/results.py", lineno 177
+    else _read_server_default_result_storage_block_id()
+  File "/workspace/ariadne/src/prefect/results.py", lineno 118
+    configuration = client.read_server_default_result_storage()
+  File "/workspace/ariadne/src/prefect/client/orchestration/__init__.py", lineno 1483
+    response = self._client.get("/admin/storage")
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_client.py", lineno 1053
+    return self.request(
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_client.py", lineno 825
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "/workspace/ariadne/src/prefect/client/base.py", lineno 703
+    response = self._send_with_retry(
+  File "/workspace/ariadne/src/prefect/client/base.py", lineno 587
+    response = send(request, *send_args, **send_kwargs)
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_client.py", lineno 914
+    response = self._send_handling_auth(
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_client.py", lineno 942
+    response = self._send_handling_redirects(
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_client.py", lineno 979
+    response = self._send_single_request(request)
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_client.py", lineno 1014
+    response = transport.handle_request(request)
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", lineno 250
+    resp = self._pool.handle_request(req)
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpcore/_sync/connection_pool.py", lineno 236
+    response = connection.handle_request(
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpcore/_sync/connection.py", lineno 78
+    stream = self._connect(request)
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpcore/_sync/connection.py", lineno 124
+    stream = self._network_backend.connect_tcp(**kwargs)
+  File "/workspace/ariadne/.venv/lib/python3.12/site-packages/httpcore/_backends/sync.py", lineno 208
+    sock = socket.create_connection(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socket.py", lineno 845
+    sock = socket(af, socktype, proto)
+14:07:23.228 | INFO    | Task run 'passthrough-8f6' - Finished in state Completed()
+14:07:23.321 | INFO    | Flow run 'comical-pudu' - Finished in state Completed()
+TINY_PREFECT_PROBE_DONE

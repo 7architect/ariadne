@@ -11,14 +11,15 @@ files are immutable historical records: they are superseded or marked
 | `pending` | Created, but not yet discussed or tested. |
 | `planning` | The direction is agreed for planning and implementation. |
 | `progress` | The decision is being tested or implemented. |
-| `accepted` | Production code exists and every acceptance criterion has evidence. |
+| `accepted` | Code appropriate to the declared scope exists and every acceptance criterion has evidence. |
 | `rejected` | The theory failed review or validation; the ADR remains as evidence. |
 
-No ADR in this graph is `accepted` yet. Passing a protocol prototype can move an
-ADR to `planning` or `progress`; only production implementation plus acceptance
-evidence can move it to `accepted`.
+ADRs 0026, 0027 and 0029 are `accepted` for their explicit selected scopes.
+Acceptance applies only to the scope defined in each ADR. Passing a selected prototype does not establish general production
+readiness; broader production criteria remain open unless they have their own
+implementation and deployment evidence.
 
-Protocol epoch 2 has earned 90% through R4-B. The gate evidence and remaining
+Protocol epoch 2 has earned 100% of the agreed short experimental delivery. The gate evidence and remaining
 production scope are recorded in
 [ADR-0012](ADR-0012-protocol-epoch-2-delivery-gates.md).
 
@@ -90,6 +91,9 @@ graph TD
     A0027 --> A0028[ADR-0028: Existing self-hosted soak CI and reviewer]
     A0026 --> A0028
     A0028 --> A0009
+    A0027 --> A0029[ADR-0029: Short capacity calibration and release scope]
+    A0025 --> A0029
+    A0029 --> A0009
     A0011 --> A0020[ADR-0020: Bounded metadata and idempotency horizon]
     A0016 --> A0020
     A0018 --> A0020
@@ -128,7 +132,7 @@ graph TD
 
 ## ADRs
 
-- [ADR-0000: Decision lifecycle and evidence](ADR-0000-decision-lifecycle.md) — `planning`
+- [ADR-0000: Decision lifecycle and evidence](ADR-0000-decision-lifecycle.md) — `progress`
 - [ADR-0001: Streaming runtime boundary](ADR-0001-runtime-boundary.md) — `progress`
 - [ADR-0002: Barrier checkpoints and recovery domains](ADR-0002-checkpoints-and-recovery-domains.md) — `progress`
 - [ADR-0003: Selective recovery through branches and joins](ADR-0003-branch-and-join-recovery.md) — `progress`
@@ -154,9 +158,10 @@ graph TD
 - [ADR-0023: Bounded retention and explicit replay horizons](ADR-0023-bounded-retention-and-replay-horizons.md) — `progress`
 - [ADR-0024: Control-plane projections, leadership and run lifecycle](ADR-0024-control-plane-authority-and-lifecycle.md) — `progress`
 - [ADR-0025: Feature-flagged Prefect adapter and operational projections](ADR-0025-prefect-adapter-and-operational-projections.md) — `progress`
-- [ADR-0026: Release compatibility and disaster recovery](ADR-0026-release-compatibility-and-disaster-recovery.md) — `progress`
-- [ADR-0027: Short acceptance and a separate long soak](ADR-0027-short-acceptance-and-separate-long-soak.md) — `planning`
+- [ADR-0026: Release compatibility and disaster recovery](ADR-0026-release-compatibility-and-disaster-recovery.md) — `accepted`
+- [ADR-0027: Short acceptance and a separate long soak](ADR-0027-short-acceptance-and-separate-long-soak.md) — `accepted`
 - [ADR-0028: Existing self-hosted soak CI and reviewer](ADR-0028-self-hosted-soak-ci-and-reviewer.md) — `progress`
+- [ADR-0029: Short capacity calibration and release scope](ADR-0029-short-capacity-calibration-and-release-scope.md) — `accepted`
 - [ADR-0090: Use Prefect transactions as the streaming coordinator](ADR-0090-prefect-transactions-as-coordinator.md) — `rejected`
 - [ADR-0091: Idempotency alone provides multi-sink atomicity](ADR-0091-idempotency-alone-is-atomic.md) — `rejected`
 - [ADR-0092: Split lifecycle and progress state machines](ADR-0092-split-safety-state-machines.md) — `rejected`

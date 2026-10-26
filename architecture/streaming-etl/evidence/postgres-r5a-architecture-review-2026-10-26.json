@@ -1,0 +1,62 @@
+{
+  "deferred": {
+    "DS-052a": "queued/not started; separate 72-hour campaign; no contribution to short-gate readiness"
+  },
+  "limits": [
+    "schema-scoped backup is not whole-cluster disaster recovery",
+    "backup recovery point is explicit; no zero-RPO claim",
+    "host kernel, container runtime, platform daemon, PostgreSQL roles and direct database credentials remain trusted boundaries",
+    "general external connector and hostile-kernel isolation are unsupported",
+    "client owns determinism and idempotency of arbitrary external effects",
+    "one durably observed terminal yield or return advances platform progress for an input",
+    "the successor R5-B gate must validate post-candidate adapter, pinned isolation-image and capacity changes before the final short delivery"
+  ],
+  "name": "r5a_selected_schema_dr_architecture_review",
+  "readiness_recommendation_percent": 95,
+  "recorded_at": "2026-10-26T14:30:00Z",
+  "reviewed_current_artifact_sha256": {
+    "postgres_release_authority.py": "b3ce9151114978f5b7117be734e62b0d8f4bd67c05c6cfbc3879d53bacd1785f",
+    "postgres_release_crash_worker.py": "5b14569ded4b579a48d518c7ad3d99c856588e52eeefbf0923f94bd0396fbf28",
+    "postgres_release_oracle.py": "d92c34de8ff22fd997ebfab3a7e443b8f85b7b8ccac7c46b251c822813b7b211",
+    "postgres_restore_contracts.py": "aee0a779020f22654c4d5f155093b425f93c07b4ccce2ed4cc2820d0fd4e067d",
+    "postgres_restore_integrity.py": "eca41ddf25a8f18c13dcf25f63880544a39fcddbb55131fd100de94c4617b735",
+    "postgres_restore_registry.py": "dcb9511e889a98f8f98d204819ecba933809aa6cd937e161e733a1015457a90f",
+    "postgres_schema_backup.py": "5fcbd3512137ea3e7607d5556d9692a8c34099f0fce14de8d9f7fd268018ac3f",
+    "postgres_schema_backup_worker.py": "5526880b2bba9f9758c58224e7595d78b5803e622cbcdf647d652672834cdc24",
+    "recovery_runbook.md": "9c97c3d2cc031991092d708772d9f238fa9f9c5d53a2458c35c9b243ddb84f6f",
+    "test_postgres_network_faults.py": "b11d368c68af43515dcc347fa77a5c953e2ae248dac25d536bb4ed531ff34fe0",
+    "test_postgres_release_authority.py": "57b4552d16c854ad42f8e163613ac66a88d760d470ebb8eb900c2c60d11a9520",
+    "test_postgres_restore_registry.py": "79157fd375d36f3226ef19692b2368646fe2c6f41200601a32195c63c716c34f",
+    "test_postgres_schema_backup.py": "3ac1ee8d000b612e4f7a7449b0ee9a0dd5c3e11bb1edb4225b697ee7b995d545"
+  },
+  "reviewed_gate": {
+    "duration_seconds": 736.183,
+    "expected_tests": 159,
+    "passed": true,
+    "path": "postgres-r5a-candidate-2026-10-26.json",
+    "postgres_version": "17.11",
+    "raw_log_path": "postgres-r5a-candidate-2026-10-26.log",
+    "raw_log_sha256": "2a4e6f7265fd2aacc918a595e3665beb141f470e34269f1b94d98647f8dc8fa2",
+    "sha256": "78af43d370ebe889fe68832ade34e1edb5e8bbe7948ac4c93eaa5922a273a338",
+    "source_drift": [],
+    "synchronous_commit": "remote_apply",
+    "synchronous_replica": true,
+    "tests": 159
+  },
+  "schema_version": 1,
+  "scope": [
+    "additive release/session compatibility and fail-closed mixed-version writes",
+    "atomic migration identity and interruption/retry",
+    "exported-snapshot PostgreSQL schema backup, signed exclusive restore grant, old-authority fencing, first-incomplete resume",
+    "process/network reply-loss and retained ObjectRef corruption controls",
+    "selected closed-network pinned operator artifact without platform DSN/admin capability"
+  ],
+  "task_verdicts": {
+    "DS-050a": "PASS",
+    "DS-050b": "PASS",
+    "DS-050c": "PASS_SELECTED_SCHEMA_DR_PROFILE",
+    "DS-050d": "PASS",
+    "DS-051c": "PASS_SELECTED_CLOSED_NETWORK_OPERATOR_PROFILE"
+  },
+  "verdict": "PASS_SELECTED_SCHEMA_DR_PROFILE"
+}

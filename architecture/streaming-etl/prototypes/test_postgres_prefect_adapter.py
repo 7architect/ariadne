@@ -10,12 +10,13 @@ import socket
 import subprocess
 import tempfile
 import unittest
-import urllib.request
 import uuid
+from contextlib import ExitStack
 from dataclasses import asdict
 from pathlib import Path
 
 import asyncpg
+import httpx
 from postgres_barrier_coordinator import PostgresBarrierCoordinator
 from postgres_checkpoint_retention import PostgresCheckpointRetention
 from postgres_control_plane import AuthenticationFailed, PostgresControlPlane
@@ -55,6 +56,7 @@ from prefect_stream_adapter import (
 from prefect.client.orchestration import get_client
 from prefect.events.worker import EventsWorker
 from prefect.exceptions import ObjectNotFound
+from prefect.filesystems import LocalFileSystem
 from prefect.logging.handlers import APILogWorker
 from prefect.settings import temporary_settings
 from prefect.states import Crashed, StateType
@@ -300,19 +302,19 @@ class PostgresPrefectAttemptTests(unittest.IsolatedAsyncioTestCase):
         )
         health = f"http://127.0.0.1:{port}/api/health"
 
-        def read_health():
-            with urllib.request.urlopen(health, timeout=0.2) as response:
-                return response.status
-
-        for _ in range(600):
-            if process.returncode is not None:
-                break
-            try:
-                await asyncio.to_thread(read_health)
-                break
-            except OSError:
-                await asyncio.sleep(0.05)
-        else:
+        healthy = False
+        async with httpx.AsyncClient(timeout=0.2, trust_env=False) as client:
+            for _ in range(600):
+                if process.returncode is not None:
+                    break
+                try:
+                    response = await client.get(health)
+                    response.raise_for_status()
+                    healthy = True
+                    break
+                except httpx.HTTPError:
+                    await asyncio.sleep(0.05)
+        if not healthy and process.returncode is None:
             process.terminate()
             await process.wait()
             home.cleanup()
@@ -341,10 +343,29 @@ class PostgresPrefectAttemptTests(unittest.IsolatedAsyncioTestCase):
                 "DS041_SOURCE": "source-cap-prefect",
             }
         )
-        settings = temporary_settings(
-            updates={"PREFECT_API_URL": env["PREFECT_API_URL"]}
+        settings = ExitStack()
+        settings.enter_context(
+            temporary_settings(updates={"PREFECT_API_URL": env["PREFECT_API_URL"]})
         )
-        settings.__enter__()
+        try:
+            storage_name = f"stream-acceptance-{port}"
+            await LocalFileSystem(basepath=home.name + "/results").asave(
+                storage_name, overwrite=True
+            )
+            # Terminal stream outputs live in PostgreSQL. An explicit public
+            # SDK storage setting also avoids repeated automatic discovery
+            # through a sync HTTP client that the selected SDK leaves open.
+            settings.enter_context(
+                temporary_settings(
+                    updates={
+                        "PREFECT_RESULTS_DEFAULT_STORAGE_BLOCK": "local-file-system/"
+                        + storage_name
+                    }
+                )
+            )
+        except BaseException:
+            await self.stop_prefect_server((process, home, previous, settings))
+            raise
         return process, home, previous, settings
 
     @staticmethod

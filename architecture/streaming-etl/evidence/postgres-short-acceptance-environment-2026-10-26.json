@@ -1,0 +1,41 @@
+{
+  "chromium": "Chromium 154.0.8037.57 built on Debian GNU/Linux 13 (trixie)",
+  "docker_server": "28.4.0",
+  "isolated_operator_base": {
+    "architecture": "amd64",
+    "image_id": "sha256:f4b7b8044a873fcc0f348549a19b9075cd77bd56ead7177192cfec38d85bce4a",
+    "os": "linux",
+    "repo_digests": [
+      "python@sha256:b658b05ce9c4eb97ec6fc19424818a1f31993659c2b505a532f470e83807815d"
+    ]
+  },
+  "observed_at": "2026-10-26T14:37:27.493832+00:00",
+  "packages": {
+    "asyncpg": "0.31.0",
+    "cryptography": "50.0.0",
+    "fastapi": "0.141.1",
+    "httpx": "0.28.1",
+    "opentelemetry-sdk": "1.44.0",
+    "pillow": "12.3.0",
+    "prefect": "3.6.24",
+    "pydantic": "2.13.4",
+    "uv": "0.12.0",
+    "websockets": "16.1.1"
+  },
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "postgres_source_image": {
+    "architecture": "amd64",
+    "image_id": "sha256:ab20e934b27ba3ff927c1b4c9ff8cf6c32f315f743efe68dd3441182a87fb085",
+    "os": "linux",
+    "repo_digests": [
+      "postgres@sha256:eee6c6e1b0894fa4fe0075eb054af9fd1cf39a35321c2d4110626cfe506411fb"
+    ]
+  },
+  "protocol": "ariadne-short-acceptance-environment/v1",
+  "python": "3.12.14",
+  "scope": "selected local short acceptance; no hosted-CI or 72-hour completion claim",
+  "source_base_commit": "8d544aa3e81b3c31c20b1ebc70e342f21212c2b3",
+  "source_provenance": "Actual tested Python/HTML bytes are bound by the frozen gate manifest; final publication must match those hashes.",
+  "worktree_clean": false,
+  "worktree_status_sha256": "c475caf4f50b9a3db28b736abb203f844e4154d8f25f6b51da97a9a7164ef6a2"
+}

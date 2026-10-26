@@ -1,0 +1,22 @@
+test_nonpositive_calibrated_net_rate_is_not_a_prediction (test_postgres_capacity_acceptance.CapacityPredictionTests.test_nonpositive_calibrated_net_rate_is_not_a_prediction) ... ok
+test_pending_state_is_never_polled_and_failure_still_propagates (test_postgres_capacity_acceptance.FutureCompletionWatcherTests.test_pending_state_is_never_polled_and_failure_still_propagates) ... ok
+test_active_invocation_keeps_exact_checkpoint_for_retry (test_postgres_capacity_acceptance.MaintenanceBusyRegressionTests.test_active_invocation_keeps_exact_checkpoint_for_retry) ... ok
+test_concurrent_isolated_targets_get_one_nonreassignable_grant (test_postgres_schema_backup.PostgresSchemaBackupTests.test_concurrent_isolated_targets_get_one_nonreassignable_grant) ... ok
+test_corrupt_target_payload_rejects_signed_activation_without_mutation (test_postgres_schema_backup.PostgresSchemaBackupTests.test_corrupt_target_payload_rejects_signed_activation_without_mutation) ... ok
+test_terminated_postgres_socket_rolls_back_whole_terminal_transaction (test_postgres_network_faults.PostgresNetworkFaultTests.test_terminated_postgres_socket_rolls_back_whole_terminal_transaction) ... ok
+test_actual_prefect_task_retry_rebinds_only_failed_operator (test_postgres_prefect_adapter.PostgresPrefectAttemptTests.test_actual_prefect_task_retry_rebinds_only_failed_operator) ... 14:44:07.124 | WARNING | asyncio - Executing <Task pending name='Task-517' coro=<PostgresPrefectAttemptTests.test_actual_prefect_task_retry_rebinds_only_failed_operator() running at /workspace/ariadne/architecture/streaming-etl/prototypes/test_postgres_prefect_adapter.py:1222> cb=[_run_until_complete_cb() at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py:181] created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py:100> took 0.152 seconds
+14:44:07.203 | INFO    | prefect.engine - View at http://127.0.0.1:49233/runs/flow-run/3a69bce9-0881-4e15-94ea-b71a8aceee1b
+14:44:07.328 | INFO    | Flow run 'sweet-kangaroo' - Beginning flow run 'sweet-kangaroo' for flow 'durable-stream-flow'
+14:44:07.353 | INFO    | Flow run 'sweet-kangaroo' - View at http://127.0.0.1:49233/runs/flow-run/3a69bce9-0881-4e15-94ea-b71a8aceee1b
+14:44:07.356 | WARNING | asyncio - Executing <Task pending name='Task-517' coro=<PostgresPrefectAttemptTests.test_actual_prefect_task_retry_rebinds_only_failed_operator() running at /workspace/ariadne/architecture/streaming-etl/prototypes/test_postgres_prefect_adapter.py:1222> wait_for=<Future pending cb=[BaseSelectorEventLoop._sock_write_done(14, handle=<Handle BaseS...events.py:317>)(), Task.task_wakeup()] created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py:448> cb=[_run_until_complete_cb() at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py:181] created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py:100> took 0.107 seconds
+14:44:07.746 | INFO    | Task run 'durable-stream-operator-18d' - Task run failed with exception: RuntimeError('deterministic operator process-loss control') - Retry 1/1 will start immediately
+14:44:08.146 | INFO    | Task run 'durable-stream-source-46c' - Finished in state Completed()
+14:44:08.534 | INFO    | Task run 'durable-stream-operator-4bf' - Finished in state Completed()
+14:44:08.542 | INFO    | Task run 'durable-stream-operator-18d' - Finished in state Completed()
+14:44:08.913 | INFO    | Flow run 'sweet-kangaroo' - Finished in state Completed()
+ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 52.153s
+
+OK

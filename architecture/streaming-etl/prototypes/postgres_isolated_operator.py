@@ -133,7 +133,7 @@ class IsolatedOperatorSupervisor:
         *,
         artifact_id: str,
         artifact_digest: str,
-        base_image: str = "python:3.12-alpine",
+        base_image: str = "python@sha256:b658b05ce9c4eb97ec6fc19424818a1f31993659c2b505a532f470e83807815d",
     ) -> tuple[str, str]:
         registry_digest, function = resolve_operator_artifact(artifact_id)
         if registry_digest != artifact_digest:

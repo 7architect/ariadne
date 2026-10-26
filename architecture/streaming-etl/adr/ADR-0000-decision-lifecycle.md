@@ -1,6 +1,6 @@
 # ADR-0000: Decision lifecycle and evidence
 
-- Status: `planning`
+- Status: `progress`
 - Date: 2026-10-19
 - Owners: ETL Architect / HighLoad Principal, runtime maintainers
 - Related: [ADR graph](README.md), [todo](../todo.md), [sprint board](../sprint_board.md)
@@ -23,10 +23,12 @@ Every material runtime decision is recorded in an ADR and linked to its
 dependencies and dependants. ADRs are never deleted. A later decision supersedes
 an earlier one by linking to it and changing its status when appropriate.
 
-Status transitions use the definitions in the [ADR graph](README.md). A prototype
-is evidence for protocol feasibility, not evidence that the production system is
-complete. `accepted` requires production code and evidence for every acceptance
-criterion in that ADR.
+Status transitions use the definitions in the [ADR graph](README.md). In line
+with the original requested workflow, `accepted` requires implemented code or a
+prototype appropriate to the ADR's explicit scope and evidence for every
+acceptance criterion in that ADR. Accepting an experimental scope does not
+establish that a production system is complete. An ADR claiming production
+scope must require production code and deployment evidence in its own criteria.
 
 Before an ADR can become `accepted`, it must contain the problem, theory, agreed
 decision, user/system/developer stories, acceptance criteria, evidence, failure

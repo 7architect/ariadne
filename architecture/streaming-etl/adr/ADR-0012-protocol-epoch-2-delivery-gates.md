@@ -171,3 +171,28 @@ followed by credential isolation, capacity evidence and the actual 72-hour soak.
 ## User amendment: short acceptance now
 
 [ADR-0027](ADR-0027-short-acceptance-and-separate-long-soak.md) records the explicit user decision on 2026-10-25: short acceptance completes the current delivery; the actual 72-hour soak moves to separate nonblocking DS-052a. Earlier references to 72 hours as a blocking final condition are superseded by this decision. Full short-profile regression, fault, resource and credential-boundary checks remain required. No result is counted as a long soak without its actual elapsed duration.
+
+## R5-A gate — 95% earned
+
+The [159-test candidate](../evidence/postgres-r5a-candidate-2026-10-26.json) and
+[architecture review](../evidence/postgres-r5a-architecture-review-2026-10-26.json)
+close DS-050a…d and W37–W39 for the selected release/session, atomic migration,
+signed schema-backup restore and tested runbook scope. Source drift is empty;
+PostgreSQL 17.11 remote_apply/sync and documentation checks pass. The result is
+95% of the agreed experimental delivery, not whole-cluster disaster recovery,
+zero RPO or general production readiness. R5-B still requires its successor
+complete regression and short capacity evidence under
+[ADR-0029](ADR-0029-short-capacity-calibration-and-release-scope.md).
+
+## R5-B gate — short experimental delivery complete
+
+The [final complete gate](../evidence/postgres-r5b-final2-2026-10-26.json) passes
+164/164 tests in 931.889 seconds with all 126 tested source hashes unchanged,
+synchronous remote_apply/sync, documentation checks and no unclosed-socket
+warnings. The [independent controls](../evidence/postgres-r5b-independent-controls-review-2026-10-26.json)
+pass 7/7 hostile checks. DS-051a…d and W40–W42 are complete for the agreed
+short experimental scope, earning 100% of that delivery. ADR-0026, ADR-0027
+and ADR-0029 are accepted only within their declared scope. Broader production
+criteria and the separate DS-052a campaign remain open. No 72-hour PASS or
+general production-readiness claim is made. Earlier failed/interrupted
+candidates remain evidence; no source change followed this final gate.

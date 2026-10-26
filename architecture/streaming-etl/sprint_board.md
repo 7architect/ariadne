@@ -10,7 +10,7 @@ replacement workers redeliver the first input without a durable downstream
 `yield`/`return`, and periodic barriers preserve graph state. Client code owns
 determinism and external-effect idempotency.
 
-Current earned readiness: **90%**. The earlier 53% measured a different protocol
+Current earned readiness: **100% of the agreed short experimental delivery**. The earlier 53% measured a different protocol
 that coupled source acknowledgement, global checkpoint decisions, and external
 sink outcomes. Its evidence is retained below but is not counted toward the new
 target.
@@ -55,18 +55,43 @@ target.
 | W34 | `done` | 86% | +3% | DS-041a | Actual feature-flagged Prefect SDK/API streaming and artifact identity pass. |
 | W35 | `done` | 88% | +2% | DS-041b, DS-041c | Fenced resume, maintenance recovery and correlated telemetry pass. |
 | W36 / R4-B gate | `done` | 90% | +2% | DS-041d | 139/139 frozen tests, real HTTP/Chromium runbook drill and Principal PASS close R4-B. |
-| W37 | `progress` | 91.5% | +1.5% | DS-050a | Durable release/session fencing and mixed-version acceptance in [ADR-0026](adr/ADR-0026-release-compatibility-and-disaster-recovery.md). |
-| W38 | `blocked` | 93.5% | +2% | DS-050b, DS-050c | Migration and infrastructure chaos campaign pass. |
-| W39 / R5-A gate | `blocked` | 95% | +1.5% | DS-050d | Backup/restore, drain, and recovery runbook pass. |
-| W40 | `blocked` | 97% | +2% | DS-051a | Short declared acceptance profile and fault/resource checks pass; DS-052a tracks the separate 72-hour follow-up. |
-| W41 | `blocked` | 98% | +1% | DS-051b, DS-051c | Capacity predictions and credential boundary are verified. |
-| W42 / R5-B gate | `blocked` | 100% | +2% | DS-051d | Final Principal review closes the evidence graph. |
+| W37 | `done` | 91.5% | +1.5% | DS-050a | Durable release/session fencing and mixed-version acceptance in [ADR-0026](adr/ADR-0026-release-compatibility-and-disaster-recovery.md). |
+| W38 | `done` | 93.5% | +2% | DS-050b, DS-050c | Migration and infrastructure chaos campaign pass. |
+| W39 / R5-A gate | `done` | 95% | +1.5% | DS-050d | Backup/restore, drain, and recovery runbook pass. |
+| W40 | `done` | 97% | +2% | DS-051a | Short declared acceptance profile and fault/resource checks pass; DS-052a tracks the separate 72-hour follow-up. |
+| W41 | `done` | 98% | +1% | DS-051b, DS-051c | Capacity predictions and credential boundary are verified. |
+| W42 / R5-B gate | `done` | 100% | +2% | DS-051d | Final Principal review closes the evidence graph. |
 
 Every row is a one-week sprint assuming at least three parallel owners. The
 planned target shows contribution to the target problem; earned readiness moves
 only at rows marked `gate`. With fewer owners the dates move and dependent tasks
-are never compressed. R4-B has earned 90%; R5 remains unclaimed until its
-gates pass.
+are never compressed. R5-A has earned 95% for the declared schema-recovery
+scope. R5-B has now passed the successor complete short gate and closes the
+selected experimental delivery at 100%.
+These percentages measure the agreed experimental delivery, not general
+production readiness or elapsed calendar weeks.
+
+R5-B evidence: [164-test final report](evidence/postgres-r5b-final2-2026-10-26.json)
+and [7 independent controls](evidence/postgres-r5b-independent-controls-review-2026-10-26.json)
+close W40–W42. All 126 tested Python/HTML hashes match, source drift is empty,
+the remote_apply/sync profile passes, and no unclosed-socket warning occurs.
+The actual capacity scenario recovers under live ingress and passes six
+independent oracles. [ADR-0029](adr/ADR-0029-short-capacity-calibration-and-release-scope.md)
+records the exact limits and retained failed trials.
+
+The [final architecture review](evidence/postgres-r5b-architecture-review-2026-10-26.json)
+records `PASS_SHORT_EXPERIMENTAL_100`; the
+[final graph validation](evidence/adr-graph-final-2026-10-26.json) closes the
+documentation/status check. ADR-0026, ADR-0027 and ADR-0029 are accepted within
+their declared scopes; broader production criteria remain open.
+
+R5-A evidence: [159-test report](evidence/postgres-r5a-candidate-2026-10-26.json)
+and [architecture review](evidence/postgres-r5a-architecture-review-2026-10-26.json)
+close W37–W39 at 95%. The report passes in 736.183 seconds without source
+drift on PostgreSQL 17.11 remote_apply/sync; the
+[recovery runbook](recovery_runbook.md) records the exact selected procedure
+and limits. The successor short capacity and integration changes are covered
+by the final R5-B gate above.
 
 R4-B evidence: [139-test report](evidence/postgres-r4b-candidate3-2026-10-25.json)
 and [Principal PASS](evidence/postgres-r4b-principal-2026-10-25.json). All 108

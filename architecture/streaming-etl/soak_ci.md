@@ -97,3 +97,14 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
 - A passing GitHub smoke and actual 72-hour execution are not yet evidenced.
   `long_soak_passed` remains false. Historical observations are
   archived in the [CI setup report](evidence/postgres-soak-ci-setup-2026-10-26.json).
+
+## Confirmed routing follow-up
+
+After the user supplied the runner inventory,
+[run 40335123178](https://github.com/7architect/ariadne/actions/runs/40335123178)
+requests the exact ARC selector `anacreon-runners`. At the last observation it
+is queued without an assigned runner. The old static-selector run was
+cancelled. Repository eligibility/runner availability remains an external
+CI follow-up; the local short release gate is independently complete. The
+72-hour profile still targets the static runner, verifies `k8s-runner`, and
+has not been dispatched.

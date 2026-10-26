@@ -1,0 +1,4 @@
+# TLC working files; the reproducible report is kept under ../evidence/.
+states/
+*_TTrace_*.bin
+*_TTrace_*.tla

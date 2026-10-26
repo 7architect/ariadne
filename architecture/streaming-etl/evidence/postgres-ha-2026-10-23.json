@@ -1,0 +1,29 @@
+{
+  "acknowledged_rows_after_promotion": [
+    [
+      1,
+      "acknowledged-before-loss"
+    ],
+    [
+      2,
+      "written-after-promotion"
+    ]
+  ],
+  "durability_profile": "synchronous remote_apply",
+  "passed": true,
+  "postgres_major": 17,
+  "promotion_seconds": 0.2914604979998785,
+  "promotion_slo_seconds": 15,
+  "replication_after_restart": {
+    "application_name": "walreceiver",
+    "state": "streaming",
+    "sync_state": "sync"
+  },
+  "replication_before": {
+    "application_name": "walreceiver",
+    "state": "streaming",
+    "sync_state": "sync"
+  },
+  "restart_seconds": 0.42078297299985934,
+  "restart_slo_seconds": 15
+}

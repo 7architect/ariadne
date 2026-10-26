@@ -1,0 +1,150 @@
+{
+  "bounded_measurement": {
+    "json_bytes": [
+      30322,
+      30340,
+      30346,
+      30452
+    ],
+    "logical_byte_budget": 262144,
+    "logical_row_budget": 512,
+    "name": "streaming_retention_100_cycles",
+    "rows": [
+      64,
+      64,
+      64,
+      64
+    ],
+    "sample_cycles": [
+      25,
+      50,
+      75,
+      100
+    ],
+    "scope": "logical row/JSON bytes; excludes heap/index/WAL"
+  },
+  "closed_hostile_findings": [
+    "regional archive prior counters were self-referential; guard now binds prior_digest and all prior_totals to the actual prior head, with an exact-live-witness forgery regression",
+    "the earlier 100-cycle census omitted regional authority; the final profile includes regional graph/cuts/plans/generations/attempts/archive families and holds exactly 64 logical rows at cycles 25/50/75/100",
+    "physical boundary corruption could be mislabeled as expandable; planner now expands only declared policy-unavailable edges after exact retained-byte validation and refuses physical horizon loss before a durable fence",
+    "missing/corrupt outputs on internal or leaf edges could fail after fencing; regional preflight validates every selected participant replay-tail output before worker generations change",
+    "retirement writers could publish new archive metadata beyond the configured budget; post-write checks under revision serialization now roll the transaction back atomically"
+  ],
+  "current_tree_hash_mismatches": [],
+  "explicit_limits": [
+    "external source rewind execution is unsupported",
+    "automatic reconstruction of missing or corrupt durable payload bytes is unsupported",
+    "logical row/JSON-byte census does not measure PostgreSQL heap, indexes, WAL, vacuum or the later soak gate",
+    "Prefect/server integration, tenant authorization, upgrades, chaos and production soak remain later gates"
+  ],
+  "generated_at": "2026-10-25T14:29:24.806464+00:00",
+  "independent_targeted_rerun": {
+    "command": [
+      "/workspace/ariadne/.venv/bin/python",
+      "-m",
+      "unittest",
+      "-v",
+      "test_postgres_join_retention.PostgresJoinRetentionTests.test_retirement_rolls_back_when_archive_exceeds_metadata_budget",
+      "test_postgres_regional_retention.PostgresRegionalRetentionTests.test_archive_head_rejects_bogus_prior_totals_with_exact_live_witnesses",
+      "test_postgres_regional_expansion.PostgresRegionalExpansionTests.test_corrupt_internal_replay_output_refuses_before_region_fence",
+      "test_postgres_regional_expansion.PostgresRegionalExpansionTests.test_unavailable_sibling_boundary_expands_and_executes_region"
+    ],
+    "duration_seconds": 9.895,
+    "returncode": 0,
+    "summary": "Ran 4 tests in 9.895s; OK",
+    "test_count": 4
+  },
+  "phase": "R3-B independent ETL Architect / HighLoad Principal gate review",
+  "readiness_gate": {
+    "approved": true,
+    "from_percent": 64,
+    "production_acceptance": false,
+    "to_percent": 75
+  },
+  "reviewed_evidence": {
+    "database": {
+      "postgres_version": "17.11",
+      "replicas": [
+        {
+          "application_name": "walreceiver",
+          "state": "streaming",
+          "sync_state": "sync"
+        }
+      ],
+      "synchronous_commit": "remote_apply"
+    },
+    "durability_profile_passed": true,
+    "duration_seconds": 336.425,
+    "expected_tests": 93,
+    "passed": true,
+    "path": "evidence/postgres-r3b-final2-2026-10-25.json",
+    "sha256": "fb1783814c7a730d6f0eac32d9707ee439019b17b392ca3f6f2b5dfcfb94cb5e",
+    "source_drift": [],
+    "test_count": 93
+  },
+  "source_sha256": {
+    "postgres_barrier_coordinator.py": "3dc5e69b8065c37a7032def392b26a2f7d2acbc7ebe5e5be377aca339213cd8c",
+    "postgres_barrier_crash_worker.py": "09528c038d0e21afc196d7003a8e25b6a06dddd1e16e05a1cb846d866408817b",
+    "postgres_barrier_gate_harness.py": "a98e491f520874745ca51229cdb60e143eca7cc7cd21cb018823f1b616b91c90",
+    "postgres_barrier_oracle.py": "9555fe96134a0e45511dd0df91f14cb1167f04fba5a72a14702d781c35408382",
+    "postgres_checkpoint_retention.py": "f355b2336df87ebee481a8e20a25a65467b6c93d3df4a143f80f362c6a8c0e6c",
+    "postgres_checkpoint_retention_crash_worker.py": "3e9e1c4346d9f27e59d54276a671bcdd66a599ab767169e247bfd3eb78abe566",
+    "postgres_checkpoint_retention_oracle.py": "191913e92f1cb92bcda286902c22c887a1b16d75dfb216d5ca3194f19b2bdfca",
+    "postgres_checkpoint_runtime.py": "b8ed0a44ddbd25addc1a096b714172301fd967202666c34f6ad3e5361beb200b",
+    "postgres_dag_pressure.py": "768c97354bf6ad9363f6e8a38c762f70d64fdb3be9fadcbb6d52c537749cab4f",
+    "postgres_generator_runtime.py": "6b4af0b3c07a7667643f63135827e2697b049da3e084079ec2cd5e3473235198",
+    "postgres_ha_harness.py": "9d207a725c13e4471e7cfbcc2705f3d466162ed86465909d7fd1eef29cbeee60",
+    "postgres_join_crash_worker.py": "ef3f90c9e98d665dd8bbc4a59243ad4a28771a876fbf2df22efc606f4cfadbc9",
+    "postgres_join_oracle.py": "bc2cad5f0e92a7a61cd4ba2a51e6f680ab7e127ee866c6d22aeb4b3ce976cdfc",
+    "postgres_join_retention.py": "efcc730e9bb5296c35825961f5a8996655dc4aae92d87c353550b3b9dc25242d",
+    "postgres_join_runtime.py": "4128295492c4afbfa52741bb4e7397e03492e18ebf2de0f71718b671975dee62",
+    "postgres_load_benchmark.py": "7c6ef7c83149ade3e9a0da68ae3dd8022ae0dcfa9cda7e0dff95b7da1fa09dce",
+    "postgres_r3b_gate_harness.py": "b56bf83c45d65adc148929230cac3dca93c4491a0f0f615983dac9942d70d129",
+    "postgres_recovery_regions.py": "ec793b84ddd235be20e4287269040a9985ffc033d8f4c1ede4910d105f08e37b",
+    "postgres_regional_recovery.py": "e9b5b3ea01a194cefef22d7c734497cb8a3c3e287d83733b1dcef03a4665b2b1",
+    "postgres_regional_recovery_crash_worker.py": "c331c85e6234dbd8e91d2f2d6b6922aacd1916f301ac831389ce73d122a86197",
+    "postgres_regional_retention.py": "c3b9e02d90a36f19988517c2eb42be1cc18a7a8dad0360057b012d3201b99cfe",
+    "postgres_regional_retention_oracle.py": "8db42d76fed4dfa7034fabefc1204f4959f76cf0e7f29f2bb51bbb04253fe54e",
+    "postgres_runtime_crash_worker.py": "6aa39563fa5d9f78f348dee7bb9cc4aebb213d0e98f6a75af93e2bdff33cd7f6",
+    "postgres_storage_footprint.py": "32b288f8ea92ca6b153f4bc27a1e95254fefb2d0330f8aa9a98d8026226a20f5",
+    "postgres_stream_oracle.py": "7aea5d50ccceff4386eb7f09a2c97180006698396905a10a4dc3da9f0ab60656",
+    "postgres_stream_v2.py": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "postgres_streaming_retention.py": "58d629ea8f8f3244027eed502cd2e28efea93703cf792de5c9d6f8d2e8200d09",
+    "postgres_streaming_retention_crash_worker.py": "94ba5a9215a27cf09571d046678fd7d9714c2877bac304b20733a1106ec879c3",
+    "test_postgres_barrier_coordinator.py": "9f6ac369486295a43305cc956d792eb99d953bc717d73aabdca58be439303083",
+    "test_postgres_checkpoint_retention.py": "d875e33545b190c2604f3efd35f0871a3f7d9d5e885c1d0c1e7db9dbd35a0961",
+    "test_postgres_generator_runtime.py": "94d130c4d8d0e4b84c214370418350679230c771c1a502ab81e6a83c7f3e8f60",
+    "test_postgres_join_retention.py": "103339da959c6debf4ca6274e2742e950e6bf4af3b7e05b34269e79722db5824",
+    "test_postgres_join_runtime.py": "2c9445416da0ae46073cb12791fd2eeca0ccbe5f714817ee6ef93a5fa40c72d5",
+    "test_postgres_recovery_regions.py": "3127752fb876d449bc175f282c8a7445b1b7649f0f5f3c1863432a7f8cd68d53",
+    "test_postgres_regional_expansion.py": "c589006ca3ec8ff15eb94bca22551214b338cde540f5a64d17bb566be895bcc7",
+    "test_postgres_regional_recovery.py": "74e8afd46ef16f3c4ffb44fc55fb54bc1557ec0d3b67ed3a127ddc572da5ff47",
+    "test_postgres_regional_retention.py": "674c9df90ecd7a394cdbd6d0d5c6ee6d139e60586f318efb21207e7553c18249",
+    "test_postgres_stream_v2.py": "f8902b61e1d30e3817c35438aad39f2f73328179c0619159aad75f930d7e0769",
+    "test_postgres_streaming_retention.py": "b858c900fec62492c69d45ed9f3704c1e8bc24d21fdf56bfa9d093892adc81ea"
+  },
+  "supported_contract": {
+    "horizon_failure": "named UnrecoverableBoundary with no committed fence, epoch change or recovery plan",
+    "policy_expansion": "recursive operator-region expansion for a declared nonreplayable edge whose exact bytes remain retained",
+    "recovery_horizon": "latest compatible completed checkpoint plus exact retained durable mailbox/log/ObjectRef tail"
+  },
+  "task_verdicts": {
+    "DS-031a": {
+      "basis": "routed DATA/BARRIER alignment, durable mailbox/terminal transactions, abort release, 12 real process-loss boundaries, independent join/coordinator/stream oracles",
+      "verdict": "PASS"
+    },
+    "DS-031b": {
+      "basis": "branch-local generation fence, snapshot+exact-tail replay, atomic region activation, healthy sibling continuity, append-only takeover and four regional process-loss boundaries",
+      "verdict": "PASS"
+    },
+    "DS-031c": {
+      "basis": "declared-nonreplayable boundary expansion only after retained bytes are verified; physical missing/corrupt/root/log authority and nonrewindable SOURCE fail atomically with named UnrecoverableBoundary",
+      "verdict": "PASS"
+    },
+    "DS-031d": {
+      "basis": "hard edge/mailbox count+byte limits, pressure visibility and credit return, plus integrated 100-cycle R1/R2/regional/stream-GC census",
+      "verdict": "PASS"
+    }
+  },
+  "verdict": "PASS"
+}

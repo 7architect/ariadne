@@ -1,0 +1,388 @@
+name: Streaming ETL soak
+run-name: Streaming ETL ${{ inputs.profile || 'smoke' }} · ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "smoke validates controls; 72h runs one continuous 72-hour campaign"
+        type: choice
+        options: [smoke, 72h]
+        default: smoke
+      runner_label:
+        description: "Existing runner label; 72h requires a label unique to one persistent Linux x64 host"
+        type: string
+        default: self-hosted
+  push:
+    branches: [codex/streaming-etl-adrs]
+    paths:
+      - ".github/workflows/streaming-etl-soak*.yml"
+      - "architecture/streaming-etl/prototypes/ci_soak/**"
+      - "architecture/streaming-etl/prototypes/postgres_*.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: streaming-etl-soak
+  cancel-in-progress: false
+
+env:
+  ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+  SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+
+jobs:
+  prepare:
+    name: Prepare on an existing self-hosted runner
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.runner_label || 'self-hosted' }}"]
+    timeout-minutes: 30
+    outputs:
+      long: ${{ steps.config.outputs.long }}
+      run_id: ${{ steps.config.outputs.run_id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Validate profile, runner and campaign ID
+        id: config
+        env:
+          PROFILE: ${{ inputs.profile || 'smoke' }}
+          RUNNER_LABEL: ${{ inputs.runner_label || 'self-hosted' }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import sys
+          from pathlib import Path
+          if sys.version_info < (3, 11):
+              raise SystemExit("The existing runner needs Python 3.11 or newer.")
+          profile = os.environ["PROFILE"]
+          label = os.environ["RUNNER_LABEL"].strip()
+          if profile == "72h" and label.lower() in {"", "self-hosted", "linux", "x64", "arm64"}:
+              raise SystemExit("72h needs an existing label unique to one runner. A runner name is not automatically a label.")
+          run_id = "gh-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"long={str(profile == '72h').lower()}\nrun_id={run_id}\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write(f"Runner: {os.environ['RUNNER_NAME']}\n\nCampaign: {run_id}\n\nProfile: {profile}\n")
+          Path(os.environ["ARIADNE_SOAK_ROOT"]).mkdir(parents=True, exist_ok=True)
+          PY
+          env -u DOCKER_HOST -u DOCKER_CONTEXT -u DOCKER_TLS -u DOCKER_TLS_VERIFY -u DOCKER_CERT_PATH \
+            docker --host=unix:///var/run/docker.sock info --format '{{.ServerVersion}}'
+      - name: Clear this job's public export directory
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os
+          import shutil
+          from pathlib import Path
+          path = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
+          shutil.rmtree(path, ignore_errors=True)
+          path.mkdir(parents=True)
+          PY
+      - name: Start immutable continuous campaign
+        if: steps.config.outputs.long == 'true'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 "$SOAK_CLI" start --bootstrap --run-id "$CAMPAIGN" --require-clean \
+            --target-seconds 259200 --segment-seconds 14400 --segment-count 18 \
+            --process-loss-segments 5,11
+      - name: Start smoke and exercise process recovery
+        if: steps.config.outputs.long == 'false'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 "$SOAK_CLI" start --bootstrap --run-id "$CAMPAIGN" --require-clean --smoke \
+            --target-seconds 45 --segment-seconds 60 --segment-count 1 \
+            --records-per-second 2 --checkpoint-every 2 --owner-fault-every 3 \
+            --process-loss-segments 0
+          python3 "$SOAK_CLI" watch --run-id "$CAMPAIGN" --segment 0 --duration 60 --poll-seconds 3
+      - name: Review smoke independently
+        if: always() && (inputs.profile || 'smoke') == 'smoke'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: python3 "$SOAK_CLI" review --run-id "$CAMPAIGN"
+      - name: Export smoke public evidence
+        if: always() && (inputs.profile || 'smoke') == 'smoke'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          if [ -f "$RUNNER_TEMP/soak-public/review.md" ]; then
+            cat "$RUNNER_TEMP/soak-public/review.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Preserve a bounded CI diagnostic even if bootstrap failed
+        if: always() && (inputs.profile || 'smoke') == 'smoke'
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          target = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
+          target.mkdir(parents=True, exist_ok=True)
+          value = {key: os.environ.get(key) for key in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'RUNNER_NAME', 'JOB_STATUS')}
+          (target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always() && (inputs.profile || 'smoke') == 'smoke'
+        with:
+          name: streaming-soak-smoke-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/soak-public/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Remove only smoke-owned Docker resources
+        if: always() && (inputs.profile || 'smoke') == 'smoke'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id || format('gh-{0}-{1}', github.run_id, github.run_attempt) }}
+        run: python3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup
+
+  segment-00:
+    name: Monitor 00 of 17
+    needs: [prepare]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 0
+
+  segment-01:
+    name: Monitor 01 of 17
+    needs: [prepare, segment-00]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 1
+
+  segment-02:
+    name: Monitor 02 of 17
+    needs: [prepare, segment-01]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 2
+
+  segment-03:
+    name: Monitor 03 of 17
+    needs: [prepare, segment-02]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 3
+
+  segment-04:
+    name: Monitor 04 of 17
+    needs: [prepare, segment-03]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 4
+
+  segment-05:
+    name: Monitor 05 of 17
+    needs: [prepare, segment-04]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 5
+
+  segment-06:
+    name: Monitor 06 of 17
+    needs: [prepare, segment-05]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 6
+
+  segment-07:
+    name: Monitor 07 of 17
+    needs: [prepare, segment-06]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 7
+
+  segment-08:
+    name: Monitor 08 of 17
+    needs: [prepare, segment-07]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 8
+
+  segment-09:
+    name: Monitor 09 of 17
+    needs: [prepare, segment-08]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 9
+
+  segment-10:
+    name: Monitor 10 of 17
+    needs: [prepare, segment-09]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 10
+
+  segment-11:
+    name: Monitor 11 of 17
+    needs: [prepare, segment-10]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 11
+
+  segment-12:
+    name: Monitor 12 of 17
+    needs: [prepare, segment-11]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 12
+
+  segment-13:
+    name: Monitor 13 of 17
+    needs: [prepare, segment-12]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 13
+
+  segment-14:
+    name: Monitor 14 of 17
+    needs: [prepare, segment-13]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 14
+
+  segment-15:
+    name: Monitor 15 of 17
+    needs: [prepare, segment-14]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 15
+
+  segment-16:
+    name: Monitor 16 of 17
+    needs: [prepare, segment-15]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 16
+
+  segment-17:
+    name: Monitor 17 of 17
+    needs: [prepare, segment-16]
+    if: needs.prepare.outputs.long == 'true'
+    uses: ./.github/workflows/streaming-etl-soak-segment.yml
+    with:
+      runner_label: ${{ inputs.runner_label }}
+      run_id: ${{ needs.prepare.outputs.run_id }}
+      segment: 17
+
+  review:
+    name: Final independent review and evidence
+    needs: [prepare, segment-17]
+    if: always() && needs.prepare.outputs.long == 'true'
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.runner_label }}"]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Clear this job's public export directory
+        run: |
+          python3 - <<'PY'
+          import os
+          import shutil
+          from pathlib import Path
+          path = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
+          shutil.rmtree(path, ignore_errors=True)
+          path.mkdir(parents=True)
+          PY
+      - name: Review actual duration, chain, state, faults and resource limits
+        id: reviewer
+        env:
+          CAMPAIGN: ${{ needs.prepare.outputs.run_id }}
+        run: python3 "$SOAK_CLI" review --run-id "$CAMPAIGN"
+      - name: Export credential-free evidence even on failure
+        if: always()
+        env:
+          CAMPAIGN: ${{ needs.prepare.outputs.run_id }}
+        run: |
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          if [ -f "$RUNNER_TEMP/soak-public/review.md" ]; then
+            cat "$RUNNER_TEMP/soak-public/review.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Preserve a bounded CI diagnostic
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          target = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
+          target.mkdir(parents=True, exist_ok=True)
+          value = {key: os.environ.get(key) for key in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'RUNNER_NAME', 'JOB_STATUS')}
+          (target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: streaming-soak-final-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/soak-public/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Stop this campaign; retain failed databases for investigation
+        if: always()
+        env:
+          CAMPAIGN: ${{ needs.prepare.outputs.run_id }}
+          REVIEW_PASSED: ${{ steps.reviewer.outcome == 'success' }}
+        run: |
+          if [ "$REVIEW_PASSED" = true ]; then
+            python3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup
+          else
+            python3 "$SOAK_CLI" stop --run-id "$CAMPAIGN"
+          fi

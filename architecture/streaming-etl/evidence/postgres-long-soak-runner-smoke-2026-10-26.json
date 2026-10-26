@@ -1,0 +1,209 @@
+{
+  "claims": {
+    "actual_prefect_in_72h": false,
+    "clean_ci_checkout_exercised": false,
+    "long_soak_passed": false,
+    "note": "This smoke proves the runner harness controls, sanitized Docker failure boundary, and pinned uv-only Docker build. The 72-hour workflow must run from a clean checkout on one uniquely labelled self-hosted runner.",
+    "smoke_controls_passed": true
+  },
+  "commands": [
+    "uv run python ci_soak/cli.py --root /tmp/ariadne-runner-smoke bootstrap --run-id runner-smoke-074439 --target-seconds 10 --segment-seconds 16 --segment-count 1 --records-per-second 2 --checkpoint-every 2 --owner-fault-every 3 --process-loss-segments 0 --smoke",
+    "uv run python ci_soak/cli.py --root /tmp/ariadne-runner-smoke start --run-id runner-smoke-074439",
+    "uv run python ci_soak/cli.py --root /tmp/ariadne-runner-smoke watch --run-id runner-smoke-074439 --segment 0 --duration 16 --poll-seconds 2",
+    "uv run python ci_soak/cli.py --root /tmp/ariadne-runner-smoke review --run-id runner-smoke-074439",
+    "uv run python ci_soak/cli.py --root /tmp/ariadne-runner-smoke export-public --run-id runner-smoke-074439 --output /tmp/ariadne-runner-smoke/public-runner-smoke-074439",
+    "uv run ruff check architecture/streaming-etl/prototypes/ci_soak",
+    "uv run ruff format --check architecture/streaming-etl/prototypes/ci_soak",
+    "uv run python -m unittest architecture/streaming-etl/prototypes/ci_soak/test_review.py -v"
+  ],
+  "core_source_manifest_digest": "9f5fc7443288e7c5c692ceba7a503a7e5e9047f3e00e7e62eec3dc0e1458e07e",
+  "core_source_sha256": {
+    "postgres_barrier_coordinator.py": "3dc5e69b8065c37a7032def392b26a2f7d2acbc7ebe5e5be377aca339213cd8c",
+    "postgres_barrier_crash_worker.py": "09528c038d0e21afc196d7003a8e25b6a06dddd1e16e05a1cb846d866408817b",
+    "postgres_barrier_gate_harness.py": "a98e491f520874745ca51229cdb60e143eca7cc7cd21cb018823f1b616b91c90",
+    "postgres_barrier_oracle.py": "9555fe96134a0e45511dd0df91f14cb1167f04fba5a72a14702d781c35408382",
+    "postgres_checkpoint_retention.py": "f355b2336df87ebee481a8e20a25a65467b6c93d3df4a143f80f362c6a8c0e6c",
+    "postgres_checkpoint_retention_crash_worker.py": "3e9e1c4346d9f27e59d54276a671bcdd66a599ab767169e247bfd3eb78abe566",
+    "postgres_checkpoint_retention_oracle.py": "191913e92f1cb92bcda286902c22c887a1b16d75dfb216d5ca3194f19b2bdfca",
+    "postgres_checkpoint_runtime.py": "b8ed0a44ddbd25addc1a096b714172301fd967202666c34f6ad3e5361beb200b",
+    "postgres_control_plane.py": "846e6d5686baf1272ca1b39f4731eda82bcd7311e63b39a59e461a712d8d0df9",
+    "postgres_control_plane_client.py": "4db1d140153bf1e10ee9db27b5e63ce5beffe3f1a64f74b030f94460730fb38a",
+    "postgres_control_plane_oracle.py": "c560c1d045ffa3adf9f0ceeb5c6d1d579ca62cd9b393a9e1f9bd5b111e5c2db3",
+    "postgres_control_plane_server.py": "be4cd810ec337a4dd9bfb6c7662d18ee1a394f3da8362ebd49dc95f2beec6a8c",
+    "postgres_dag_pressure.py": "768c97354bf6ad9363f6e8a38c762f70d64fdb3be9fadcbb6d52c537749cab4f",
+    "postgres_generator_runtime.py": "6b4af0b3c07a7667643f63135827e2697b049da3e084079ec2cd5e3473235198",
+    "postgres_ha_harness.py": "eb545e2518efd6cd8f18725b4e038e6ef92cd977a878ad394267ecc7ed16ead2",
+    "postgres_isolated_operator.py": "b54b2aa43b95cfa2f577e92139bb1b38b983dba808113a3a9acf2231308a4915",
+    "postgres_join_crash_worker.py": "ef3f90c9e98d665dd8bbc4a59243ad4a28771a876fbf2df22efc606f4cfadbc9",
+    "postgres_join_oracle.py": "bc2cad5f0e92a7a61cd4ba2a51e6f680ab7e127ee866c6d22aeb4b3ce976cdfc",
+    "postgres_join_retention.py": "efcc730e9bb5296c35825961f5a8996655dc4aae92d87c353550b3b9dc25242d",
+    "postgres_join_runtime.py": "4128295492c4afbfa52741bb4e7397e03492e18ebf2de0f71718b671975dee62",
+    "postgres_load_benchmark.py": "7c6ef7c83149ade3e9a0da68ae3dd8022ae0dcfa9cda7e0dff95b7da1fa09dce",
+    "postgres_operational_server.py": "a8ee91100cc3f54f6f4abb08af55cb4aea4f1c61d8cdb29928ca9606047fef43",
+    "postgres_prefect_attempt_oracle.py": "4fb556946099b48d7a65d4f892af3369b42f1e0331e7855f781b8ce9fd2e3756",
+    "postgres_prefect_attempts.py": "a7b59978b5fd8e7aece7b82db67c6bf307e14ada4ca04cb094453c55165f68f1",
+    "postgres_prefect_maintenance.py": "81dae06bcdfa030ff637d9c0e75b1d4f0d1ecd4840bd329ac5d56cf3311e1b19",
+    "postgres_prefect_maintenance_oracle.py": "1d26f2ee10c68132339451eee3a2a97f119068ec92514bb021d635f276982cc9",
+    "postgres_r3b_gate_harness.py": "b56bf83c45d65adc148929230cac3dca93c4491a0f0f615983dac9942d70d129",
+    "postgres_recovery_regions.py": "ec793b84ddd235be20e4287269040a9985ffc033d8f4c1ede4910d105f08e37b",
+    "postgres_regional_recovery.py": "e9b5b3ea01a194cefef22d7c734497cb8a3c3e287d83733b1dcef03a4665b2b1",
+    "postgres_regional_recovery_crash_worker.py": "c331c85e6234dbd8e91d2f2d6b6922aacd1916f301ac831389ce73d122a86197",
+    "postgres_regional_retention.py": "c3b9e02d90a36f19988517c2eb42be1cc18a7a8dad0360057b012d3201b99cfe",
+    "postgres_regional_retention_oracle.py": "8db42d76fed4dfa7034fabefc1204f4959f76cf0e7f29f2bb51bbb04253fe54e",
+    "postgres_release_authority.py": "b3ce9151114978f5b7117be734e62b0d8f4bd67c05c6cfbc3879d53bacd1785f",
+    "postgres_release_crash_worker.py": "5b14569ded4b579a48d518c7ad3d99c856588e52eeefbf0923f94bd0396fbf28",
+    "postgres_release_gate_harness.py": "7091cbb05e2f71b45d2610202eda8b7afda9a546d4bf77299c03b178983f2d86",
+    "postgres_release_oracle.py": "d92c34de8ff22fd997ebfab3a7e443b8f85b7b8ccac7c46b251c822813b7b211",
+    "postgres_restore_contracts.py": "aee0a779020f22654c4d5f155093b425f93c07b4ccce2ed4cc2820d0fd4e067d",
+    "postgres_restore_integrity.py": "eca41ddf25a8f18c13dcf25f63880544a39fcddbb55131fd100de94c4617b735",
+    "postgres_restore_registry.py": "dcb9511e889a98f8f98d204819ecba933809aa6cd937e161e733a1015457a90f",
+    "postgres_runtime_crash_worker.py": "6aa39563fa5d9f78f348dee7bb9cc4aebb213d0e98f6a75af93e2bdff33cd7f6",
+    "postgres_schema_backup.py": "5fcbd3512137ea3e7607d5556d9692a8c34099f0fce14de8d9f7fd268018ac3f",
+    "postgres_schema_backup_worker.py": "5526880b2bba9f9758c58224e7595d78b5803e622cbcdf647d652672834cdc24",
+    "postgres_schema_identity.py": "62c613e61f40c6e1dda08423ef29380634780ce8a96cd141f099d971373659ec",
+    "postgres_storage_footprint.py": "32b288f8ea92ca6b153f4bc27a1e95254fefb2d0330f8aa9a98d8026226a20f5",
+    "postgres_stream_observability.py": "8b12f5d1860bd10b4344ead5257e0032f91f714f512d6710fdc7c30f4d50dd08",
+    "postgres_stream_oracle.py": "7aea5d50ccceff4386eb7f09a2c97180006698396905a10a4dc3da9f0ab60656",
+    "postgres_stream_telemetry.py": "35d3a5e97b1afaf394e30e15ea8250616acbaf1bd48e768fd75919863b8198fe",
+    "postgres_stream_v2.py": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "postgres_streaming_retention.py": "58b1213ecd5c901c46458d88d42c4d4a9b21090c5878cd6aae4fa8dde4675af1",
+    "postgres_streaming_retention_crash_worker.py": "94ba5a9215a27cf09571d046678fd7d9714c2877bac304b20733a1106ec879c3"
+  },
+  "credentials_exported": false,
+  "dependencies": {
+    "asyncpg": "0.30.0",
+    "cryptography": "45.0.7",
+    "postgres_image": "postgres@sha256:eee6c6e1b0894fa4fe0075eb054af9fd1cf39a35321c2d4110626cfe506411fb",
+    "python": "3.12",
+    "python_image": "python@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704",
+    "uv": "0.12.23",
+    "uv_image": "ghcr.io/astral-sh/uv@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21"
+  },
+  "fault_schedule": {
+    "owner_loss_every_records": 3,
+    "process_loss_segments": [
+      0
+    ]
+  },
+  "generated_at": "2026-10-26T07:45:36.536948+00:00",
+  "git_commit": "87b5243845e733ed938b21cf7b9aeda6d6a4e194",
+  "git_provenance": {
+    "status_sha256": "1672bdbeac5c146f91f76ac473087045736e1e5457ab98ef9d54885f744cf12f",
+    "worktree_clean": false
+  },
+  "image_id": "sha256:16db5161b116b23f092547521cc2ed2e492bdbb2d7428c3adc9fc766c8551fc2",
+  "observed_faults": {
+    "container_restarts": 0,
+    "expected_owner_faults": 5,
+    "owner_faults": 5,
+    "post_process_loss_source_completed": 16,
+    "pre_process_loss_source_completed": 14,
+    "service_process_boots": 2
+  },
+  "oracles": {
+    "barrier": {
+      "passed": true,
+      "returncode": 0,
+      "violations": []
+    },
+    "join": {
+      "passed": true,
+      "returncode": 0,
+      "violations": []
+    },
+    "release": {
+      "passed": true,
+      "returncode": 0,
+      "violations": []
+    },
+    "stream": {
+      "passed": true,
+      "returncode": 0,
+      "violations": []
+    }
+  },
+  "postgres_image_id": "sha256:ab20e934b27ba3ff927c1b4c9ff8cf6c32f315f743efe68dd3441182a87fb085",
+  "protocol": "ariadne-long-soak-runner-smoke-evidence/v1",
+  "public_artifact_files": [
+    "manifest.json",
+    "review.json",
+    "review.md",
+    "segments/segment-00.json"
+  ],
+  "public_artifact_sha256": {
+    "manifest.json": "ae2682a3ea0a812adf95c9fa8a9d85e7c096f07ca35400ef8284320e3d6588d6",
+    "review.json": "0e14ccc7f757e78f61ea1e9cdb38898998a78886f13fbf6db80f34a957b4f8fa",
+    "review.md": "763a2390399c0e802416c3b346d65e4ba58220963bd84ffddb771d1e7cfa57c5",
+    "segments/segment-00.json": "4a4841e271d093c8b9537f3e2485a481bcfd0d4742f0d0ac7c29b6c7dfbb3cbf"
+  },
+  "release_session_remaining_seconds": [
+    299.359893,
+    292.849072,
+    289.269305,
+    285.687187
+  ],
+  "review": {
+    "actual_prefect_in_72h": false,
+    "elapsed_seconds": 26.772523,
+    "generated_at": "2026-10-26T07:45:17.570926+00:00",
+    "long_soak_passed": false,
+    "manifest_digest": "f4ce996cd0a5e60d502294cd11b11afa8efed802bcda844d5893ca43c0922699",
+    "owner_faults": 5,
+    "process_boots": 2,
+    "protocol": "ariadne-long-soak-review/v1",
+    "resource_measurements": {
+      "latter_half_primary_bytes_per_hour": 0.0,
+      "latter_half_schema_bytes_per_hour": 0.0,
+      "latter_half_service_rss_bytes_per_hour": 242413145.24890262,
+      "max_primary_data_bytes": 70044331,
+      "max_schema_relation_bytes": 5906432,
+      "max_service_rss_bytes": 40464547
+    },
+    "run_id": "runner-smoke-074439",
+    "scope": [
+      "real PostgreSQL 17 synchronous remote_apply pair",
+      "ordinary Python yield DAG source->A->{B,C}->J->D",
+      "periodic barriers and bounded retirement/GC",
+      "release-session storage guard",
+      "owner loss and externally scheduled service-process loss",
+      "actual Prefect integration remains separate short R4-B evidence"
+    ],
+    "segment_count": 1,
+    "smoke_passed": true,
+    "source_completed": 16,
+    "violations": []
+  },
+  "run_id": "runner-smoke-074439",
+  "runner_identity": {
+    "docker_id": "38c03c37-33e8-4e1e-a39a-b7ba3727692a",
+    "docker_root_dir": "/var/lib/docker",
+    "docker_server_version": "28.4.0",
+    "hostname": "051c8ba538b8",
+    "machine_id_sha256": "bac981e74ef285a071df5cae9ac9013fcffab22ee2bcbfeca2945e15fb2d2199",
+    "runner_arch": null,
+    "runner_environment": null,
+    "runner_name": null,
+    "runner_os": null
+  },
+  "scope": "short local Docker smoke of the hash-bound self-hosted-runner harness; not the separate 72-hour result",
+  "source_manifest_digest": "b48225b10e97415359ae6a9aa17095fb93dcdea52d6a20b950c93abbb6d4b72d",
+  "source_sha256": {
+    "Dockerfile": "9a7814eaef1a9573cd79c9b7cdb95eb8a154183a495248d774e0a5790e081177",
+    "README.md": "e1f89143672d0abfe964eb11fea747233e43f883bb29a105d6f06f13a475ace3",
+    "cli.py": "8fc584b5236316148c7476a6e60f0b33206466f4cbeabe1d4f09b2856ba89ae8",
+    "pyproject.toml": "d69bb3924e6e40bb6fce5247c1ab6a49b1656c802903c07a895a870bf11e02b2",
+    "review.py": "d59502efea82d760e9594a66b04dd7e0297b0b2c659d678c852585a68bd9a8e1",
+    "service.py": "c41e959c00234b32c70188da1aa63adb4313c210504d62481d0eb9c06b73aa6e",
+    "supervisor.py": "6b347d55d25a52f902f2aabda82d266dde07243fa76836a71b2ef94ad5a4334c",
+    "test_review.py": "685bbbbe67938fd993ea09a75167d0ca3ac62dc9c6678853c7bff5d098d0b66d",
+    "uv.lock": "678faf1e7e7b4a9ff17631d99615c687c125d6d7afe12666788d8fb02c9b1252"
+  },
+  "validation": {
+    "docker_build": "PASS",
+    "docker_error_redaction": "PASS",
+    "public_export_complete": true,
+    "reviewer_unit_tests": "5/5 PASS",
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS"
+  }
+}

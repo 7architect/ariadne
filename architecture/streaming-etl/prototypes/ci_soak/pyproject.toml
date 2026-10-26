@@ -1,0 +1,11 @@
+[project]
+name = "ariadne-ci-soak"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "asyncpg==0.30.0",
+  "cryptography==45.0.7",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,152 @@
+{
+  "capacity": {
+    "max_bytes": 1258291200,
+    "max_records": 60000,
+    "min_max_age_seconds": 65.0,
+    "partitions": 4,
+    "required_age_seconds": 60,
+    "required_bytes_for_60s": 589824000.0,
+    "required_records_for_60s": 36000.0,
+    "used_bytes": 0,
+    "used_records": 0
+  },
+  "checks": {
+    "backlog_recovered_during_ingress": true,
+    "byte_horizon": true,
+    "catchup": true,
+    "compaction": true,
+    "duration": false,
+    "independent_oracle": true,
+    "ingress": true,
+    "invariants": true,
+    "no_errors": true,
+    "p95": true,
+    "p99": true,
+    "record_horizon": true,
+    "remote_apply": true,
+    "replication": true,
+    "time_horizon": true
+  },
+  "compaction": {
+    "credits_after": {
+      "p0": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p1": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p2": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p3": {
+        "used_bytes": 0,
+        "used_records": 0
+      }
+    },
+    "reclaimed_bytes": 196608000,
+    "reclaimed_records": 12000,
+    "safe_through": {
+      "p0": 3000,
+      "p1": 3000,
+      "p2": 3000,
+      "p3": 3000
+    },
+    "scope": "live ingress partitions with completed consumer history",
+    "seconds": 5.660154625999894
+  },
+  "duration_seconds": 20.030940522000037,
+  "errors": [],
+  "independent_oracle": {
+    "observations": {
+      "completions": 12000,
+      "consumers": 4,
+      "partitions": 4,
+      "records": 0,
+      "tombstones": 12000
+    },
+    "passed": true,
+    "violations": []
+  },
+  "ingested_records": 12000,
+  "ingress_records_per_second": 600.0,
+  "invariants": {
+    "bad_capacity": 0,
+    "bad_invocations": 0,
+    "bad_objects": 0,
+    "bad_progress": 0,
+    "passed": true,
+    "sequence_gaps": 0
+  },
+  "latency": {
+    "definition": "per offered record from scheduled offer time through group commit ACK",
+    "group_size": 3,
+    "mean_ms": 19.864954329633555,
+    "p50_ms": 18.640434666394867,
+    "p95_ms": 30.298002332983742,
+    "p99_ms": 67.05156399993939
+  },
+  "mean_payload_bytes": 16384,
+  "offered_records_per_second": 600,
+  "passed": false,
+  "payload_distribution": {
+    "16KiB": 0.15,
+    "1KiB": 0.8,
+    "256KiB": 0.05,
+    "partition_phase_offsets": [
+      0,
+      5,
+      10,
+      15
+    ]
+  },
+  "provenance": {
+    "data_plane_sha256": "cd6881a9be6f52ad6f91bc7f71c989e394c8d017e01bbe3eb422d494218105c1",
+    "git_revision": "87b5243845e733ed938b21cf7b9aeda6d6a4e194",
+    "harness_sha256": "33b96d1ed726b2089cdb4321b463bf24e78110793b01c0590e3b05ebd09123a8",
+    "oracle_sha256": "01a731d341cbda8773ea4f4273b3e932312904293ad37b422ba6a5c97a1df6a9",
+    "postgres_image_digest": "sha256:ab20e934b27ba3ff927c1b4c9ff8cf6c32f315f743efe68dd3441182a87fb085"
+  },
+  "replication": [
+    {
+      "application_name": "walreceiver",
+      "state": "streaming",
+      "sync_state": "sync"
+    }
+  ],
+  "schema": "ds011_phase_probe_20261024",
+  "settings": {
+    "checkpoint_completion_target": "0.9",
+    "checkpoint_timeout": "15min",
+    "max_wal_size": "4GB",
+    "min_wal_size": "1GB",
+    "server_version": "17.11",
+    "shared_buffers": "128MB",
+    "synchronous_commit": "remote_apply",
+    "synchronous_standby_names": "*",
+    "wal_level": "replica"
+  },
+  "stalled_consumer": {
+    "backlog_basis": "records durably appended during measured 10-second outage",
+    "backlog_records": 5988,
+    "backlog_recovered_during_ingress": true,
+    "catchup_rate_definition": "gross durable completions per second from consumer start until the outage backlog is first eliminated",
+    "catchup_records_per_second": 1775.2990153187868,
+    "catchup_seconds": 5.12420720199998,
+    "caught_up_records": 12000,
+    "completions_at_backlog_recovery": 9097,
+    "lag_at_backlog_recovery": 11,
+    "live_ingress_continued": true,
+    "outage_seconds": 10
+  },
+  "thresholds": {
+    "append_p95_ms": 40,
+    "append_p99_ms": 100,
+    "backlog_seconds": 60,
+    "catchup_records_per_second": 750.0,
+    "duration_seconds": 60,
+    "ingress_records_per_second": 500
+  }
+}

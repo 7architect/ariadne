@@ -1,0 +1,889 @@
+{
+  "capacity": {
+    "max_bytes": 1258291200,
+    "max_records": 60000,
+    "min_max_age_seconds": 65.0,
+    "partitions": 4,
+    "required_age_seconds": 60,
+    "required_bytes_for_60s": 501350400.0,
+    "required_records_for_60s": 30600.0,
+    "used_bytes": 0,
+    "used_records": 0
+  },
+  "checks": {
+    "backlog_recovered_during_ingress": true,
+    "byte_horizon": true,
+    "catchup": true,
+    "compaction": true,
+    "duration": true,
+    "independent_oracle": true,
+    "ingress": true,
+    "invariants": true,
+    "metadata_compaction": true,
+    "no_errors": true,
+    "p95": true,
+    "p99": true,
+    "record_horizon": true,
+    "remote_apply": true,
+    "replication": true,
+    "time_horizon": true
+  },
+  "compaction": {
+    "credits_after": {
+      "p0": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p1": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p2": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p3": {
+        "used_bytes": 0,
+        "used_records": 0
+      }
+    },
+    "reclaimed_bytes": 501350400,
+    "reclaimed_records": 30600,
+    "reclaimed_records_per_second": 760.8726152835851,
+    "safe_through": {
+      "p0": 7650,
+      "p1": 7650,
+      "p2": 7650,
+      "p3": 7650
+    },
+    "scope": "live ingress partitions with completed consumer history",
+    "seconds": 40.21698164100053
+  },
+  "duration_seconds": 60.08529781600009,
+  "errors": [],
+  "independent_oracle": {
+    "observations": {
+      "completions": 4,
+      "consumers": 4,
+      "metadata_operations": 1,
+      "metadata_summaries": 4,
+      "object_identities": 0,
+      "partitions": 4,
+      "records": 0,
+      "tombstones": 0
+    },
+    "passed": true,
+    "violations": []
+  },
+  "ingested_records": 30600,
+  "ingress_records_per_second": 510.0,
+  "invariants": {
+    "bad_capacity": 0,
+    "bad_invocations": 0,
+    "bad_objects": 0,
+    "bad_progress": 0,
+    "passed": true,
+    "sequence_gaps": 0
+  },
+  "latency": {
+    "append_round_trip_ms": {
+      "max": 82.72911499989277,
+      "p95": 19.305870999232866,
+      "p99": 22.691397000016877
+    },
+    "batch_queue_wait_ms": {
+      "definition": "scheduled first record through event-loop wake; includes the intentional three-record group-fill interval",
+      "max": 67.0978550970176,
+      "p95": 4.970017862433451,
+      "p99": 5.788286274764687
+    },
+    "batch_scheduler_delay_ms": {
+      "max": 63.17628647047968,
+      "p95": 1.0484492340765428,
+      "p99": 1.8667176482267678
+    },
+    "by_payload_bytes": {
+      "1024": {
+        "count": 24480,
+        "p50_ms": 14.014565353136277,
+        "p95_ms": 22.039387627955875,
+        "p99_ms": 26.373215334388078
+      },
+      "16384": {
+        "count": 4590,
+        "p50_ms": 15.773137607538956,
+        "p95_ms": 23.24125166705926,
+        "p99_ms": 27.975413804597338
+      },
+      "262144": {
+        "count": 1530,
+        "p50_ms": 17.259889862543787,
+        "p95_ms": 24.89798421447631,
+        "p99_ms": 28.74230056841043
+      }
+    },
+    "definition": "per offered record from scheduled offer time through group commit ACK",
+    "group_size": 3,
+    "mean_ms": 14.479020955652553,
+    "p50_ms": 14.453767018494545,
+    "p95_ms": 22.5701783929253,
+    "p99_ms": 26.906248902378138,
+    "payload_encoding_ms": {
+      "max": 2.306349999344093,
+      "p95": 0.37092999991727993,
+      "p99": 0.6176240003696876
+    },
+    "top_20_batch_outliers": [
+      {
+        "ack_second": 58.61022497700105,
+        "append_call_start_second": 58.52749586200116,
+        "catchup_active": true,
+        "db_call_ms": 82.72911499989277,
+        "encoding_ms": 0.022215001081349328,
+        "local_first_sequence": 7462,
+        "local_last_sequence": 7464,
+        "partition": "p0",
+        "payload_ready_second": 58.5274955670011,
+        "queue_wait_ms": 7.865508861868875,
+        "scheduled_first_second": 58.51960784313815,
+        "scheduled_last_second": 58.523529411764684,
+        "wake_delay_ms": 3.943940235330956,
+        "wake_second": 58.527473352000015,
+        "worst_offer_to_ack_ms": 90.61713386290648
+      },
+      {
+        "ack_second": 56.10081871799957,
+        "append_call_start_second": 56.019856009999785,
+        "catchup_active": true,
+        "db_call_ms": 80.96270799978811,
+        "encoding_ms": 0.020884999685222283,
+        "local_first_sequence": 7141,
+        "local_last_sequence": 7143,
+        "partition": "p2",
+        "payload_ready_second": 56.0198556560008,
+        "queue_wait_ms": 6.109280804594164,
+        "scheduled_first_second": 56.01372549019652,
+        "scheduled_last_second": 56.01764705882306,
+        "wake_delay_ms": 2.1877121780562447,
+        "wake_second": 56.019834771001115,
+        "worst_offer_to_ack_ms": 87.09322780305229
+      },
+      {
+        "ack_second": 58.62926227900061,
+        "append_call_start_second": 58.61025323099966,
+        "catchup_active": true,
+        "db_call_ms": 19.009048000953044,
+        "encoding_ms": 0.017882000975077972,
+        "local_first_sequence": 7465,
+        "local_last_sequence": 7467,
+        "partition": "p0",
+        "payload_ready_second": 58.610252992000824,
+        "queue_wait_ms": 67.0978550970176,
+        "scheduled_first_second": 58.54313725490283,
+        "scheduled_last_second": 58.54705882352937,
+        "wake_delay_ms": 63.17628647047968,
+        "wake_second": 58.61023510999985,
+        "worst_offer_to_ack_ms": 86.12502409778244
+      },
+      {
+        "ack_second": 58.64982857799987,
+        "append_call_start_second": 58.629295146000004,
+        "catchup_active": true,
+        "db_call_ms": 20.53343199986557,
+        "encoding_ms": 0.021116999050718732,
+        "local_first_sequence": 7468,
+        "local_last_sequence": 7470,
+        "partition": "p0",
+        "payload_ready_second": 58.62929486699977,
+        "queue_wait_ms": 62.60708333320508,
+        "scheduled_first_second": 58.566666666667516,
+        "scheduled_last_second": 58.57058823529405,
+        "wake_delay_ms": 58.68551470666716,
+        "wake_second": 58.62927375000072,
+        "worst_offer_to_ack_ms": 83.16191133235407
+      },
+      {
+        "ack_second": 56.11999601000025,
+        "append_call_start_second": 56.10107086199969,
+        "catchup_active": true,
+        "db_call_ms": 18.92514800056233,
+        "encoding_ms": 0.2424239992251387,
+        "local_first_sequence": 7144,
+        "local_last_sequence": 7146,
+        "partition": "p2",
+        "payload_ready_second": 56.10107048200007,
+        "queue_wait_ms": 63.57315603963798,
+        "scheduled_first_second": 56.037254901961205,
+        "scheduled_last_second": 56.04117647058774,
+        "wake_delay_ms": 59.65158741310006,
+        "wake_second": 56.10082805800084,
+        "worst_offer_to_ack_ms": 82.74110803904478
+      },
+      {
+        "ack_second": 56.13967214500008,
+        "append_call_start_second": 56.120031553000445,
+        "catchup_active": true,
+        "db_call_ms": 19.640591999632306,
+        "encoding_ms": 0.022991000150796026,
+        "local_first_sequence": 7147,
+        "local_last_sequence": 7149,
+        "partition": "p2",
+        "payload_ready_second": 56.12003107500095,
+        "queue_wait_ms": 59.22377027491166,
+        "scheduled_first_second": 56.06078431372589,
+        "scheduled_last_second": 56.06470588235243,
+        "wake_delay_ms": 55.30220164837374,
+        "wake_second": 56.1200080840008,
+        "worst_offer_to_ack_ms": 78.88783127418719
+      },
+      {
+        "ack_second": 56.16120381099972,
+        "append_call_start_second": 56.13971795500038,
+        "catchup_active": true,
+        "db_call_ms": 21.485855999344494,
+        "encoding_ms": 0.03335800101922359,
+        "local_first_sequence": 7150,
+        "local_last_sequence": 7152,
+        "partition": "p2",
+        "payload_ready_second": 56.139717624000696,
+        "queue_wait_ms": 55.370540509102284,
+        "scheduled_first_second": 56.084313725490574,
+        "scheduled_last_second": 56.08823529411711,
+        "wake_delay_ms": 51.448971882564365,
+        "wake_second": 56.139684265999676,
+        "worst_offer_to_ack_ms": 76.89008550914878
+      },
+      {
+        "ack_second": 58.663192043999516,
+        "append_call_start_second": 58.64992870900096,
+        "catchup_active": true,
+        "db_call_ms": 13.263334998555365,
+        "encoding_ms": 0.08877300024323631,
+        "local_first_sequence": 7471,
+        "local_last_sequence": 7473,
+        "partition": "p0",
+        "payload_ready_second": 58.64992841300045,
+        "queue_wait_ms": 59.64356156800932,
+        "scheduled_first_second": 58.5901960784322,
+        "scheduled_last_second": 58.59411764705874,
+        "wake_delay_ms": 55.7219929414714,
+        "wake_second": 58.64983964000021,
+        "worst_offer_to_ack_ms": 72.99596556731558
+      },
+      {
+        "ack_second": 56.17894131100002,
+        "append_call_start_second": 56.16123690099994,
+        "catchup_active": true,
+        "db_call_ms": 17.704410000078497,
+        "encoding_ms": 0.021784999262308702,
+        "local_first_sequence": 7153,
+        "local_last_sequence": 7155,
+        "partition": "p2",
+        "payload_ready_second": 56.161236535999706,
+        "queue_wait_ms": 53.37161374518473,
+        "scheduled_first_second": 56.10784313725526,
+        "scheduled_last_second": 56.1117647058818,
+        "wake_delay_ms": 49.45004511864681,
+        "wake_second": 56.16121475100044,
+        "worst_offer_to_ack_ms": 71.09817374475824
+      },
+      {
+        "ack_second": 58.70309622000059,
+        "append_call_start_second": 58.678875040001,
+        "catchup_active": true,
+        "db_call_ms": 24.22117999958573,
+        "encoding_ms": 0.019343999156262726,
+        "local_first_sequence": 7477,
+        "local_last_sequence": 7479,
+        "partition": "p0",
+        "payload_ready_second": 58.67887472300026,
+        "queue_wait_ms": 41.60047703953751,
+        "scheduled_first_second": 58.63725490196157,
+        "scheduled_last_second": 58.64117647058811,
+        "wake_delay_ms": 37.67890841299959,
+        "wake_second": 58.67885537900111,
+        "worst_offer_to_ack_ms": 65.84131803901982
+      },
+      {
+        "ack_second": 58.678843633000724,
+        "append_call_start_second": 58.663222449000386,
+        "catchup_active": true,
+        "db_call_ms": 15.621184000337962,
+        "encoding_ms": 0.023974000214366242,
+        "local_first_sequence": 7474,
+        "local_last_sequence": 7476,
+        "partition": "p0",
+        "payload_ready_second": 58.66322220599977,
+        "queue_wait_ms": 49.472741802674136,
+        "scheduled_first_second": 58.613725490196884,
+        "scheduled_last_second": 58.61764705882342,
+        "wake_delay_ms": 45.55117317613622,
+        "wake_second": 58.66319823199956,
+        "worst_offer_to_ack_ms": 65.11814280383987
+      },
+      {
+        "ack_second": 58.71974553099972,
+        "append_call_start_second": 58.70312984700104,
+        "catchup_active": true,
+        "db_call_ms": 16.615683998679742,
+        "encoding_ms": 0.021427000319818035,
+        "local_first_sequence": 7480,
+        "local_last_sequence": 7482,
+        "partition": "p0",
+        "payload_ready_second": 58.70312956400085,
+        "queue_wait_ms": 42.32382327427331,
+        "scheduled_first_second": 58.66078431372625,
+        "scheduled_last_second": 58.66470588235279,
+        "wake_delay_ms": 38.40225464773539,
+        "wake_second": 58.70310813700053,
+        "worst_offer_to_ack_ms": 58.96121727346326
+      },
+      {
+        "ack_second": 56.190012281000236,
+        "append_call_start_second": 56.17896875800034,
+        "catchup_active": true,
+        "db_call_ms": 11.043522999898414,
+        "encoding_ms": 0.01648800025577657,
+        "local_first_sequence": 7156,
+        "local_last_sequence": 7158,
+        "partition": "p2",
+        "payload_ready_second": 56.178968477001035,
+        "queue_wait_ms": 47.57943998083647,
+        "scheduled_first_second": 56.13137254901994,
+        "scheduled_last_second": 56.13529411764648,
+        "wake_delay_ms": 43.65787135429855,
+        "wake_second": 56.17895198900078,
+        "worst_offer_to_ack_ms": 58.63973198029271
+      },
+      {
+        "ack_second": 58.73842210899966,
+        "append_call_start_second": 58.719774847000735,
+        "catchup_active": true,
+        "db_call_ms": 18.64726199892175,
+        "encoding_ms": 0.01968300057342276,
+        "local_first_sequence": 7483,
+        "local_last_sequence": 7485,
+        "partition": "p0",
+        "payload_ready_second": 58.719774539000355,
+        "queue_wait_ms": 35.441130508843344,
+        "scheduled_first_second": 58.68431372549094,
+        "scheduled_last_second": 58.688235294117476,
+        "wake_delay_ms": 31.519561882305425,
+        "wake_second": 58.71975485599978,
+        "worst_offer_to_ack_ms": 54.10838350871927
+      },
+      {
+        "ack_second": 56.20371144899946,
+        "append_call_start_second": 56.190273903999696,
+        "catchup_active": true,
+        "db_call_ms": 13.437544999760576,
+        "encoding_ms": 0.25022800036822446,
+        "local_first_sequence": 7159,
+        "local_last_sequence": 7161,
+        "partition": "p2",
+        "payload_ready_second": 56.19027351600016,
+        "queue_wait_ms": 35.121327215165365,
+        "scheduled_first_second": 56.15490196078463,
+        "scheduled_last_second": 56.158823529411166,
+        "wake_delay_ms": 31.199758588627446,
+        "wake_second": 56.19002328799979,
+        "worst_offer_to_ack_ms": 48.80948821482889
+      },
+      {
+        "ack_second": 58.75552659599998,
+        "append_call_start_second": 58.73848914100017,
+        "catchup_active": true,
+        "db_call_ms": 17.037454999808688,
+        "encoding_ms": 0.05499399958353024,
+        "local_first_sequence": 7486,
+        "local_last_sequence": 7488,
+        "partition": "p0",
+        "payload_ready_second": 58.738488827000765,
+        "queue_wait_ms": 30.59069574555906,
+        "scheduled_first_second": 58.70784313725562,
+        "scheduled_last_second": 58.71176470588216,
+        "wake_delay_ms": 26.66912711902114,
+        "wake_second": 58.73843383300118,
+        "worst_offer_to_ack_ms": 47.683458744359086
+      },
+      {
+        "ack_second": 0.05166678699970362,
+        "append_call_start_second": 0.012365627000690438,
+        "catchup_active": false,
+        "db_call_ms": 39.30115999901318,
+        "encoding_ms": 0.016468000467284583,
+        "local_first_sequence": 1,
+        "local_last_sequence": 3,
+        "partition": "p1",
+        "payload_ready_second": 0.01236521300052118,
+        "queue_wait_ms": 4.505607745159068,
+        "scheduled_first_second": 0.007843137254894827,
+        "scheduled_last_second": 0.011764705883251736,
+        "wake_delay_ms": 0.5840391168021597,
+        "wake_second": 0.012348745000053896,
+        "worst_offer_to_ack_ms": 43.82364974480879
+      },
+      {
+        "ack_second": 0.04427760600083275,
+        "append_call_start_second": 0.006181119000757462,
+        "catchup_active": false,
+        "db_call_ms": 38.096487000075285,
+        "encoding_ms": 0.053423000281327404,
+        "local_first_sequence": 1,
+        "local_last_sequence": 3,
+        "partition": "p0",
+        "payload_ready_second": 0.006180739999763318,
+        "queue_wait_ms": 4.166532686213031,
+        "scheduled_first_second": 0.0019607843132689595,
+        "scheduled_last_second": 0.005882352941625868,
+        "wake_delay_ms": 0.24496405785612296,
+        "wake_second": 0.006127316999481991,
+        "worst_offer_to_ack_ms": 42.31682168756379
+      },
+      {
+        "ack_second": 0.06178442500095116,
+        "append_call_start_second": 0.023697086000538548,
+        "catchup_active": false,
+        "db_call_ms": 38.08733900041261,
+        "encoding_ms": 0.02172299900848884,
+        "local_first_sequence": 1,
+        "local_last_sequence": 3,
+        "partition": "p3",
+        "payload_ready_second": 0.023696670999925118,
+        "queue_wait_ms": 4.067104862770066,
+        "scheduled_first_second": 0.019607843138146563,
+        "scheduled_last_second": 0.023529411764684482,
+        "wake_delay_ms": 0.14553623623214662,
+        "wake_second": 0.02367494800091663,
+        "worst_offer_to_ack_ms": 42.176581862804596
+      },
+      {
+        "ack_second": 58.5908262970006,
+        "append_call_start_second": 58.56714026100053,
+        "catchup_active": true,
+        "db_call_ms": 23.68603600007191,
+        "encoding_ms": 0.4378220000944566,
+        "local_first_sequence": 7465,
+        "local_last_sequence": 7467,
+        "partition": "p1",
+        "payload_ready_second": 58.56713977700019,
+        "queue_wait_ms": 17.682347157460754,
+        "scheduled_first_second": 58.54901960784264,
+        "scheduled_last_second": 58.552941176470995,
+        "wake_delay_ms": 13.760778529103845,
+        "wake_second": 58.5667019550001,
+        "worst_offer_to_ack_ms": 41.80668915796559
+      }
+    ]
+  },
+  "mean_payload_bytes": 16384,
+  "metadata_compaction": {
+    "expired_retry_rejected": true,
+    "idempotent_retry": true,
+    "locations": {
+      "load/p0": {
+        "anchor_digest": "bbe18ec1bbf339860e9f5099461af53dd8bf79393f6642d2ddaba9033fb0f26f",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-0"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p0",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "db27c8de390793e6619c7eb7183816b2eba79486bc18ee2fdcf2aa127ee21141"
+      },
+      "load/p1": {
+        "anchor_digest": "41bd75238bc24aaf514d1b8540d33f1901274239d3e5f017e8d01a78c8cc8fe7",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-1"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p1",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "38910b3c3dc35697424ac3bcd17490fb32ec7dc0cfe267ed0603a0a1ec581253"
+      },
+      "load/p2": {
+        "anchor_digest": "819548afd8da6da1a535e9aa8cf9c96fdd8df46f6a35d96840c56c9897966f1c",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-2"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p2",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "eba9e64a06daaecb49b764ee7088421c37634e6aa0f6b22739c28d42691c52ac"
+      },
+      "load/p3": {
+        "anchor_digest": "6deeabf0b7316d1a2235a4e885c612d23d6ffefaafaa1f712db218a113556689",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-3"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p3",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "358d3b52eb491474189d38e77de79e84e83eda72a04236d152125ad7bf985367"
+      }
+    },
+    "operation_id": "metadata:926dc2c21d425a247d53873b72fbde670b53bed55dcd16dfea787983a5c54f6c",
+    "pressure_after": {
+      "p0": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p0",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      },
+      "p1": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p1",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      },
+      "p2": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p2",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      },
+      "p3": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p3",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      }
+    },
+    "seconds": 12.976382578999619
+  },
+  "offered_records_per_second": 510,
+  "passed": true,
+  "payload_distribution": {
+    "16KiB": 0.15,
+    "1KiB": 0.8,
+    "256KiB": 0.05,
+    "offer_schedule": "deterministic global batch ordinals, one three-record batch every 3/510 seconds, round-robin across four partitions"
+  },
+  "postgres_stats": {
+    "after_measured_ingress": {
+      "checkpointer": {
+        "buffers_written": 56977,
+        "num_requested": 14,
+        "num_timed": 1,
+        "restartpoints_done": 0,
+        "restartpoints_req": 0,
+        "restartpoints_timed": 0,
+        "stats_reset": "2026-10-24T01:42:36.127708+00:00",
+        "sync_time": 2752,
+        "write_time": 842
+      },
+      "database": {
+        "active_time": 2735496.098,
+        "blk_read_time": 0,
+        "blk_write_time": 0,
+        "blks_hit": 598649720,
+        "blks_read": 29209,
+        "checksum_failures": null,
+        "checksum_last_failure": null,
+        "conflicts": 0,
+        "datid": "16384",
+        "datname": "streaming",
+        "deadlocks": 1,
+        "idle_in_transaction_time": 1624210.998,
+        "numbackends": 8,
+        "session_time": 11826081.927,
+        "sessions": 3760,
+        "sessions_abandoned": 225,
+        "sessions_fatal": 0,
+        "sessions_killed": 0,
+        "stats_reset": null,
+        "temp_bytes": 0,
+        "temp_files": 0,
+        "tup_deleted": 3178365,
+        "tup_fetched": 618327027,
+        "tup_inserted": 3436825,
+        "tup_returned": 5575592976,
+        "tup_updated": 1544263,
+        "xact_commit": 824761,
+        "xact_rollback": 1788
+      },
+      "wal": {
+        "stats_reset": "2026-10-24T01:42:36.127708+00:00",
+        "wal_buffers_full": 5324,
+        "wal_bytes": 2745677622,
+        "wal_fpi": 49059,
+        "wal_records": 17760509,
+        "wal_sync": 351347,
+        "wal_sync_time": 0,
+        "wal_write": 357833,
+        "wal_write_time": 0
+      }
+    },
+    "before_measured_ingress": {
+      "checkpointer": {
+        "buffers_written": 56977,
+        "num_requested": 14,
+        "num_timed": 1,
+        "restartpoints_done": 0,
+        "restartpoints_req": 0,
+        "restartpoints_timed": 0,
+        "stats_reset": "2026-10-24T01:42:36.127708+00:00",
+        "sync_time": 2752,
+        "write_time": 842
+      },
+      "database": {
+        "active_time": 2637417.822,
+        "blk_read_time": 0,
+        "blk_write_time": 0,
+        "blks_hit": 591031754,
+        "blks_read": 28322,
+        "checksum_failures": null,
+        "checksum_last_failure": null,
+        "conflicts": 0,
+        "datid": "16384",
+        "datname": "streaming",
+        "deadlocks": 1,
+        "idle_in_transaction_time": 1544842.471,
+        "numbackends": 5,
+        "session_time": 11379098.507,
+        "sessions": 3755,
+        "sessions_abandoned": 225,
+        "sessions_fatal": 0,
+        "sessions_killed": 0,
+        "stats_reset": null,
+        "temp_bytes": 0,
+        "temp_files": 0,
+        "tup_deleted": 3178364,
+        "tup_fetched": 579693962,
+        "tup_inserted": 3281081,
+        "tup_returned": 5535412195,
+        "tup_updated": 1479677,
+        "xact_commit": 770599,
+        "xact_rollback": 1788
+      },
+      "wal": {
+        "stats_reset": "2026-10-24T01:42:36.127708+00:00",
+        "wal_buffers_full": 5324,
+        "wal_bytes": 2619197639,
+        "wal_fpi": 48353,
+        "wal_records": 17090079,
+        "wal_sync": 326919,
+        "wal_sync_time": 0,
+        "wal_write": 333382,
+        "wal_write_time": 0
+      }
+    }
+  },
+  "provenance": {
+    "data_plane_sha256": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "git_revision": "87b5243845e733ed938b21cf7b9aeda6d6a4e194",
+    "harness_sha256": "7c6ef7c83149ade3e9a0da68ae3dd8022ae0dcfa9cda7e0dff95b7da1fa09dce",
+    "oracle_sha256": "2c1db770e65277a90ced9c2f10af83ab16a8e11aae0da4fb346dd445bde5d2e2",
+    "postgres_image_digest": "sha256:ab20e934b27ba3ff927c1b4c9ff8cf6c32f315f743efe68dd3441182a87fb085",
+    "process_topology": {
+      "available_cpu_count": 5,
+      "consumer_go_at_second": 10.001679475999481,
+      "consumer_processes": 1,
+      "consumer_ready_before_measurement": true,
+      "consumer_start_method": "spawn",
+      "process_cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "producer_backend_pids": [
+        4138,
+        4139,
+        4140,
+        4141
+      ],
+      "producer_connections_warm_before_measurement": true,
+      "producer_coroutines": 4,
+      "producer_processes": 1
+    }
+  },
+  "replication": [
+    {
+      "application_name": "walreceiver",
+      "state": "streaming",
+      "sync_state": "sync"
+    }
+  ],
+  "schema": "ds011_release_trial30_20261024",
+  "settings": {
+    "checkpoint_completion_target": "0.9",
+    "checkpoint_timeout": "15min",
+    "max_wal_size": "4GB",
+    "min_wal_size": "1GB",
+    "server_version": "17.11",
+    "shared_buffers": "128MB",
+    "synchronous_commit": "remote_apply",
+    "synchronous_standby_names": "*",
+    "wal_level": "replica"
+  },
+  "stalled_consumer": {
+    "backlog_basis": "records durably appended during measured 10-second outage",
+    "backlog_records": 5097,
+    "backlog_recovered_during_ingress": true,
+    "catchup_rate_definition": "gross durable completions per second from consumer start until the outage backlog is first eliminated",
+    "catchup_records_per_second": 901.2121033814668,
+    "catchup_seconds": 12.960323054001492,
+    "caught_up_records": 30600,
+    "completions_at_backlog_recovery": 11680,
+    "configured_catchup_limit_records_per_second": 900,
+    "idle_poll_seconds": 0.02,
+    "lag_at_backlog_recovery": 26,
+    "live_ingress_continued": true,
+    "outage_seconds": 10
+  },
+  "thresholds": {
+    "append_p95_ms": 40,
+    "append_p99_ms": 100,
+    "backlog_seconds": 60,
+    "catchup_records_per_second": 637.5,
+    "compaction_records_per_second": 637.5,
+    "duration_seconds": 60,
+    "ingress_records_per_second": 500
+  }
+}

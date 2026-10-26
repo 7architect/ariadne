@@ -1,0 +1,69 @@
+name: Streaming ETL soak segment
+
+on:
+  workflow_call:
+    inputs:
+      runner_label:
+        type: string
+        required: true
+      run_id:
+        type: string
+        required: true
+      segment:
+        type: number
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    name: Continuous campaign segment ${{ inputs.segment }}
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.runner_label }}"]
+    timeout-minutes: 270
+    env:
+      ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+      SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+      CAMPAIGN: ${{ inputs.run_id }}
+      SEGMENT: ${{ inputs.segment }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Clear this job's public export directory
+        run: |
+          python3 - <<'PY'
+          import os
+          import shutil
+          from pathlib import Path
+          path = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
+          shutil.rmtree(path, ignore_errors=True)
+          path.mkdir(parents=True)
+          PY
+      - name: Observe existing service without restarting it
+        run: python3 "$SOAK_CLI" watch --run-id "$CAMPAIGN" --segment "$SEGMENT" --duration 14400 --poll-seconds 60
+      - name: Export only public checkpoint evidence
+        if: always()
+        run: python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+      - name: Preserve a bounded CI diagnostic
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          target = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
+          target.mkdir(parents=True, exist_ok=True)
+          value = {key: os.environ.get(key) for key in ('CAMPAIGN', 'SEGMENT', 'GITHUB_RUN_ATTEMPT', 'RUNNER_NAME', 'JOB_STATUS')}
+          (target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: streaming-soak-segment-${{ inputs.segment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/soak-public/
+          if-no-files-found: error
+          retention-days: 90

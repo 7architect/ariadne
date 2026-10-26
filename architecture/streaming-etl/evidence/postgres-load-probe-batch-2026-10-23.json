@@ -1,0 +1,74 @@
+{
+  "capacity": {
+    "max_bytes": 805306368,
+    "max_records": 35000,
+    "required_bytes_for_60s": 491520000,
+    "required_records_for_60s": 30000,
+    "used_bytes": 21681152,
+    "used_records": 1328
+  },
+  "checks": {
+    "byte_horizon": true,
+    "catchup": true,
+    "duration": true,
+    "ingress": false,
+    "invariants": true,
+    "no_errors": true,
+    "p95": false,
+    "p99": false,
+    "record_horizon": true,
+    "remote_apply": true,
+    "replication": true
+  },
+  "duration_seconds": 3.4819485500001974,
+  "errors": [],
+  "ingested_records": 1328,
+  "ingress_records_per_second": 381.39564124229366,
+  "invariants": {
+    "bad_capacity": 0,
+    "bad_objects": 0,
+    "bad_progress": 0,
+    "passed": true,
+    "sequence_gaps": 0
+  },
+  "latency": {
+    "mean_ms": 469.32481787952247,
+    "p50_ms": 463.80407900005594,
+    "p95_ms": 603.3570330000657,
+    "p99_ms": 817.1499390000463
+  },
+  "mean_payload_bytes": 16384,
+  "passed": false,
+  "payload_distribution": {
+    "16KiB": 0.15,
+    "1KiB": 0.8,
+    "256KiB": 0.05
+  },
+  "replication": [
+    {
+      "application_name": "walreceiver",
+      "state": "streaming",
+      "sync_state": "sync"
+    }
+  ],
+  "schema": "ds011_probe_batch_20261023",
+  "settings": {
+    "synchronous_commit": "remote_apply",
+    "synchronous_standby_names": "*"
+  },
+  "stalled_consumer": {
+    "backlog_records": 1328,
+    "catchup_records_per_second": 4403.768538190492,
+    "catchup_seconds": 0.3015599000000293,
+    "caught_up_records": 1328,
+    "outage_seconds": 10
+  },
+  "thresholds": {
+    "append_p95_ms": 40,
+    "append_p99_ms": 100,
+    "backlog_seconds": 60,
+    "catchup_records_per_second": 625.0,
+    "duration_seconds": 60,
+    "ingress_records_per_second": 500
+  }
+}

@@ -121,8 +121,6 @@ three workflow files and found no remaining blocking defect; actionlint and the
 18-job dependency-chain check pass. Checkout and artifact actions are pinned to
 the verified v7.0.1 and v7.0.2 commit SHAs respectively.
 
-## Consequences
-
 ## Repository ownership and runner access
 
 The user clarified that the ARC scale set belongs to the `Anacreonsystems`
@@ -145,6 +143,8 @@ successful transfer, verify the new owner and branch, update the Git remote,
 and check that the organization's runner group permits this repository. Transfer
 alone does not override a selected-repository runner-group policy. Existing
 accepted short-profile evidence remains valid; hosted CI and DS-052a remain open.
+
+## Consequences
 
 The separate campaign occupies the existing static host for at least 72 hours.
 Other jobs on the host can affect measured capacity; a routing selector does not

@@ -123,6 +123,29 @@ the verified v7.0.1 and v7.0.2 commit SHAs respectively.
 
 ## Consequences
 
+## Repository ownership and runner access
+
+The user clarified that the ARC scale set belongs to the `Anacreonsystems`
+organization. The current `7architect/ariadne` repository belongs to a personal
+account; matching a runner label does not grant access to another owner's
+organization runners. This explains why the requested selector alone does not
+establish runner eligibility.
+
+The user proposed transferring the repository to the organization. Preflight
+confirmed the organization login, the published delivery branch, and no public
+target repository named `Anacreonsystems/ariadne`. The attempted repository
+transfer API returned HTTP 403 `Resource not accessible by integration`.
+No transfer occurred and the local remote is unchanged. Repository administration
+permission for the integration is distinct from the connected user's reported
+repository admin permission.
+
+The owner can transfer through repository Settings, General, Danger Zone,
+Transfer ownership, selecting `Anacreonsystems` and keeping `ariadne`. After a
+successful transfer, verify the new owner and branch, update the Git remote,
+and check that the organization's runner group permits this repository. Transfer
+alone does not override a selected-repository runner-group policy. Existing
+accepted short-profile evidence remains valid; hosted CI and DS-052a remain open.
+
 The separate campaign occupies the existing static host for at least 72 hours.
 Other jobs on the host can affect measured capacity; a routing selector does not
 reserve CPU or disk. Queue delays over the declared observation-gap limit cause

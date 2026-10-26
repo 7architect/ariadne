@@ -100,6 +100,18 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
 
 ## Confirmed routing follow-up
 
+The ARC scale set belongs to `Anacreonsystems`, while the repository currently
+belongs to the personal account `7architect`. The requested runner name alone
+cannot grant cross-owner access. A user-proposed transfer to
+`Anacreonsystems/ariadne` was attempted through the GitHub API and rejected with
+HTTP 403 `Resource not accessible by integration`; ownership was not changed.
+
+For manual transfer, open repository Settings, General, Danger Zone, Transfer
+ownership and select `Anacreonsystems`. Then verify the destination and delivery
+branch, update the local remote, and allow the repository in the organization's
+runner group if that group restricts repository access. Do not rewrite historical
+test reports or claim hosted CI passed as a consequence of transfer alone.
+
 After the user supplied the runner inventory,
 [run 40335123178](https://github.com/7architect/ariadne/actions/runs/40335123178)
 requests the exact ARC selector `anacreon-runners`. At the last observation it

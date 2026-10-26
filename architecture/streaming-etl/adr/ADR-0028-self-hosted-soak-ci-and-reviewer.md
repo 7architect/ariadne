@@ -30,6 +30,9 @@ scheduled faults, and declared resource-budget violations.
 ## Proposed solution and agreement
 
 Use the existing runners. Do not register a runner or provision a new machine.
+Use project names and neutral wording for branches, commits and documentation.
+The delivery branch is `streaming-etl-adrs`; CI branch filters and current
+documentation follow its name. Historical evidence remains unchanged.
 The [main workflow](../../../.github/workflows/streaming-etl-soak.yml) offers a
 short smoke profile and a manual `72h` profile. The smoke uses the standard
 `self-hosted`, `Linux`, and `X64` labels and performs start, fault injection,

@@ -14,7 +14,7 @@ on:
         type: string
         default: self-hosted
   push:
-    branches: [codex/streaming-etl-adrs]
+    branches: [streaming-etl-adrs]
     paths:
       - ".github/workflows/streaming-etl-soak*.yml"
       - "architecture/streaming-etl/prototypes/ci_soak/**"

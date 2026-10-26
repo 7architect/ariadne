@@ -24,7 +24,7 @@ machine and Docker daemon identity throughout the campaign.
 
 The [Streaming ETL soak workflow](../../.github/workflows/streaming-etl-soak.yml)
 defaults to `profile=smoke` and `runner_label=self-hosted`. A push of the workflow
-or harness on `codex/streaming-etl-adrs` also requests this smoke profile. It
+or harness on `streaming-etl-adrs` also requests this smoke profile. It
 selects an available existing Linux x64 runner and performs the complete short
 start/recovery/review/export/cleanup sequence within that job.
 
@@ -74,7 +74,7 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
 ## Current execution status
 
 - Workflow source, the explicit 18-job chain and the prototype dependencies are
-  committed and published on `codex/streaming-etl-adrs` at commit
+  committed and published on `streaming-etl-adrs` at commit
   `2f5902d5297f475f2835c4fdf8ce6db73aee287d`.
 - The three new workflow files pass actionlint v1.7.12.
 - The [current local Docker smoke](evidence/postgres-long-soak-runner-smoke-2026-10-26.json)

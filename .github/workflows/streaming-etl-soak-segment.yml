@@ -27,6 +27,9 @@ jobs:
       CAMPAIGN: ${{ inputs.run_id }}
       SEGMENT: ${{ inputs.segment }}
     steps:
+      - name: Verify the existing persistent runner
+        id: guard
+        run: test "$RUNNER_NAME" = k8s-runner
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
@@ -44,7 +47,7 @@ jobs:
       - name: Observe existing service without restarting it
         run: python3 "$SOAK_CLI" watch --run-id "$CAMPAIGN" --segment "$SEGMENT" --duration 14400 --poll-seconds 60
       - name: Export only public checkpoint evidence
-        if: always()
+        if: always() && steps.guard.outcome == 'success'
         run: python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
       - name: Preserve a bounded CI diagnostic
         if: always()

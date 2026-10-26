@@ -9,10 +9,6 @@ on:
         type: choice
         options: [smoke, 72h]
         default: smoke
-      runner_label:
-        description: "Existing runner label; 72h requires a label unique to one persistent Linux x64 host"
-        type: string
-        default: self-hosted
   push:
     branches: [streaming-etl-adrs]
     paths:
@@ -34,7 +30,7 @@ env:
 jobs:
   prepare:
     name: Prepare on an existing self-hosted runner
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.runner_label || 'self-hosted' }}"]
+    runs-on: ${{ inputs.profile == '72h' && 'self-hosted' || 'anacreon-runners' }}
     timeout-minutes: 30
     outputs:
       long: ${{ steps.config.outputs.long }}
@@ -48,7 +44,6 @@ jobs:
         id: config
         env:
           PROFILE: ${{ inputs.profile || 'smoke' }}
-          RUNNER_LABEL: ${{ inputs.runner_label || 'self-hosted' }}
         run: |
           python3 - <<'PY'
           import os
@@ -57,9 +52,8 @@ jobs:
           if sys.version_info < (3, 11):
               raise SystemExit("The existing runner needs Python 3.11 or newer.")
           profile = os.environ["PROFILE"]
-          label = os.environ["RUNNER_LABEL"].strip()
-          if profile == "72h" and label.lower() in {"", "self-hosted", "linux", "x64", "arm64"}:
-              raise SystemExit("72h needs an existing label unique to one runner. A runner name is not automatically a label.")
+          if profile == "72h" and os.environ["RUNNER_NAME"] != "k8s-runner":
+              raise SystemExit("72h requires the existing persistent k8s-runner; ephemeral ARC runners cannot retain this campaign between jobs.")
           run_id = "gh-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
               output.write(f"long={str(profile == '72h').lower()}\nrun_id={run_id}\n")
@@ -145,7 +139,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 0
 
@@ -155,7 +149,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 1
 
@@ -165,7 +159,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 2
 
@@ -175,7 +169,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 3
 
@@ -185,7 +179,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 4
 
@@ -195,7 +189,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 5
 
@@ -205,7 +199,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 6
 
@@ -215,7 +209,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 7
 
@@ -225,7 +219,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 8
 
@@ -235,7 +229,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 9
 
@@ -245,7 +239,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 10
 
@@ -255,7 +249,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 11
 
@@ -265,7 +259,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 12
 
@@ -275,7 +269,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 13
 
@@ -285,7 +279,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 14
 
@@ -295,7 +289,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 15
 
@@ -305,7 +299,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 16
 
@@ -315,7 +309,7 @@ jobs:
     if: needs.prepare.outputs.long == 'true'
     uses: ./.github/workflows/streaming-etl-soak-segment.yml
     with:
-      runner_label: ${{ inputs.runner_label }}
+      runner_label: self-hosted
       run_id: ${{ needs.prepare.outputs.run_id }}
       segment: 17
 
@@ -323,9 +317,12 @@ jobs:
     name: Final independent review and evidence
     needs: [prepare, segment-17]
     if: always() && needs.prepare.outputs.long == 'true'
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.runner_label }}"]
+    runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 15
     steps:
+      - name: Verify the existing persistent runner
+        id: guard
+        run: test "$RUNNER_NAME" = k8s-runner
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
@@ -346,7 +343,7 @@ jobs:
           CAMPAIGN: ${{ needs.prepare.outputs.run_id }}
         run: python3 "$SOAK_CLI" review --run-id "$CAMPAIGN"
       - name: Export credential-free evidence even on failure
-        if: always()
+        if: always() && steps.guard.outcome == 'success'
         env:
           CAMPAIGN: ${{ needs.prepare.outputs.run_id }}
         run: |
@@ -376,7 +373,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
       - name: Stop this campaign; retain failed databases for investigation
-        if: always()
+        if: always() && steps.guard.outcome == 'success'
         env:
           CAMPAIGN: ${{ needs.prepare.outputs.run_id }}
           REVIEW_PASSED: ${{ steps.reviewer.outcome == 'success' }}

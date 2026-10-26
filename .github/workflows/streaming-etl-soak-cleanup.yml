@@ -3,10 +3,6 @@ name: Streaming ETL soak cleanup
 on:
   workflow_dispatch:
     inputs:
-      runner_label:
-        description: Existing label unique to the host that owns the campaign
-        type: string
-        required: true
       run_id:
         description: "Campaign ID from the report, for example gh-123456789-1"
         type: string
@@ -17,12 +13,14 @@ permissions:
 
 jobs:
   cleanup:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.runner_label }}"]
+    runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 10
     env:
       ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
       CAMPAIGN: ${{ inputs.run_id }}
     steps:
+      - name: Verify the existing persistent runner
+        run: test "$RUNNER_NAME" = k8s-runner
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}

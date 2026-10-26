@@ -7,25 +7,27 @@ remains in force.
 
 ## Existing runner requirements
 
-Use one of the three existing self-hosted runners. The selected profile requires
+Use the existing runner inventory supplied by the user: `anacreon-runners` is
+an ARC ephemeral scale set; `k8s-runner` is the static self-hosted runner. The
+selected profile requires
 Linux x64, Python 3.11 or newer, a working local Docker socket accessible to the
 runner account, outbound image/dependency access, and writable
-`/var/tmp/ariadne-soak`. The job must run on a persistent host. The configured
+`/var/tmp/ariadne-soak`. A long campaign must run on the persistent static host;
+the short smoke can complete within one ephemeral ARC job. The configured
 containers can consume up to 5 GiB RAM and five CPU equivalents in total; allow
 at least 20 GiB free disk for images, two PostgreSQL volumes and evidence. These
 are campaign prerequisites, not a production capacity claim.
 
-The long profile requires a custom label that selects exactly one existing
-runner. Enter its real label, not its display name. The standard labels alone
-cannot pin one of three machines. The harness records and verifies the runner,
-machine and Docker daemon identity throughout the campaign.
+Long jobs request `[self-hosted, Linux, X64]` and verify the reported name is
+`k8s-runner`. No custom label is required for the confirmed inventory. The
+harness also verifies machine and Docker identity throughout the campaign.
 
 ## Start a short check
 
 The [Streaming ETL soak workflow](../../.github/workflows/streaming-etl-soak.yml)
-defaults to `profile=smoke` and `runner_label=self-hosted`. A push of the workflow
+defaults to `profile=smoke`, routed to `anacreon-runners`. A push of the workflow
 or harness on `streaming-etl-adrs` also requests this smoke profile. It
-selects an available existing Linux x64 runner and performs the complete short
+selects an existing ARC runner and performs the complete short
 start/recovery/review/export/cleanup sequence within that job.
 
 The result must say `smoke_passed=true` and `long_soak_passed=false`. A successful
@@ -33,8 +35,8 @@ smoke does not close DS-052a or establish long-duration capacity.
 
 ## Start the separate long campaign
 
-After the workflow is available for manual dispatch, choose `profile=72h` and
-the existing unique runner label. Manual dispatch availability normally requires
+After the workflow is available for manual dispatch, choose `profile=72h`.
+It routes to the existing static runner. Manual dispatch availability normally requires
 the workflow to exist on the repository's default branch. Publishing a feature
 branch alone does not establish that availability; the branch push smoke is a
 separate trigger.
@@ -67,7 +69,7 @@ On success the final job removes this campaign's Docker resources. On failure
 it stops the workload but retains databases and public evidence. Cancellation
 can prevent finalization. Use
 [Streaming ETL soak cleanup](../../.github/workflows/streaming-etl-soak-cleanup.yml)
-with the owning host's unique label and explicit campaign ID, then check the
+with the explicit campaign ID; it verifies the static runner name. Check the
 job result. It removes only named resources from that campaign manifest and its
 credentials file; it does not prune Docker globally or touch unrelated tests.
 
@@ -90,6 +92,8 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
   [smoke run 40288079824](https://github.com/7architect/ariadne/actions/runs/40288079824).
   Its prepare job initially waits for `self-hosted`, `Linux`, and `X64` labels;
   no runner has yet been assigned at the time this observation was recorded.
-- Unique-label selection, a passing GitHub smoke, and actual 72-hour execution
-  are not yet evidenced. `long_soak_passed` remains false. Observations are
+- The user confirmed the two runner types; routing now uses ARC for smoke and
+  the static runner with an explicit name check for the long campaign.
+- A passing GitHub smoke and actual 72-hour execution are not yet evidenced.
+  `long_soak_passed` remains false. Historical observations are
   archived in the [CI setup report](evidence/postgres-soak-ci-setup-2026-10-26.json).

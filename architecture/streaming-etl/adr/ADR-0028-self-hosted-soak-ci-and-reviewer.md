@@ -34,14 +34,19 @@ Use project names and neutral wording for branches, commits and documentation.
 The delivery branch is `streaming-etl-adrs`; CI branch filters and current
 documentation follow its name. Historical evidence remains unchanged.
 The [main workflow](../../../.github/workflows/streaming-etl-soak.yml) offers a
-short smoke profile and a manual `72h` profile. The smoke uses the standard
-`self-hosted`, `Linux`, and `X64` labels and performs start, fault injection,
-review, artifact upload, and cleanup within one job.
+short smoke profile and a manual `72h` profile. The user confirmed the runner
+inventory: `anacreon-runners` is an ARC ephemeral scale set with no additional
+labels; `k8s-runner` is the static runner with `self-hosted`, `Linux`, and `X64`.
+The smoke uses `runs-on: anacreon-runners` and performs start, fault injection,
+review, artifact upload, and cleanup within one job, so no state must survive
+replacement of an ARC runner.
 
-The long profile additionally requires an existing custom label unique to one
-persistent runner. All jobs request that label. Generic labels are rejected
-before bootstrap; runtime identity checks independently reject movement to a
-different host. We must verify a real label before dispatching the long profile.
+The initial unique-custom-label requirement is superseded by that confirmed
+inventory. The long profile uses the existing static runner's standard labels
+and explicitly verifies `RUNNER_NAME=k8s-runner` before bootstrap, every monitor,
+review, and manual cleanup. Runtime identity checks independently reject host
+or Docker drift. No new label or runner registration is required. An ephemeral
+ARC job cannot own this long campaign across job boundaries.
 An explicit dependency chain, rather than matrix scheduling order, runs the
 [18 monitor jobs](../../../.github/workflows/streaming-etl-soak-segment.yml).
 Each monitor lasts four hours with a 270-minute job timeout. The continuous
@@ -118,8 +123,8 @@ the verified v7.0.1 and v7.0.2 commit SHAs respectively.
 
 ## Consequences
 
-The separate campaign occupies one existing host for at least 72 hours. Other
-jobs on the host can affect measured capacity; a unique routing label does not
+The separate campaign occupies the existing static host for at least 72 hours.
+Other jobs on the host can affect measured capacity; a routing selector does not
 reserve CPU or disk. Queue delays over the declared observation-gap limit cause
 review failure even if the detached workload remains alive. Retained failure
 databases require explicit cleanup. This ADR remains `progress` until its

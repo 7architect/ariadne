@@ -1,0 +1,63 @@
+{
+  "branch": "codex/streaming-etl-adrs",
+  "claims": {
+    "github_smoke_passed": false,
+    "long_soak_passed": false,
+    "long_soak_started": false,
+    "new_runners_registered": false,
+    "workflow_published": true
+  },
+  "github": {
+    "conclusion": null,
+    "jobs": [
+      {
+        "conclusion": null,
+        "id": 121456393604,
+        "labels": [
+          "self-hosted",
+          "Linux",
+          "X64"
+        ],
+        "name": "Prepare on an existing self-hosted runner",
+        "runner_id": 0,
+        "runner_name": "",
+        "status": "queued"
+      }
+    ],
+    "runner_listing": "HTTP 403 Resource not accessible by integration",
+    "status": "queued",
+    "url": "https://github.com/7architect/ariadne/actions/runs/40288079824",
+    "workflow_run_id": 40288079824
+  },
+  "limits": [
+    "Queued is not a completed smoke test.",
+    "A runner name is not automatically a routing label.",
+    "Actual Prefect integration remains the separate short profile."
+  ],
+  "long_campaign": {
+    "job_timeout_minutes": 270,
+    "requires_existing_unique_runner_label": true,
+    "runner_label_known": false,
+    "segment_seconds": 14400,
+    "segments": 18,
+    "target_seconds": 259200
+  },
+  "observed_at": "2026-10-26T07:50:49.881904+00:00",
+  "protocol": "ariadne-soak-ci-setup/v1",
+  "published_commit": "2f5902d5297f475f2835c4fdf8ce6db73aee287d",
+  "validation": {
+    "actionlint": "PASS",
+    "actionlint_version": "1.7.12",
+    "explicit_dependency_chain": "18 sequential jobs PASS",
+    "format": "PASS",
+    "local_docker_smoke": "postgres-long-soak-runner-smoke-2026-10-26.json",
+    "principal_workflow_review": "PASS",
+    "reviewer_unit_tests": "5/5 PASS",
+    "ruff": "PASS"
+  },
+  "workflow_sha256": {
+    ".github/workflows/streaming-etl-soak-cleanup.yml": "dce862827c0258c99cf6e756d6eac07413da2fbcda25860264e7117ddccf489d",
+    ".github/workflows/streaming-etl-soak-segment.yml": "ca78b85b49d8b0a523904223ed39035e235f98d9d455839c03c51dcc2b2d155b",
+    ".github/workflows/streaming-etl-soak.yml": "f69ffe1716af0dd8937a8f8c8e4e80d7c16f6618696b37a60d9fdddf923a6062"
+  }
+}

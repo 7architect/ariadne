@@ -73,7 +73,9 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
 
 ## Current execution status
 
-- Workflow source and explicit 18-job chain are prepared locally.
+- Workflow source, the explicit 18-job chain and the prototype dependencies are
+  committed and published on `codex/streaming-etl-adrs` at commit
+  `2f5902d5297f475f2835c4fdf8ce6db73aee287d`.
 - The three new workflow files pass actionlint v1.7.12.
 - The [current local Docker smoke](evidence/postgres-long-soak-runner-smoke-2026-10-26.json)
   passes after active process loss, five owner faults and four independent oracle
@@ -84,5 +86,10 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
 - GitHub runner listing and runner permission reads return HTTP 403 through the
   current integration. Existing-runner routing uses labels and needs no runner
   registration or administration API.
-- A GitHub smoke run, unique-label selection, and actual 72-hour execution are
-  not yet evidenced. `long_soak_passed` remains false.
+- GitHub accepted the workflow and created
+  [smoke run 40288079824](https://github.com/7architect/ariadne/actions/runs/40288079824).
+  Its prepare job initially waits for `self-hosted`, `Linux`, and `X64` labels;
+  no runner has yet been assigned at the time this observation was recorded.
+- Unique-label selection, a passing GitHub smoke, and actual 72-hour execution
+  are not yet evidenced. `long_soak_passed` remains false. Observations are
+  archived in the [CI setup report](evidence/postgres-soak-ci-setup-2026-10-26.json).

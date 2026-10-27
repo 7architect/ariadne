@@ -143,5 +143,25 @@ passed both pre-commit and type checking at commit
 `6d03a45e28c009f384c09cdbcfb3057432ea2e99`. The obsolete queued smoke was
 cancelled before publication; its
 [replacement](https://github.com/Anacreonsystems/ariadne/actions/runs/40484370723)
-is queued for `anacreon-runners` without an assigned host. The 72-hour profile
-has not been dispatched.
+was queued for `anacreon-runners` without an assigned host at that observation.
+The 72-hour profile has not been dispatched.
+
+## ARC bind-mount readiness
+
+The user changed runner-group access and actual ARC jobs were assigned.
+Attempt 2 reached Docker/database/image bootstrap but failed to publish status
+to the host; the [repair record](evidence/ci-arc-bind-mount-repair-2026-10-27.json)
+preserves its failure and the filesystem hypothesis.
+
+The one-job smoke uses `$RUNNER_TEMP/ariadne-soak` in the ARC shared work volume.
+The static 72-hour profile continues to use `/var/tmp/ariadne-soak` across jobs.
+Before bootstrap, the workflow verifies host-to-container and container-to-host
+file visibility with an ephemeral pinned Python container. A selected-root
+failure stops provisioning. The former `/var/tmp` path is a nonfatal smoke
+control; neither outcome is assumed in advance.
+
+Read `SOAK_BIND_MOUNT_PROBE_JSON` in the job log and `bind_mount_probe` inside
+the exported `ci-status.json`. The public record contains root classes and
+bounded outcomes without the nonce. It is copied after public export so the
+export directory reset cannot remove it. The deterministic smoke review and
+owned cleanup must still pass; a mount probe alone does not earn acceptance.

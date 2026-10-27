@@ -197,7 +197,7 @@ passed both `Pre-commit checks` and `Type Checks` in
 [run 40484377266](https://github.com/Anacreonsystems/ariadne/actions/runs/40484377266).
 The obsolete pre-repair queued smoke was cancelled before publication. The
 [replacement smoke](https://github.com/Anacreonsystems/ariadne/actions/runs/40484370723)
-requests `anacreon-runners` and is still queued without an assigned host.
+requests `anacreon-runners` and was still queued at that observation.
 Static-analysis success does not establish streaming-runner access.
 
 The [first successor gate](../evidence/postgres-ci-style-regression-2026-10-27.json)
@@ -234,6 +234,50 @@ Every pre-existing evidence artifact retains its hash. The
 checks links and retained statuses after publication references were added.
 The earned short experimental percentage remains 100%; this ADR remains
 `progress` for its actual-run and long-duration criteria.
+
+## ARC filesystem follow-up
+
+After the user changed runner-group access, the queued workflow received
+`anacreon-runners-runner-s2jvf`. It was assigned during cancellation of the old
+queued attempt; that attempt was cancelled and its owned cleanup succeeded.
+Fresh attempt 2 ran on `anacreon-runners-runner-km72x`. Python/Docker checks,
+database bootstrap and image build completed, but the host never observed
+`service-status.json` and readiness timed out. The
+[failed raw log](../evidence/github-arc-smoke-failed-40484370723-attempt2.log)
+and [repair record](../evidence/ci-arc-bind-mount-repair-2026-10-27.json)
+retain the result. Artifact metadata exists; downloading its archive through the
+current connection returned HTTP 403. The failed attempt is not acceptance.
+
+The theory is a Docker-in-Docker filesystem boundary: the runner's `/var/tmp`
+can differ from the daemon's directory with the same absolute name. A local
+daemon shared with the development environment does not establish that an ARC
+sidecar sees those files. Missing host status alone does not prove the theory;
+a bidirectional bind-mount control is required.
+
+The smoke now selects `$RUNNER_TEMP/ariadne-soak`, inside the ARC shared work
+volume, and publishes that root through `GITHUB_ENV` for every following step.
+The 72-hour profile and its separate monitor/cleanup jobs retain
+`/var/tmp/ariadne-soak` on the static host. Ephemeral smoke paths cannot be used
+for persistence between long-campaign jobs.
+
+Before provisioning, a pinned Python container must read a fresh host nonce
+and atomically write a matching response which the host verifies. The selected
+root must pass. Smoke also probes the former `/var/tmp` root as a bounded,
+nonfatal control; its failure is not required. Only an invisible legacy root
+with a passing selected root establishes that boundary for the actual attempt.
+The probe uses the existing sanitized Docker boundary and removes only its
+own unique container/directory. Its public record contains outcomes and root
+classes, not nonces or credentials. The later `ci-status.json` includes the
+record after `export-public` recreates the artifact directory.
+
+As a developer, I want the one-job ARC smoke to share its campaign files with
+Docker and fail before provisioning when the selected mount cannot round-trip.
+Acceptance: as a system, I got a passing selected-root probe, actual readiness,
+scheduled process-loss recovery, a passing deterministic review, public export
+and successful owned cleanup from a fresh ARC run. Workflow lint and local
+checks prepare this repair; actual hosted evidence is required to close it.
+Core/CLI bytes, lease limits and the selected short-delivery percentage do not
+change. This ADR and the 72-hour acceptance remain `progress`.
 
 ## Consequences
 

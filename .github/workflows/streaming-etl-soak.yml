@@ -55,14 +55,99 @@ jobs:
           if profile == "72h" and os.environ["RUNNER_NAME"] != "k8s-runner":
               raise SystemExit("72h requires the existing persistent k8s-runner; ephemeral ARC runners cannot retain this campaign between jobs.")
           run_id = "gh-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
+          state_root = (
+              Path(os.environ["ARIADNE_SOAK_ROOT"])
+              if profile == "72h"
+              else Path(os.environ["RUNNER_TEMP"]) / "ariadne-soak"
+          ).resolve()
+          state_root.mkdir(parents=True, exist_ok=True)
+          with open(os.environ["GITHUB_ENV"], "a") as environment:
+              environment.write(f"ARIADNE_SOAK_ROOT={state_root}\n")
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
-              output.write(f"long={str(profile == '72h').lower()}\nrun_id={run_id}\n")
+              output.write(f"long={str(profile == '72h').lower()}\nrun_id={run_id}\nstate_root={state_root}\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
-              summary.write(f"Runner: {os.environ['RUNNER_NAME']}\n\nCampaign: {run_id}\n\nProfile: {profile}\n")
-          Path(os.environ["ARIADNE_SOAK_ROOT"]).mkdir(parents=True, exist_ok=True)
+              summary.write(f"Runner: {os.environ['RUNNER_NAME']}\n\nCampaign: {run_id}\n\nProfile: {profile}\n\nState root: {state_root}\n")
           PY
           env -u DOCKER_HOST -u DOCKER_CONTEXT -u DOCKER_TLS -u DOCKER_TLS_VERIFY -u DOCKER_CERT_PATH \
             docker --host=unix:///var/run/docker.sock info --format '{{.ServerVersion}}'
+      - name: Verify bidirectional state sharing with Docker
+        env:
+          PROFILE: ${{ inputs.profile || 'smoke' }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import runpy
+          import secrets
+          import tempfile
+          from pathlib import Path
+
+          helpers = runpy.run_path(os.environ["SOAK_CLI"], run_name="soak_mount_probe")
+          docker = helpers["docker"]
+          state_root = Path(os.environ["ARIADNE_SOAK_ROOT"])
+          probe_script = (
+              "import os; from pathlib import Path; p=Path('/probe'); "
+              "nonce=os.environ['PROBE_NONCE']; "
+              "assert (p/'request').read_text()==nonce; "
+              "(p/'response.tmp').write_text('ack-'+nonce); "
+              "(p/'response.tmp').replace(p/'response')"
+          )
+
+          def probe(base):
+              base.mkdir(parents=True, exist_ok=True)
+              outcome = {"bidirectional": False, "source_path_missing": False}
+              with tempfile.TemporaryDirectory(prefix="docker-mount-", dir=base) as temporary:
+                  directory = Path(temporary)
+                  nonce = secrets.token_hex(16)
+                  (directory / "request").write_text(nonce)
+                  name = "ariadne-bind-probe-" + secrets.token_hex(8)
+                  try:
+                      result = docker(
+                          "run", "--rm", "--name", name, "--network", "none",
+                          "--read-only", "--memory", "64m", "--pids-limit", "32",
+                          "--mount", f"type=bind,src={directory},dst=/probe",
+                          "-e", f"PROBE_NONCE={nonce}", helpers["PYTHON_IMAGE"],
+                          "python", "-c", probe_script, check=False,
+                      )
+                      response = directory / "response"
+                      outcome.update(
+                          docker_exit_code=result.returncode,
+                          source_path_missing="bind source path does not exist" in result.stderr,
+                          bidirectional=(
+                              result.returncode == 0 and response.is_file()
+                              and response.read_text() == "ack-" + nonce
+                          ),
+                      )
+                  except helpers["DockerCommandError"]:
+                      outcome["docker_boundary_error"] = True
+                  finally:
+                      docker("rm", "-f", name, check=False)
+              return outcome
+
+          report = {
+              "protocol": "ariadne-ci-bind-mount/v1",
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "profile": os.environ["PROFILE"],
+              "state_root_kind": "persistent" if os.environ["PROFILE"] == "72h" else "runner_temp",
+              "state_root": str(state_root),
+          }
+          roots = [("selected_root", state_root)]
+          if os.environ["PROFILE"] == "smoke":
+              roots.insert(0, ("legacy_persistent_root_control", Path("/var/tmp/ariadne-soak")))
+          for label, base in roots:
+              try:
+                  report[label] = probe(base)
+              except (OSError, helpers["DockerCommandError"]) as error:
+                  report[label] = {"bidirectional": False, "probe_error": type(error).__name__}
+          target = Path(os.environ["RUNNER_TEMP"]) / (
+              f"soak-bind-probe-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}.json"
+          )
+          target.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n")
+          print("SOAK_BIND_MOUNT_PROBE_JSON=" + json.dumps(report, sort_keys=True))
+          if not report["selected_root"]["bidirectional"]:
+              raise SystemExit("The selected state directory is not shared bidirectionally with Docker.")
+          PY
       - name: Clear this job's public export directory
         if: always()
         run: |
@@ -118,6 +203,11 @@ jobs:
           target = Path(os.environ['RUNNER_TEMP']) / 'soak-public'
           target.mkdir(parents=True, exist_ok=True)
           value = {key: os.environ.get(key) for key in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'RUNNER_NAME', 'JOB_STATUS')}
+          probe = Path(os.environ["RUNNER_TEMP"]) / (
+              f"soak-bind-probe-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}.json"
+          )
+          if probe.is_file():
+              value["bind_mount_probe"] = json.loads(probe.read_text())
           (target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
           PY
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

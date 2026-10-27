@@ -1,0 +1,18 @@
+{
+  "legacy_persistent_root_control": {
+    "bidirectional": true,
+    "docker_exit_code": 0,
+    "source_path_missing": false
+  },
+  "profile": "smoke",
+  "protocol": "ariadne-ci-bind-mount/v1",
+  "run_attempt": "1",
+  "run_id": "local-20261027",
+  "selected_root": {
+    "bidirectional": true,
+    "docker_exit_code": 0,
+    "source_path_missing": false
+  },
+  "state_root": "/tmp/ariadne-arc-mount-local-2026-10-27/ariadne-soak",
+  "state_root_kind": "runner_temp"
+}

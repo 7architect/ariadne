@@ -279,6 +279,50 @@ checks prepare this repair; actual hosted evidence is required to close it.
 Core/CLI bytes, lease limits and the selected short-delivery percentage do not
 change. This ADR and the 72-hour acceptance remain `progress`.
 
+## Smoke resource policy and long-duration rates
+
+The [fresh ARC observation](../evidence/ci-arc-smoke-observed-40577088311.json)
+at commit `c1e5d114e0b2ef7cb89798b45dd9bcfe38e04a55` confirms the filesystem
+boundary: the former root failed with `source_path_missing=true`, while the
+selected shared root passed both directions. Readiness and the watch segment
+then passed with 22 source records, seven owner faults, two process boots,
+four passing oracles, complete credential-free export and owned cleanup.
+The [raw log](../evidence/github-arc-smoke-resource-failed-40577088311.log)
+preserves the actual reviewer FAIL: `unexplained_primary_growth` and
+`unexplained_schema_growth`. This run is not reclassified as a smoke PASS.
+
+The measured interval was 64.324871 seconds. Maxima were 71,009,267 primary
+data bytes, 6,537,216 schema bytes and 38,304,481 service RSS bytes. The old
+reviewer applied hourly latter-half slope limits to this cold startup window.
+Finite PostgreSQL page allocations over seconds cannot establish a sustained
+hourly growth trend. Retrying or increasing the numeric limits would not
+resolve that mismatch between the short and long acceptance profiles.
+
+Agreement: smoke enforces the existing absolute budgets and every existing
+identity, durability, cursor, checksum, fault, oracle and capacity check. It
+continues to calculate and report all growth rates descriptively. Non-smoke
+retains both absolute budgets and the unchanged hourly growth limits. Reports
+declare an explicit `resource_policy` and keep `long_soak_passed=false` for
+smoke.
+
+Absolute limits remain 8 GiB primary data, 512 MiB schema relations and
+768 MiB service RSS. Long-profile growth limits remain 32 MiB/hour primary,
+8 MiB/hour schema and 16 MiB/hour RSS. None of these numeric limits increased.
+As a developer, I want cold smoke resource observations to describe their
+measured duration. As a user, I want long-duration resource limits to remain
+mandatory for the long campaign.
+
+Acceptance: as a system, I can pass eight bounded cold-allocation samples in
+smoke while still reporting their high hourly extrapolations, reject the same
+growth rates in non-smoke review, reject each absolute-budget overrun in smoke,
+and expose the exact policy in the report. The eight-test reviewer suite
+includes those controls: the
+[before log](../evidence/ci-smoke-resource-policy-before-2026-10-27.log)
+reproduces the defect and the
+[after log](../evidence/ci-smoke-resource-policy-after-2026-10-27.log)
+passes. A fresh ARC campaign must still pass the changed reviewer on its own
+source identity; historical campaigns are not re-reviewed as new acceptance.
+
 ## Consequences
 
 The separate campaign occupies the existing static host for at least 72 hours.

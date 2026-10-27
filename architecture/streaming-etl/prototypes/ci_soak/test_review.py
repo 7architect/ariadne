@@ -131,6 +131,120 @@ class LongSoakReviewerTests(unittest.TestCase):
         self.assertFalse(report["smoke_passed"])
         self.assertIn("oracle_set:0", report["violations"])
 
+    def cold_allocation_fixture(self):
+        root, run_id = self.fixture()
+        directory = root / run_id
+        manifest = json.loads((directory / "manifest.json").read_text())
+        manifest.update(target_seconds=40, segment_seconds=40)
+        (directory / "manifest.json").write_text(json.dumps(manifest))
+        status = json.loads((directory / "service-status.json").read_text())
+        status["elapsed_seconds"] = 41
+        (directory / "service-status.json").write_text(json.dumps(status))
+        path = directory / "segments" / "segment-00.json"
+        segment = json.loads(path.read_text())
+        segment["manifest_digest"] = soak_review.digest(manifest)
+        segment["duration_seconds"] = 40
+        ended = datetime.fromisoformat(segment["ended_at"])
+        segment["started_at"] = (ended - timedelta(seconds=40)).isoformat()
+        template = segment["samples"][0]
+        samples = []
+        for index in range(8):
+            sample = json.loads(json.dumps(template))
+            sample["elapsed_seconds"] = (index + 1) * 5
+            allocated = index >= 6
+            sample["metrics"]["primary_data_bytes"] = (70 + 4 * allocated) * 1024**2
+            sample["database"]["schema_relation_bytes"] = (1 + 2 * allocated) * 1024**2
+            sample["metrics"]["service_rss_bytes"] = (16 + allocated) * 1024**2
+            samples.append(sample)
+        segment["samples"] = samples
+        path.write_text(json.dumps(segment))
+        return root, run_id
+
+    def expected_resource_policy(self, *, smoke):
+        return {
+            "profile": "smoke_absolute_caps"
+            if smoke
+            else "long_absolute_and_rate_caps",
+            "absolute_caps_enforced": True,
+            "growth_rate_caps_enforced": not smoke,
+            "growth_rates_descriptive": smoke,
+            "absolute_caps_bytes": {
+                "primary_data": 8 * 1024**3,
+                "schema_relation": 512 * 1024**2,
+                "service_rss": 768 * 1024**2,
+            },
+            "growth_rate_caps_bytes_per_hour": {
+                "primary_data": 32 * 1024**2,
+                "schema_relation": 8 * 1024**2,
+                "service_rss": 16 * 1024**2,
+            },
+        }
+
+    def test_cold_smoke_reports_rates_and_enforces_absolute_caps(self):
+        root, run_id = self.cold_allocation_fixture()
+        report = soak_review.review(root, run_id)
+        self.assertTrue(report["smoke_passed"], report["violations"])
+        self.assertFalse(report["long_soak_passed"])
+        self.assertEqual(report["violations"], [])
+        self.assertEqual(
+            report["resource_policy"], self.expected_resource_policy(smoke=True)
+        )
+        measurements = report["resource_measurements"]
+        self.assertGreater(
+            measurements["latter_half_primary_bytes_per_hour"], 32 * 1024**2
+        )
+        self.assertGreater(
+            measurements["latter_half_schema_bytes_per_hour"], 8 * 1024**2
+        )
+        self.assertGreater(
+            measurements["latter_half_service_rss_bytes_per_hour"], 16 * 1024**2
+        )
+
+    def test_non_smoke_keeps_all_growth_rate_limits(self):
+        root, run_id = self.cold_allocation_fixture()
+        directory = root / run_id
+        manifest = json.loads((directory / "manifest.json").read_text())
+        manifest["smoke"] = False
+        (directory / "manifest.json").write_text(json.dumps(manifest))
+        path = directory / "segments" / "segment-00.json"
+        segment = json.loads(path.read_text())
+        segment["manifest_digest"] = soak_review.digest(manifest)
+        path.write_text(json.dumps(segment))
+        report = soak_review.review(root, run_id)
+        self.assertFalse(report["long_soak_passed"])
+        self.assertEqual(
+            report["resource_policy"], self.expected_resource_policy(smoke=False)
+        )
+        for violation in (
+            "unexplained_primary_growth",
+            "unexplained_schema_growth",
+            "unexplained_service_rss_growth",
+        ):
+            self.assertIn(violation, report["violations"])
+
+    def test_smoke_rejects_each_absolute_resource_budget_overrun(self):
+        cases = (
+            ("metrics", "primary_data_bytes", 8 * 1024**3, "primary_storage_budget"),
+            (
+                "database",
+                "schema_relation_bytes",
+                512 * 1024**2,
+                "schema_storage_budget",
+            ),
+            ("metrics", "service_rss_bytes", 768 * 1024**2, "service_rss_budget"),
+        )
+        for section, key, limit, violation in cases:
+            with self.subTest(resource=key):
+                root, run_id = self.fixture()
+                path = root / run_id / "segments" / "segment-00.json"
+                segment = json.loads(path.read_text())
+                segment["samples"][0][section][key] = limit + 1
+                path.write_text(json.dumps(segment))
+                report = soak_review.review(root, run_id)
+                self.assertFalse(report["smoke_passed"])
+                self.assertFalse(report["long_soak_passed"])
+                self.assertIn(violation, report["violations"])
+
     def test_partial_public_export_excludes_credentials(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)

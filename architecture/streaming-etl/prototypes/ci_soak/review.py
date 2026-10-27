@@ -274,12 +274,15 @@ def review(root: Path, run_id: str) -> dict[str, Any]:
         violations.append("schema_storage_budget")
     if max_rss > 768 * 1024**2:
         violations.append("service_rss_budget")
-    if len(latter_physical) >= 4 and physical_slope > 32 * 1024**2:
-        violations.append("unexplained_primary_growth")
-    if len(latter_schema) >= 4 and schema_slope > 8 * 1024**2:
-        violations.append("unexplained_schema_growth")
-    if len(latter_rss) >= 4 and rss_slope > 16 * 1024**2:
-        violations.append("unexplained_service_rss_growth")
+    # A cold smoke observes finite allocations over seconds. Preserve their
+    # measured rates, while the long profile enforces sustained-growth limits.
+    if not manifest["smoke"]:
+        if len(latter_physical) >= 4 and physical_slope > 32 * 1024**2:
+            violations.append("unexplained_primary_growth")
+        if len(latter_schema) >= 4 and schema_slope > 8 * 1024**2:
+            violations.append("unexplained_schema_growth")
+        if len(latter_rss) >= 4 and rss_slope > 16 * 1024**2:
+            violations.append("unexplained_service_rss_growth")
 
     smoke_passed = manifest["smoke"] and not violations
     long_soak_passed = (
@@ -309,6 +312,26 @@ def review(root: Path, run_id: str) -> dict[str, Any]:
             "latter_half_schema_bytes_per_hour": schema_slope,
             "max_service_rss_bytes": max_rss,
             "latter_half_service_rss_bytes_per_hour": rss_slope,
+        },
+        "resource_policy": {
+            "profile": (
+                "smoke_absolute_caps"
+                if manifest["smoke"]
+                else "long_absolute_and_rate_caps"
+            ),
+            "absolute_caps_enforced": True,
+            "growth_rate_caps_enforced": not manifest["smoke"],
+            "growth_rates_descriptive": bool(manifest["smoke"]),
+            "absolute_caps_bytes": {
+                "primary_data": 8 * 1024**3,
+                "schema_relation": 512 * 1024**2,
+                "service_rss": 768 * 1024**2,
+            },
+            "growth_rate_caps_bytes_per_hour": {
+                "primary_data": 32 * 1024**2,
+                "schema_relation": 8 * 1024**2,
+                "service_rss": 16 * 1024**2,
+            },
         },
         "violations": sorted(set(violations)),
         "smoke_passed": smoke_passed,
@@ -344,6 +367,7 @@ def markdown(report: dict[str, Any]) -> str:
         f"- Process boots: `{report['process_boots']}`",
         f"- `long_soak_passed`: `{str(report['long_soak_passed']).lower()}`",
         f"- `smoke_passed`: `{str(report['smoke_passed']).lower()}`",
+        f"- Resource policy: `{report.get('resource_policy', {}).get('profile', 'unspecified')}`",
         "",
         "## Violations",
         "",

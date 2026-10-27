@@ -165,3 +165,12 @@ the exported `ci-status.json`. The public record contains root classes and
 bounded outcomes without the nonce. It is copied after public export so the
 export directory reset cannot remove it. The deterministic smoke review and
 owned cleanup must still pass; a mount probe alone does not earn acceptance.
+
+The [first repaired-root ARC run](evidence/ci-arc-smoke-observed-40577088311.json)
+confirmed that boundary and completed recovery/export/cleanup, but its reviewer
+failed on hourly growth extrapolations from a cold minute-long run. It remains
+a failed observation. The reviewer now declares its resource policy explicitly:
+smoke enforces all existing absolute caps and reports rates descriptively;
+non-smoke also enforces the unchanged hourly rate caps. All other checks remain
+mandatory. See [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) for
+measurements, controls and fresh-run acceptance requirements.

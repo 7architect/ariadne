@@ -1,0 +1,30 @@
+test_cleanup_removes_partial_bootstrap_without_manifest (test_review.LongSoakReviewerTests.test_cleanup_removes_partial_bootstrap_without_manifest) ... ok
+test_cold_smoke_reports_rates_and_enforces_absolute_caps (test_review.LongSoakReviewerTests.test_cold_smoke_reports_rates_and_enforces_absolute_caps) ... FAIL
+test_docker_failure_redacts_environment_sql_and_dsn (test_review.LongSoakReviewerTests.test_docker_failure_redacts_environment_sql_and_dsn) ... ok
+test_missing_independent_oracle_fails (test_review.LongSoakReviewerTests.test_missing_independent_oracle_fails) ... ok
+test_non_smoke_keeps_all_growth_rate_limits (test_review.LongSoakReviewerTests.test_non_smoke_keeps_all_growth_rate_limits) ... ERROR
+test_partial_public_export_excludes_credentials (test_review.LongSoakReviewerTests.test_partial_public_export_excludes_credentials) ... ok
+test_smoke_passes_without_claiming_long_duration (test_review.LongSoakReviewerTests.test_smoke_passes_without_claiming_long_duration) ... ok
+test_smoke_rejects_each_absolute_resource_budget_overrun (test_review.LongSoakReviewerTests.test_smoke_rejects_each_absolute_resource_budget_overrun) ... ok
+
+======================================================================
+ERROR: test_non_smoke_keeps_all_growth_rate_limits (test_review.LongSoakReviewerTests.test_non_smoke_keeps_all_growth_rate_limits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ariadne/architecture/streaming-etl/prototypes/ci_soak/test_review.py", line 205, in test_non_smoke_keeps_all_growth_rate_limits
+    self.assertEqual(report["resource_policy"], self.expected_resource_policy(smoke=False))
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'resource_policy'
+
+======================================================================
+FAIL: test_cold_smoke_reports_rates_and_enforces_absolute_caps (test_review.LongSoakReviewerTests.test_cold_smoke_reports_rates_and_enforces_absolute_caps)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ariadne/architecture/streaming-etl/prototypes/ci_soak/test_review.py", line 184, in test_cold_smoke_reports_rates_and_enforces_absolute_caps
+    self.assertTrue(report["smoke_passed"], report["violations"])
+AssertionError: False is not true : ['unexplained_primary_growth', 'unexplained_schema_growth', 'unexplained_service_rss_growth']
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.059s
+
+FAILED (failures=1, errors=1)

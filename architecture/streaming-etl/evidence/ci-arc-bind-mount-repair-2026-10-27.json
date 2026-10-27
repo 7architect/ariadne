@@ -233,7 +233,7 @@
   "core_or_cli_changed": false,
   "date": "2026-10-27",
   "hypothesis": {
-    "confirmed": false,
+    "confirmed": true,
     "description": "ARC runner and Docker daemon do not share the /var/tmp campaign directory; the workflow must use their shared work volume for the one-job smoke.",
     "verification": "Bidirectional selected-root probe plus bounded legacy-root control, followed by actual smoke recovery and independent review."
   },
@@ -253,12 +253,45 @@
     "smoke_root": "RUNNER_TEMP/ariadne-soak"
   },
   "long_soak_passed": false,
+  "mount_fix_run": {
+    "legacy_root_source_missing": true,
+    "mount_probe_passed": true,
+    "observation_report": "ci-arc-smoke-observed-40577088311.json",
+    "raw_log": "github-arc-smoke-resource-failed-40577088311.log",
+    "raw_log_sha256": "53d07ab8ca146492630b67dff350996b4e461b00098be5d11eb70de625a568be",
+    "readiness_and_watch_passed": true,
+    "review_violations": [
+      "unexplained_primary_growth",
+      "unexplained_schema_growth"
+    ],
+    "run_id": 40577088311,
+    "runner_name": "anacreon-runners-runner-8gxj7",
+    "smoke_passed": false,
+    "source_commit": "c1e5d114e0b2ef7cb89798b45dd9bcfe38e04a55"
+  },
   "proposed_roots": {
     "72h": "/var/tmp/ariadne-soak",
     "smoke": "RUNNER_TEMP/ariadne-soak"
   },
   "protocol": "ariadne-arc-bind-mount-repair/v1",
   "repository": "Anacreonsystems/ariadne",
+  "reviewer_policy_repair": {
+    "after_tests": {
+      "count": 8,
+      "passed": true,
+      "raw_log": "ci-smoke-resource-policy-after-2026-10-27.log"
+    },
+    "before_tests": {
+      "count": 8,
+      "errors": 1,
+      "failures": 1,
+      "raw_log": "ci-smoke-resource-policy-before-2026-10-27.log"
+    },
+    "description": "Short smoke retains absolute caps and reports growth rates descriptively. Non-smoke retains the same absolute and growth-rate caps.",
+    "long_numeric_limits_changed": false,
+    "reviewer_after_sha256": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+    "reviewer_before_sha256": "d59502efea82d760e9594a66b04dd7e0297b0b2c659d678c852585a68bd9a8e1"
+  },
   "run_id": 40484370723,
   "runner_access_confirmed": true,
   "source_commit": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",

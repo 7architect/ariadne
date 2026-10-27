@@ -36,34 +36,34 @@ async def main() -> int:
     fault = crash_at(args.fault_point)
     try:
         common = (
-            args.revision_id, args.graph_version, args.graph_digest,
-            args.owner_id, args.owner_epoch,
+            args.revision_id,
+            args.graph_version,
+            args.graph_digest,
+            args.owner_id,
+            args.owner_epoch,
         )
         if args.operation == "intent":
-            await coordinator.start_checkpoint(
-                *common, args.identity, fault=fault
-            )
+            await coordinator.start_checkpoint(*common, args.identity, fault=fault)
         elif args.operation == "barrier":
             await coordinator.inject_source_barrier(
                 *common, args.identity, "input", "left", fault=fault
             )
         elif args.operation == "participant":
             await coordinator.acknowledge_participant(
-                *common, args.identity, "join", {"count": 2},
-                mailbox_highwater=2, state_version=1, fault=fault,
+                *common,
+                args.identity,
+                "join",
+                {"count": 2},
+                mailbox_highwater=2,
+                state_version=1,
+                fault=fault,
             )
         elif args.operation == "complete":
-            await coordinator.complete_checkpoint(
-                *common, args.identity, fault=fault
-            )
+            await coordinator.complete_checkpoint(*common, args.identity, fault=fault)
         elif args.operation == "recovery_plan":
-            await coordinator.begin_recovery(
-                *common, args.identity, fault=fault
-            )
+            await coordinator.begin_recovery(*common, args.identity, fault=fault)
         elif args.operation == "recovery_ready":
-            await coordinator.finish_recovery(
-                *common, args.identity, fault=fault
-            )
+            await coordinator.finish_recovery(*common, args.identity, fault=fault)
         else:
             raise ValueError("unknown operation")
     finally:

@@ -37,7 +37,9 @@ class StreamContext:
     attempt: int
 
 
-SyncTask = Callable[[StreamContext, DataEnvelope], Generator[OutputSpec, None, dict[str, Any] | None]]
+SyncTask = Callable[
+    [StreamContext, DataEnvelope], Generator[OutputSpec, None, dict[str, Any] | None]
+]
 AsyncTask = Callable[[StreamContext, DataEnvelope], AsyncGenerator[OutputSpec, None]]
 
 
@@ -64,7 +66,9 @@ class GeneratorRuntime:
     def _leave(self, consumer_id: str) -> None:
         self._active.discard(consumer_id)
 
-    def _pending_output(self, consumer_id: str, envelope: DataEnvelope, spec: OutputSpec) -> PendingOutput:
+    def _pending_output(
+        self, consumer_id: str, envelope: DataEnvelope, spec: OutputSpec
+    ) -> PendingOutput:
         identity = f"{consumer_id}:{envelope.record_id}"
         object_key = f"stream-output:{identity}"
         ref = ObjectRef.for_payload(object_key, spec.payload, spec.schema_id)
@@ -89,7 +93,9 @@ class GeneratorRuntime:
                 json.dumps(spec.managed_state, sort_keys=True, separators=(",", ":"))
             )
         except (TypeError, ValueError) as exc:
-            raise GeneratorProtocolError("YIELD state must be JSON serializable") from exc
+            raise GeneratorProtocolError(
+                "YIELD state must be JSON serializable"
+            ) from exc
         return OutputSpec(bytes(spec.payload), str(spec.schema_id), state)
 
     @staticmethod
@@ -120,7 +126,9 @@ class GeneratorRuntime:
                     token, holder_id, invocation_ttl=self.invocation_ttl
                 )
             except RuntimeError as exc:
-                raise GeneratorProtocolError("consumer invocation already active") from exc
+                raise GeneratorProtocolError(
+                    "consumer invocation already active"
+                ) from exc
             self._hit(adapter_fault, "adapter:after_delivery_before_client")
             ctx = StreamContext(consumer_id, token.sequence, token.attempt)
             generator = task(ctx, envelope)
@@ -152,7 +160,9 @@ class GeneratorRuntime:
             try:
                 generator.close()
             except RuntimeError as exc:
-                raise GeneratorProtocolError("generator emitted after terminal yield") from exc
+                raise GeneratorProtocolError(
+                    "generator emitted after terminal yield"
+                ) from exc
             self._hit(adapter_fault, "adapter:after_close_before_object")
             output = self._pending_output(consumer_id, envelope, spec)
             self._hit(adapter_fault, "adapter:after_object_before_completion")
@@ -194,12 +204,16 @@ class GeneratorRuntime:
                     token, holder_id, invocation_ttl=self.invocation_ttl
                 )
             except RuntimeError as exc:
-                raise GeneratorProtocolError("consumer invocation already active") from exc
+                raise GeneratorProtocolError(
+                    "consumer invocation already active"
+                ) from exc
             self._hit(adapter_fault, "adapter:after_delivery_before_client")
             ctx = StreamContext(consumer_id, token.sequence, token.attempt)
             generator = task(ctx, envelope)
             if not inspect.isasyncgen(generator):
-                raise GeneratorProtocolError("stream task must return an async generator")
+                raise GeneratorProtocolError(
+                    "stream task must return an async generator"
+                )
             try:
                 operation = generator.__anext__()
                 spec = (
@@ -225,7 +239,9 @@ class GeneratorRuntime:
             try:
                 await generator.aclose()
             except RuntimeError as exc:
-                raise GeneratorProtocolError("async generator emitted after terminal yield") from exc
+                raise GeneratorProtocolError(
+                    "async generator emitted after terminal yield"
+                ) from exc
             self._hit(adapter_fault, "adapter:after_close_before_object")
             output = self._pending_output(consumer_id, envelope, spec)
             self._hit(adapter_fault, "adapter:after_object_before_completion")

@@ -6,13 +6,12 @@ import json
 import os
 import subprocess
 import sys
-import uuid
 import unittest
+import uuid
 from dataclasses import replace
 from pathlib import Path
 
 import asyncpg
-
 from postgres_stream_v2 import (
     AppendResult,
     CapacityBlocked,
@@ -25,7 +24,6 @@ from postgres_stream_v2 import (
     content_object_key,
     metadata_operation_id,
 )
-
 
 DSN = os.environ.get(
     "ARIADNE_STREAM_DSN",
@@ -62,26 +60,46 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         )
         peer = await PostgresStream.open(DSN, self.schema)
         try:
+
             async def append(number: int):
                 store = self.store if number % 2 else peer
                 return await store.append(
-                    f"attempt-{number}", "input", "p0", f"record-{number}",
-                    f"object-{number}", f"payload-{number}".encode(), "bytes/v1",
+                    f"attempt-{number}",
+                    "input",
+                    "p0",
+                    f"record-{number}",
+                    f"object-{number}",
+                    f"payload-{number}".encode(),
+                    "bytes/v1",
                     f"lineage-{number}",
                 )
 
             results = await asyncio.gather(*(append(n) for n in range(1, 101)))
-            self.assertEqual(sorted(result.sequence for result in results), list(range(1, 101)))
+            self.assertEqual(
+                sorted(result.sequence for result in results), list(range(1, 101))
+            )
             retried = await peer.append(
-                "attempt-37", "input", "p0", "record-37", "object-37",
-                b"payload-37", "bytes/v1", "lineage-37",
+                "attempt-37",
+                "input",
+                "p0",
+                "record-37",
+                "object-37",
+                b"payload-37",
+                "bytes/v1",
+                "lineage-37",
             )
             original = next(item for item in results if item.record_id == "record-37")
             self.assertEqual(retried, original)
             with self.assertRaisesRegex(PostgresProtocolError, "identity drift"):
                 await peer.append(
-                    "attempt-37", "input", "p0", "record-other", "object-37",
-                    b"payload-37", "bytes/v1", "lineage-37",
+                    "attempt-37",
+                    "input",
+                    "p0",
+                    "record-other",
+                    "object-37",
+                    b"payload-37",
+                    "bytes/v1",
+                    "lineage-37",
                 )
             self.assertTrue((await self.store.invariant_report())["passed"])
         finally:
@@ -95,8 +113,14 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         async def append(number: int) -> str:
             try:
                 await self.store.append(
-                    f"capacity-{number}", "bounded", "p0", f"capacity-record-{number}",
-                    f"capacity-object-{number}", b"x" * 10, "bytes/v1", f"l-{number}",
+                    f"capacity-{number}",
+                    "bounded",
+                    "p0",
+                    f"capacity-record-{number}",
+                    f"capacity-object-{number}",
+                    b"x" * 10,
+                    "bytes/v1",
+                    f"l-{number}",
                 )
             except CapacityBlocked:
                 return "BLOCKED"
@@ -115,16 +139,30 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
     async def test_pressure_api_names_record_and_byte_dimensions(self) -> None:
         await self.store.create_partition("records", "p0", max_records=1, max_bytes=100)
         await self.store.append(
-            "records-a1", "records", "p0", "records-r1", "records-o1",
-            b"x", "bytes/v1", "records-l1",
+            "records-a1",
+            "records",
+            "p0",
+            "records-r1",
+            "records-o1",
+            b"x",
+            "bytes/v1",
+            "records-l1",
         )
         with self.assertRaises(CapacityBlocked) as record_block:
             await self.store.append(
-                "records-a2", "records", "p0", "records-r2", "records-o2",
-                b"y", "bytes/v1", "records-l2",
+                "records-a2",
+                "records",
+                "p0",
+                "records-r2",
+                "records-o2",
+                b"y",
+                "bytes/v1",
+                "records-l2",
             )
         self.assertEqual(record_block.exception.attempt_ids, ("records-a2",))
-        self.assertEqual(record_block.exception.pressure["binding_dimensions"], ["records"])
+        self.assertEqual(
+            record_block.exception.pressure["binding_dimensions"], ["records"]
+        )
         public = await self.store.pressure_snapshot(
             "records", "p0", proposed_records=1, proposed_bytes=1
         )
@@ -138,20 +176,38 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(durable["pressure_snapshot"])["used_records"], 1)
         await self.store.compact("records", "p0", 1)
         resumed = await self.store.append(
-            "records-a2", "records", "p0", "records-r2", "records-o2",
-            b"y", "bytes/v1", "records-l2",
+            "records-a2",
+            "records",
+            "p0",
+            "records-r2",
+            "records-o2",
+            b"y",
+            "bytes/v1",
+            "records-l2",
         )
         self.assertEqual(resumed.sequence, 2)
 
         await self.store.create_partition("bytes", "p0", max_records=10, max_bytes=3)
         await self.store.append(
-            "bytes-a1", "bytes", "p0", "bytes-r1", "bytes-o1",
-            b"xx", "bytes/v1", "bytes-l1",
+            "bytes-a1",
+            "bytes",
+            "p0",
+            "bytes-r1",
+            "bytes-o1",
+            b"xx",
+            "bytes/v1",
+            "bytes-l1",
         )
         with self.assertRaises(CapacityBlocked) as byte_block:
             await self.store.append(
-                "bytes-a2", "bytes", "p0", "bytes-r2", "bytes-o2",
-                b"yy", "bytes/v1", "bytes-l2",
+                "bytes-a2",
+                "bytes",
+                "p0",
+                "bytes-r2",
+                "bytes-o2",
+                b"yy",
+                "bytes/v1",
+                "bytes-l2",
             )
         self.assertEqual(byte_block.exception.pressure["binding_dimensions"], ["bytes"])
         self.assertEqual(byte_block.exception.pressure["projected_bytes"], 4)
@@ -161,8 +217,14 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
             "aged", "p0", max_records=10, max_bytes=1000, max_age_seconds=60
         )
         await self.store.append(
-            "aged-1", "aged", "p0", "aged-r1", "aged-o1", b"one",
-            "bytes/v1", "aged-l1",
+            "aged-1",
+            "aged",
+            "p0",
+            "aged-r1",
+            "aged-o1",
+            b"one",
+            "bytes/v1",
+            "aged-l1",
         )
         async with self.store.pool.acquire() as conn:
             await conn.execute(
@@ -171,8 +233,14 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
             )
         with self.assertRaises(CapacityBlocked) as age_block:
             await self.store.append(
-                "aged-2", "aged", "p0", "aged-r2", "aged-o2", b"two",
-                "bytes/v1", "aged-l2",
+                "aged-2",
+                "aged",
+                "p0",
+                "aged-r2",
+                "aged-o2",
+                b"two",
+                "bytes/v1",
+                "aged-l2",
             )
         self.assertEqual(age_block.exception.pressure["binding_dimensions"], ["age"])
         age_public = await self.store.pressure_snapshot("aged", "p0")
@@ -180,14 +248,23 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         reclaimed = await self.store.compact("aged", "p0", 1)
         self.assertEqual(reclaimed["reclaimed_records"], 1)
         retried = await self.store.append(
-            "aged-2", "aged", "p0", "aged-r2", "aged-o2", b"two",
-            "bytes/v1", "aged-l2",
+            "aged-2",
+            "aged",
+            "p0",
+            "aged-r2",
+            "aged-o2",
+            b"two",
+            "bytes/v1",
+            "aged-l2",
         )
         self.assertEqual(retried.sequence, 2)
 
     async def test_consumer_capacity_is_atomic_and_public(self) -> None:
         await self.store.create_partition(
-            "consumer-cap", "p0", max_records=1, max_bytes=100,
+            "consumer-cap",
+            "p0",
+            max_records=1,
+            max_bytes=100,
             max_consumers=1,
         )
 
@@ -211,17 +288,28 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(pressure["max_consumers"], 1)
         self.assertEqual(pressure["binding_dimensions"], ["consumers"])
         oracle = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(oracle.returncode, 0, oracle.stdout + oracle.stderr)
 
     async def test_server_time_lease_takeover_fences_stale_completion(self) -> None:
         await self.store.create_partition("input", "p0", max_records=10, max_bytes=1000)
-        await self.store.create_partition("output", "p0", max_records=10, max_bytes=1000)
+        await self.store.create_partition(
+            "output", "p0", max_records=10, max_bytes=1000
+        )
         await self.store.append(
-            "input-1", "input", "p0", "record-1", "object-1", b"document-1",
-            "bytes/v1", "source-1",
+            "input-1",
+            "input",
+            "p0",
+            "record-1",
+            "object-1",
+            b"document-1",
+            "bytes/v1",
+            "source-1",
         )
         await self.store.create_consumer("reviewer", "input", "p0")
         anna_epoch = await self.store.claim_consumer(
@@ -235,7 +323,9 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertGreater(tanya_epoch, anna_epoch)
         with self.assertRaises(StaleOwner):
-            await self.store.complete(anna_token, "RETURN", managed_state={"seen": "anna"})
+            await self.store.complete(
+                anna_token, "RETURN", managed_state={"seen": "anna"}
+            )
         tanya_token, envelope = await self.store.deliver_next(
             "reviewer", "tanya", tanya_epoch
         )
@@ -244,8 +334,13 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
             tanya_token,
             "YIELD",
             output=Output(
-                "output", "p0", "signed-1", "signed-object-1", b"signed",
-                "bytes/v1", "reviewer-1",
+                "output",
+                "p0",
+                "signed-1",
+                "signed-object-1",
+                b"signed",
+                "bytes/v1",
+                "reviewer-1",
             ),
             managed_state={"seen": 1},
         )
@@ -258,8 +353,13 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 tanya_token,
                 "YIELD",
                 output=Output(
-                    "output", "p0", "signed-1", "signed-object-1", b"signed",
-                    "bytes/v1", "reviewer-1",
+                    "output",
+                    "p0",
+                    "signed-1",
+                    "signed-object-1",
+                    b"signed",
+                    "bytes/v1",
+                    "reviewer-1",
                 ),
                 managed_state={"seen": 1},
             ),
@@ -270,8 +370,13 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 tanya_token,
                 "YIELD",
                 output=Output(
-                    "output", "p0", "different", "different-object", b"different",
-                    "bytes/v2", "different-lineage",
+                    "output",
+                    "p0",
+                    "different",
+                    "different-object",
+                    b"different",
+                    "bytes/v2",
+                    "different-lineage",
                 ),
                 managed_state={"seen": 999},
                 state_schema="different/v2",
@@ -291,25 +396,36 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         epoch = await self.store.claim_consumer("reviewer", "anna", lease_seconds=60)
         token, _ = await self.store.deliver_next("reviewer", "anna", epoch)
         forged = DeliveryToken(
-            token.consumer_id, token.sequence, token.owner_id, token.owner_epoch,
+            token.consumer_id,
+            token.sequence,
+            token.owner_id,
+            token.owner_epoch,
             token.attempt + 998,
         )
         with self.assertRaisesRegex(PostgresProtocolError, "exact in-flight"):
             await self.store.complete(forged, "RETURN", managed_state={})
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 0)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 0
+        )
 
-    async def test_bounded_batch_requires_delivery_and_replays_whole_range(self) -> None:
+    async def test_bounded_batch_requires_delivery_and_replays_whole_range(
+        self,
+    ) -> None:
         await self.store.create_partition("input", "p0", max_records=10, max_bytes=1000)
         for number in range(1, 11):
             await self.store.append(
-                f"a-{number}", "input", "p0", f"r-{number}", f"o-{number}",
-                f"document-{number}".encode(), "bytes/v1", f"l-{number}",
+                f"a-{number}",
+                "input",
+                "p0",
+                f"r-{number}",
+                f"o-{number}",
+                f"document-{number}".encode(),
+                "bytes/v1",
+                f"l-{number}",
             )
         await self.store.create_consumer("reviewer", "input", "p0")
         epoch = await self.store.claim_consumer("reviewer", "anna", lease_seconds=10)
-        first = await self.store.deliver_batch(
-            "reviewer", "anna", epoch, max_records=4
-        )
+        first = await self.store.deliver_batch("reviewer", "anna", epoch, max_records=4)
         self.assertEqual([token.sequence for token, _ in first], [1, 2, 3, 4])
         forged = list(first)
         forged[-1] = (replace(forged[-1][0], attempt=999), forged[-1][1])
@@ -366,7 +482,9 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([token.sequence for token, _ in replayed], [5, 6, 7, 8])
         self.assertGreater(replayed[0][0].attempt, second[0][0].attempt)
         await self.store.complete_return_batch(replayed)
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 8)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 8
+        )
         self.assertTrue((await self.store.invariant_report())["passed"])
 
     async def test_staged_orphan_is_invisible_until_atomic_append(self) -> None:
@@ -375,12 +493,20 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(await self.store.orphan_objects(), ["orphan"])
         async with self.store.pool.acquire() as conn:
             self.assertEqual(
-                await conn.fetchval("SELECT count(*) FROM records WHERE object_key='orphan'"),
+                await conn.fetchval(
+                    "SELECT count(*) FROM records WHERE object_key='orphan'"
+                ),
                 0,
             )
         result = await self.store.append(
-            "publish-orphan", "input", "p0", "record-1", "orphan", b"payload",
-            "bytes/v1", "lineage-1",
+            "publish-orphan",
+            "input",
+            "p0",
+            "record-1",
+            "orphan",
+            b"payload",
+            "bytes/v1",
+            "lineage-1",
         )
         self.assertEqual(result.sequence, 1)
         self.assertEqual(await self.store.orphan_objects(), [])
@@ -388,25 +514,33 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_completion_batch_straddling_retired_horizon_expires(self) -> None:
         await self.store.create_partition(
-            "batch-horizon", "p0", max_records=4, max_bytes=1000,
-            max_metadata_records=4, max_producers=1,
+            "batch-horizon",
+            "p0",
+            max_records=4,
+            max_bytes=1000,
+            max_metadata_records=4,
+            max_producers=1,
         )
-        await self.store.register_producer(
-            "batch-horizon", "p0", "batch-producer"
-        )
+        await self.store.register_producer("batch-horizon", "p0", "batch-producer")
         items = []
         for number in range(1, 5):
             payload = f"batch-{number}".encode()
-            items.append((
-                f"batch-a-{number}", "batch-horizon", "p0",
-                f"batch-r-{number}", content_object_key(payload, "bytes/v1"),
-                payload, "bytes/v1", f"batch-l-{number}",
-                "batch-producer", number,
-            ))
+            items.append(
+                (
+                    f"batch-a-{number}",
+                    "batch-horizon",
+                    "p0",
+                    f"batch-r-{number}",
+                    content_object_key(payload, "bytes/v1"),
+                    payload,
+                    "bytes/v1",
+                    f"batch-l-{number}",
+                    "batch-producer",
+                    number,
+                )
+            )
         await self.store.append_batch(items)
-        await self.store.create_consumer(
-            "batch-consumer", "batch-horizon", "p0"
-        )
+        await self.store.create_consumer("batch-consumer", "batch-horizon", "p0")
         epoch = await self.store.claim_consumer(
             "batch-consumer", "worker", lease_seconds=60
         )
@@ -425,9 +559,7 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         ):
             await self.store.complete_return_batch(delivered, managed_states=states)
         drifted = list(delivered)
-        drifted[-1] = (
-            drifted[-1][0], replace(drifted[-1][1], payload=b"drifted")
-        )
+        drifted[-1] = (drifted[-1][0], replace(drifted[-1][1], payload=b"drifted"))
         with self.assertRaisesRegex(
             IdempotencyHorizonExpired, "intersects retired horizon"
         ):
@@ -442,31 +574,56 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
     async def test_object_identity_survives_payload_compaction(self) -> None:
         await self.store.create_partition("input", "p0", max_records=3, max_bytes=100)
         await self.store.append(
-            "shared-a1", "input", "p0", "shared-r1", "shared", b"stable",
-            "bytes/v1", "shared-l1",
+            "shared-a1",
+            "input",
+            "p0",
+            "shared-r1",
+            "shared",
+            b"stable",
+            "bytes/v1",
+            "shared-l1",
         )
         await self.store.compact("input", "p0", 1)
         same = await self.store.append(
-            "shared-a2", "input", "p0", "shared-r2", "shared", b"stable",
-            "bytes/v1", "shared-l2",
+            "shared-a2",
+            "input",
+            "p0",
+            "shared-r2",
+            "shared",
+            b"stable",
+            "bytes/v1",
+            "shared-l2",
         )
         self.assertEqual(same.sequence, 2)
         await self.store.compact("input", "p0", 2)
         with self.assertRaisesRegex(PostgresProtocolError, "object identity drift"):
             await self.store.append(
-                "shared-a3", "input", "p0", "shared-r3", "shared", b"changed",
-                "bytes/v2", "shared-l3",
+                "shared-a3",
+                "input",
+                "p0",
+                "shared-r3",
+                "shared",
+                b"changed",
+                "bytes/v2",
+                "shared-l3",
             )
         oracle = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(oracle.returncode, 0, oracle.stdout + oracle.stderr)
 
     async def test_metadata_horizon_stays_bounded_for_100_cycles(self) -> None:
         await self.store.create_partition(
-            "cycle", "p0", max_records=1, max_bytes=100,
-            max_metadata_records=1, max_producers=1,
+            "cycle",
+            "p0",
+            max_records=1,
+            max_bytes=100,
+            max_metadata_records=1,
+            max_producers=1,
         )
         await self.store.register_producer("cycle", "p0", "cycle-producer")
         await self.store.create_consumer("cycle-consumer", "cycle", "p0")
@@ -476,18 +633,25 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         for number in range(1, 101):
             payload = f"cycle-{number}".encode()
             result = await self.store.append(
-                f"cycle-attempt-{number}", "cycle", "p0", f"cycle-record-{number}",
-                content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-                f"cycle-lineage-{number}", producer_id="cycle-producer",
+                f"cycle-attempt-{number}",
+                "cycle",
+                "p0",
+                f"cycle-record-{number}",
+                content_object_key(payload, "bytes/v1"),
+                payload,
+                "bytes/v1",
+                f"cycle-lineage-{number}",
+                producer_id="cycle-producer",
                 producer_sequence=number,
             )
             self.assertEqual(result.sequence, number)
-            token, _ = await self.store.deliver_next(
-                "cycle-consumer", "worker", epoch
-            )
+            token, _ = await self.store.deliver_next("cycle-consumer", "worker", epoch)
             await self.store.complete(
-                token, "RETURN", managed_state={"last": number},
-                state_schema="cycle/v1", state_version=1,
+                token,
+                "RETURN",
+                managed_state={"last": number},
+                state_schema="cycle/v1",
+                state_version=1,
             )
             await self.store.compact("cycle", "p0", number)
             cuts = [("cycle", "p0", number)]
@@ -499,10 +663,15 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
             )
             with self.assertRaises(IdempotencyHorizonExpired):
                 await self.store.append(
-                    f"cycle-attempt-{number}", "cycle", "p0",
+                    f"cycle-attempt-{number}",
+                    "cycle",
+                    "p0",
                     f"cycle-record-{number}",
-                    content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-                    f"cycle-lineage-{number}", producer_id="cycle-producer",
+                    content_object_key(payload, "bytes/v1"),
+                    payload,
+                    "bytes/v1",
+                    f"cycle-lineage-{number}",
+                    producer_id="cycle-producer",
                     producer_sequence=number,
                 )
             pressure = await self.store.pressure_snapshot("cycle", "p0")
@@ -511,39 +680,62 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         position = await self.store.position("cycle-consumer")
         self.assertEqual(position["completion_retired_through"], 99)
         async with self.store.pool.acquire() as conn:
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM append_attempts"), 0)
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM turn_completions"), 1)
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM metadata_summaries"), 1)
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM metadata_operations"), 1)
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM object_identities"), 0)
+            self.assertEqual(
+                await conn.fetchval("SELECT count(*) FROM append_attempts"), 0
+            )
+            self.assertEqual(
+                await conn.fetchval("SELECT count(*) FROM turn_completions"), 1
+            )
+            self.assertEqual(
+                await conn.fetchval("SELECT count(*) FROM metadata_summaries"), 1
+            )
+            self.assertEqual(
+                await conn.fetchval("SELECT count(*) FROM metadata_operations"), 1
+            )
+            self.assertEqual(
+                await conn.fetchval("SELECT count(*) FROM object_identities"), 0
+            )
         oracle = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(oracle.returncode, 0, oracle.stdout + oracle.stderr)
 
-    async def test_metadata_operation_retry_rejects_cut_and_partition_drift(self) -> None:
+    async def test_metadata_operation_retry_rejects_cut_and_partition_drift(
+        self,
+    ) -> None:
         for partition in ("p0", "p1"):
             await self.store.create_partition(
-                "ops", partition, max_records=3, max_bytes=1000,
-                max_metadata_records=3, max_producers=1,
+                "ops",
+                partition,
+                max_records=3,
+                max_bytes=1000,
+                max_metadata_records=3,
+                max_producers=1,
             )
             await self.store.register_producer(
                 "ops", partition, f"producer-{partition}"
             )
             payload = f"{partition}-one".encode()
             await self.store.append(
-                f"attempt-{partition}-1", "ops", partition, f"record-{partition}-1",
-                content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-                f"lineage-{partition}-1", producer_id=f"producer-{partition}",
+                f"attempt-{partition}-1",
+                "ops",
+                partition,
+                f"record-{partition}-1",
+                content_object_key(payload, "bytes/v1"),
+                payload,
+                "bytes/v1",
+                f"lineage-{partition}-1",
+                producer_id=f"producer-{partition}",
                 producer_sequence=1,
             )
             await self.store.compact("ops", partition, 1)
         first_cuts = [("ops", "p0", 1)]
         operation_id = metadata_operation_id(first_cuts)
-        first = await self.store.compact_metadata(
-            first_cuts, operation_id=operation_id
-        )
+        first = await self.store.compact_metadata(first_cuts, operation_id=operation_id)
         retried = await self.store.compact_metadata(
             first_cuts, operation_id=operation_id
         )
@@ -553,9 +745,16 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
 
         payload = b"p0-two"
         await self.store.append(
-            "attempt-p0-2", "ops", "p0", "record-p0-2",
-            content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-            "lineage-p0-2", producer_id="producer-p0", producer_sequence=2,
+            "attempt-p0-2",
+            "ops",
+            "p0",
+            "record-p0-2",
+            content_object_key(payload, "bytes/v1"),
+            payload,
+            "bytes/v1",
+            "lineage-p0-2",
+            producer_id="producer-p0",
+            producer_sequence=2,
         )
         await self.store.compact("ops", "p0", 2)
         with self.assertRaisesRegex(PostgresProtocolError, "operation identity drift"):
@@ -581,8 +780,11 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 1,
             )
         oracle = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(oracle.returncode, 0, oracle.stdout + oracle.stderr)
         async with self.store.pool.acquire() as conn:
@@ -594,16 +796,23 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 operation_id,
             )
         corrupted = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertNotEqual(corrupted.returncode, 0, corrupted.stdout)
         self.assertIn("metadata_operation_outcome_cut", corrupted.stdout)
 
     async def test_structured_producer_retry_gap_race_and_expiry(self) -> None:
         await self.store.create_partition(
-            "structured", "p0", max_records=4, max_bytes=1000,
-            max_metadata_records=4, max_producers=1,
+            "structured",
+            "p0",
+            max_records=4,
+            max_bytes=1000,
+            max_metadata_records=4,
+            max_producers=1,
         )
         await self.store.register_producer(
             "structured", "p0", "deployment-v1/producer-1"
@@ -615,16 +824,27 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         gap_payload = b"gap"
         with self.assertRaisesRegex(PostgresProtocolError, "sequence gap"):
             await self.store.append(
-                "structured-gap", "structured", "p0", "structured-gap-r",
-                content_object_key(gap_payload, "bytes/v1"), gap_payload,
-                "bytes/v1", "structured-gap-l",
-                producer_id="deployment-v1/producer-1", producer_sequence=2,
+                "structured-gap",
+                "structured",
+                "p0",
+                "structured-gap-r",
+                content_object_key(gap_payload, "bytes/v1"),
+                gap_payload,
+                "bytes/v1",
+                "structured-gap-l",
+                producer_id="deployment-v1/producer-1",
+                producer_sequence=2,
             )
         first_payload = b"first"
         first_args = (
-            "structured-a1", "structured", "p0", "structured-r1",
-            content_object_key(first_payload, "bytes/v1"), first_payload,
-            "bytes/v1", "structured-l1",
+            "structured-a1",
+            "structured",
+            "p0",
+            "structured-r1",
+            content_object_key(first_payload, "bytes/v1"),
+            first_payload,
+            "bytes/v1",
+            "structured-l1",
         )
         first = await self.store.append(
             *first_args, producer_id="deployment-v1/producer-1", producer_sequence=1
@@ -637,19 +857,31 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         )
         with self.assertRaisesRegex(PostgresProtocolError, "identity drift"):
             await self.store.append(
-                "structured-a1", "structured", "p0", "structured-r1",
-                content_object_key(b"drift", "bytes/v1"), b"drift",
-                "bytes/v1", "structured-l1",
-                producer_id="deployment-v1/producer-1", producer_sequence=1,
+                "structured-a1",
+                "structured",
+                "p0",
+                "structured-r1",
+                content_object_key(b"drift", "bytes/v1"),
+                b"drift",
+                "bytes/v1",
+                "structured-l1",
+                producer_id="deployment-v1/producer-1",
+                producer_sequence=1,
             )
 
         async def contender(label: str, payload: bytes):
             try:
                 return await self.store.append(
-                    f"structured-{label}", "structured", "p0", f"structured-r-{label}",
-                    content_object_key(payload, "bytes/v1"), payload,
-                    "bytes/v1", f"structured-l-{label}",
-                    producer_id="deployment-v1/producer-1", producer_sequence=2,
+                    f"structured-{label}",
+                    "structured",
+                    "p0",
+                    f"structured-r-{label}",
+                    content_object_key(payload, "bytes/v1"),
+                    payload,
+                    "bytes/v1",
+                    f"structured-l-{label}",
+                    producer_id="deployment-v1/producer-1",
+                    producer_sequence=2,
                 )
             except PostgresProtocolError as exc:
                 return exc
@@ -661,19 +893,30 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(winners), 1)
         winner = winners[0]
         await self.store.compact("structured", "p0", 2)
-        winner_attempt = "structured-left" if winner.record_id.endswith("left") else "structured-right"
+        winner_attempt = (
+            "structured-left"
+            if winner.record_id.endswith("left")
+            else "structured-right"
+        )
         winner_payload = b"left" if winner_attempt.endswith("left") else b"right"
         winner_args = (
-            winner_attempt, "structured", "p0", winner.record_id,
-            content_object_key(winner_payload, "bytes/v1"), winner_payload,
-            "bytes/v1", "structured-l-left" if winner_attempt.endswith("left")
+            winner_attempt,
+            "structured",
+            "p0",
+            winner.record_id,
+            content_object_key(winner_payload, "bytes/v1"),
+            winner_payload,
+            "bytes/v1",
+            "structured-l-left"
+            if winner_attempt.endswith("left")
             else "structured-l-right",
         )
 
         async def retry_winner():
             try:
                 return await self.store.append(
-                    *winner_args, producer_id="deployment-v1/producer-1",
+                    *winner_args,
+                    producer_id="deployment-v1/producer-1",
                     producer_sequence=2,
                 )
             except IdempotencyHorizonExpired as exc:
@@ -693,26 +936,35 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(retirement["locations"]["structured/p0"]["retired_through"], 2)
         with self.assertRaises(IdempotencyHorizonExpired):
             await self.store.append(
-                *winner_args, producer_id="deployment-v1/producer-1",
+                *winner_args,
+                producer_id="deployment-v1/producer-1",
                 producer_sequence=2,
             )
         with self.assertRaises(IdempotencyHorizonExpired):
             await self.store.append(
-                winner_attempt, "structured", "p0", winner.record_id,
-                content_object_key(b"expired-drift", "bytes/v1"), b"expired-drift",
-                "bytes/v1", winner_args[7],
-                producer_id="deployment-v1/producer-1", producer_sequence=2,
+                winner_attempt,
+                "structured",
+                "p0",
+                winner.record_id,
+                content_object_key(b"expired-drift", "bytes/v1"),
+                b"expired-drift",
+                "bytes/v1",
+                winner_args[7],
+                producer_id="deployment-v1/producer-1",
+                producer_sequence=2,
             )
 
     async def test_oracle_binds_retired_watermarks_to_operation_anchors(self) -> None:
         await self.store.create_partition(
-            "no-summary", "p0", max_records=1, max_bytes=100,
-            max_metadata_records=1, max_producers=1,
+            "no-summary",
+            "p0",
+            max_records=1,
+            max_bytes=100,
+            max_metadata_records=1,
+            max_producers=1,
         )
         await self.store.register_producer("no-summary", "p0", "no-summary-producer")
-        await self.store.create_consumer(
-            "no-summary-consumer", "no-summary", "p0"
-        )
+        await self.store.create_consumer("no-summary-consumer", "no-summary", "p0")
         async with self.store.pool.acquire() as conn:
             await conn.execute(
                 "UPDATE producer_progress SET retired_through=1 "
@@ -723,8 +975,11 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 "WHERE consumer_id='no-summary-consumer'"
             )
         missing_summary = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertNotEqual(missing_summary.returncode, 0, missing_summary.stdout)
         self.assertIn("retired_without_summary", missing_summary.stdout)
@@ -739,16 +994,26 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
             )
 
         await self.store.create_partition(
-            "anchors", "p0", max_records=3, max_bytes=1000,
-            max_metadata_records=3, max_producers=1,
+            "anchors",
+            "p0",
+            max_records=3,
+            max_bytes=1000,
+            max_metadata_records=3,
+            max_producers=1,
         )
         await self.store.register_producer("anchors", "p0", "anchor-producer")
         for number in range(1, 4):
             payload = f"anchor-{number}".encode()
             await self.store.append(
-                f"anchor-a-{number}", "anchors", "p0", f"anchor-r-{number}",
-                content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-                f"anchor-l-{number}", producer_id="anchor-producer",
+                f"anchor-a-{number}",
+                "anchors",
+                "p0",
+                f"anchor-r-{number}",
+                content_object_key(payload, "bytes/v1"),
+                payload,
+                "bytes/v1",
+                f"anchor-l-{number}",
+                producer_id="anchor-producer",
                 producer_sequence=number,
             )
         for consumer_id in ("anchor-left", "anchor-right"):
@@ -766,8 +1031,11 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
             cuts, operation_id=metadata_operation_id(cuts)
         )
         valid = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(valid.returncode, 0, valid.stdout + valid.stderr)
         async with self.store.pool.acquire() as conn:
@@ -776,40 +1044,60 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 "WHERE consumer_id='anchor-left'"
             )
         corrupted = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertNotEqual(corrupted.returncode, 0, corrupted.stdout)
         self.assertIn("metadata_operation_anchors", corrupted.stdout)
 
     async def test_oracle_rejects_missing_hot_append_authority(self) -> None:
         await self.store.create_partition(
-            "hot-authority", "p0", max_records=1, max_bytes=100,
-            max_metadata_records=1, max_producers=1,
+            "hot-authority",
+            "p0",
+            max_records=1,
+            max_bytes=100,
+            max_metadata_records=1,
+            max_producers=1,
         )
-        await self.store.register_producer(
-            "hot-authority", "p0", "hot-producer"
-        )
+        await self.store.register_producer("hot-authority", "p0", "hot-producer")
         payload = b"hot"
         await self.store.append(
-            "hot-attempt", "hot-authority", "p0", "hot-record",
-            content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-            "hot-lineage", producer_id="hot-producer", producer_sequence=1,
+            "hot-attempt",
+            "hot-authority",
+            "p0",
+            "hot-record",
+            content_object_key(payload, "bytes/v1"),
+            payload,
+            "bytes/v1",
+            "hot-lineage",
+            producer_id="hot-producer",
+            producer_sequence=1,
         )
         valid = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(valid.returncode, 0, valid.stdout + valid.stderr)
         async with self.store.pool.acquire() as conn:
-            await conn.execute("DELETE FROM append_attempts WHERE attempt_id='hot-attempt'")
+            await conn.execute(
+                "DELETE FROM append_attempts WHERE attempt_id='hot-attempt'"
+            )
             await conn.execute(
                 "UPDATE partitions SET used_metadata_records=0 "
                 "WHERE channel='hot-authority' AND partition_id='p0'"
             )
         corrupted = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertNotEqual(corrupted.returncode, 0, corrupted.stdout)
         self.assertIn("producer_hot_attempts", corrupted.stdout)
@@ -817,16 +1105,27 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_oracle_recomputes_live_content_address(self) -> None:
         await self.store.create_partition(
-            "content", "p0", max_records=1, max_bytes=100,
-            max_metadata_records=1, max_producers=1,
+            "content",
+            "p0",
+            max_records=1,
+            max_bytes=100,
+            max_metadata_records=1,
+            max_producers=1,
         )
         await self.store.register_producer("content", "p0", "content-producer")
         original = b"x"
         key = content_object_key(original, "bytes/v1")
         await self.store.append(
-            "content-attempt", "content", "p0", "content-record", key,
-            original, "bytes/v1", "content-lineage",
-            producer_id="content-producer", producer_sequence=1,
+            "content-attempt",
+            "content",
+            "p0",
+            "content-record",
+            key,
+            original,
+            "bytes/v1",
+            "content-lineage",
+            producer_id="content-producer",
+            producer_sequence=1,
         )
         replacement = b"y"
         digest = hashlib.sha256(replacement).hexdigest()
@@ -849,37 +1148,60 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         async with self.store.pool.acquire() as conn, conn.transaction():
             await conn.execute(
                 "UPDATE objects SET payload=$2,payload_digest=$3,payload_size=$4 "
-                "WHERE object_key=$1", key, replacement, digest, len(replacement),
+                "WHERE object_key=$1",
+                key,
+                replacement,
+                digest,
+                len(replacement),
             )
             await conn.execute(
                 "UPDATE object_identities SET payload_digest=$2,payload_size=$3 "
-                "WHERE object_key=$1", key, digest, len(replacement),
+                "WHERE object_key=$1",
+                key,
+                digest,
+                len(replacement),
             )
             await conn.execute(
                 "UPDATE records SET payload_digest=$2,payload_size=$3 "
-                "WHERE object_key=$1", key, digest, len(replacement),
+                "WHERE object_key=$1",
+                key,
+                digest,
+                len(replacement),
             )
             await conn.execute(
                 """UPDATE append_attempts
                    SET payload_digest=$1,payload_size=$2,identity_digest=$3
                    WHERE attempt_id='content-attempt'""",
-                digest, len(replacement), identity_hash,
+                digest,
+                len(replacement),
+                identity_hash,
             )
         corrupted = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertNotEqual(corrupted.returncode, 0, corrupted.stdout)
         self.assertIn("content_address", corrupted.stdout)
 
-    async def test_reference_safe_compaction_returns_credits_and_retry_witness(self) -> None:
+    async def test_reference_safe_compaction_returns_credits_and_retry_witness(
+        self,
+    ) -> None:
         await self.store.create_partition("input", "p0", max_records=5, max_bytes=50)
         originals = []
         for number in range(1, 6):
             originals.append(
                 await self.store.append(
-                    f"a-{number}", "input", "p0", f"r-{number}", f"o-{number}",
-                    str(number).encode().ljust(10, b"x"), "bytes/v1", f"l-{number}",
+                    f"a-{number}",
+                    "input",
+                    "p0",
+                    f"r-{number}",
+                    f"o-{number}",
+                    str(number).encode().ljust(10, b"x"),
+                    "bytes/v1",
+                    f"l-{number}",
                 )
             )
         await self.store.create_consumer("late", "input", "p0", start_sequence=3)
@@ -889,13 +1211,21 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(first["safe_through"], 1)
         self.assertEqual(first["sequences"], [1])
         retried = await self.store.append(
-            "a-1", "input", "p0", "r-1", "o-1", b"1xxxxxxxxx",
-            "bytes/v1", "l-1",
+            "a-1",
+            "input",
+            "p0",
+            "r-1",
+            "o-1",
+            b"1xxxxxxxxx",
+            "bytes/v1",
+            "l-1",
         )
         self.assertEqual(retried, originals[0])
         self.assertEqual(await self.store.retained_floor("input", "p0"), 2)
         with self.assertRaisesRegex(PostgresProtocolError, "outside retained suffix"):
-            await self.store.create_consumer("too-late", "input", "p0", start_sequence=1)
+            await self.store.create_consumer(
+                "too-late", "input", "p0", start_sequence=1
+            )
         with self.assertRaisesRegex(PostgresProtocolError, "outside retained suffix"):
             await self.store.add_ref("RECOVERY_PIN", "late-pin", "input", "p0", 1)
         await self.store.release_ref("RECOVERY_PIN", "pin-2")
@@ -904,8 +1234,14 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(second["safe_through"], 2)
         self.assertEqual(second["sequences"], [2])
         appended = await self.store.append(
-            "a-6", "input", "p0", "r-6", "o-6", b"6xxxxxxxxx",
-            "bytes/v1", "l-6",
+            "a-6",
+            "input",
+            "p0",
+            "r-6",
+            "o-6",
+            b"6xxxxxxxxx",
+            "bytes/v1",
+            "l-6",
         )
         self.assertEqual(appended.sequence, 6)
         self.assertTrue((await self.store.invariant_report())["passed"])
@@ -914,8 +1250,14 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         await self.store.create_partition("input", "p0", max_records=2, max_bytes=100)
         for number in (1, 2):
             await self.store.append(
-                f"a-{number}", "input", "p0", f"r-{number}", f"o-{number}",
-                str(number).encode(), "bytes/v1", f"l-{number}",
+                f"a-{number}",
+                "input",
+                "p0",
+                f"r-{number}",
+                f"o-{number}",
+                str(number).encode(),
+                "bytes/v1",
+                f"l-{number}",
             )
         roots_read = asyncio.Event()
         allow_delete = asyncio.Event()
@@ -944,13 +1286,22 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         await self.store.create_partition("input", "p0", max_records=2, max_bytes=100)
         for number in (1, 2):
             await self.store.append(
-                f"a-{number}", "input", "p0", f"r-{number}", f"o-{number}",
-                str(number).encode(), "bytes/v1", f"l-{number}",
+                f"a-{number}",
+                "input",
+                "p0",
+                f"r-{number}",
+                f"o-{number}",
+                str(number).encode(),
+                "bytes/v1",
+                f"l-{number}",
             )
         await self.store.compact("input", "p0", 2)
         good = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(good.returncode, 0, good.stdout + good.stderr)
         async with self.store.pool.acquire() as conn:
@@ -960,8 +1311,11 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                    VALUES('forged-late','input','p0',1,0)"""
             )
         bad = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(bad.returncode, 2)
         self.assertIn(
@@ -972,8 +1326,14 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
     async def test_independent_oracle_rejects_lost_active_roots(self) -> None:
         await self.store.create_partition("input", "p0", max_records=2, max_bytes=100)
         await self.store.append(
-            "root-a1", "input", "p0", "root-r1", "root-o1", b"one",
-            "bytes/v1", "root-l1",
+            "root-a1",
+            "input",
+            "p0",
+            "root-r1",
+            "root-o1",
+            b"one",
+            "bytes/v1",
+            "root-l1",
         )
         await self.store.add_ref("RECOVERY_PIN", "root-pin", "input", "p0", 1)
         await self.store.seal_checkpoint("root-checkpoint", "input", "p0", 0)
@@ -1000,8 +1360,11 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 "WHERE channel='input' AND partition_id='p0'"
             )
         bad = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(bad.returncode, 2)
         violations = json.loads(bad.stdout)["violations"]
@@ -1014,8 +1377,13 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         await self.store.create_partition("output", "p0", max_records=2, max_bytes=100)
         for number in (1, 2):
             await self.store.append(
-                f"cross-a{number}", "input", "p0", f"cross-r{number}",
-                f"cross-o{number}", str(number).encode(), "bytes/v1",
+                f"cross-a{number}",
+                "input",
+                "p0",
+                f"cross-r{number}",
+                f"cross-o{number}",
+                str(number).encode(),
+                "bytes/v1",
                 f"cross-l{number}",
             )
         await self.store.create_consumer("cross-consumer", "input", "p0")
@@ -1025,11 +1393,16 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
         for number in (1, 2):
             token, _ = await self.store.deliver_next("cross-consumer", "anna", epoch)
             await self.store.complete(
-                token, "YIELD",
+                token,
+                "YIELD",
                 output=Output(
-                    "output", "p0", f"cross-out-r{number}",
-                    f"cross-out-o{number}", f"out-{number}".encode(),
-                    "bytes/v1", f"cross-out-l{number}",
+                    "output",
+                    "p0",
+                    f"cross-out-r{number}",
+                    f"cross-out-o{number}",
+                    f"out-{number}".encode(),
+                    "bytes/v1",
+                    f"cross-out-l{number}",
                 ),
                 managed_state={"last": number},
             )
@@ -1039,8 +1412,11 @@ class PostgresStreamTests(unittest.IsolatedAsyncioTestCase):
                 "WHERE consumer_id='cross-consumer' AND input_sequence=1"
             )
         bad = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, self.schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, self.schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(bad.returncode, 2)
         self.assertIn(

@@ -148,7 +148,10 @@ class CompositionOracle:
                 ).fetchone()
                 if seal is None or seal["intent_digest"] != intent["intent_digest"]:
                     violations.append(f"checkpoint_intent_unsealed:{checkpoint}")
-                if fence is not None and intent["authority_ordinal"] >= fence["authority_ordinal"]:
+                if (
+                    fence is not None
+                    and intent["authority_ordinal"] >= fence["authority_ordinal"]
+                ):
                     violations.append(f"retroactive_checkpoint_intent:{checkpoint}")
 
             observations = connection.execute(
@@ -163,8 +166,7 @@ class CompositionOracle:
                     entry is None
                     or entry["kind"] != "BARRIER"
                     or entry["checkpoint"] != observation["checkpoint"]
-                    or entry["cut_data_sequence"]
-                    != observation["cut_data_sequence"]
+                    or entry["cut_data_sequence"] != observation["cut_data_sequence"]
                     or entry["intent_digest"] != observation["intent_digest"]
                 ):
                     violations.append(
@@ -283,11 +285,16 @@ class CompositionOracle:
                 if status in ("ALIGNED", "COMPLETED") and checkpoint not in snapshots:
                     violations.append(f"checkpoint_snapshot_missing:{checkpoint}")
                 if status == "STARTED" and checkpoint in snapshots:
-                    violations.append(f"checkpoint_snapshot_before_alignment:{checkpoint}")
+                    violations.append(
+                        f"checkpoint_snapshot_before_alignment:{checkpoint}"
+                    )
             for checkpoint, snapshot in snapshots.items():
                 intent = intents.get(checkpoint)
                 cuts = json.loads(snapshot["cuts_json"])
-                if intent is None or snapshot["intent_digest"] != intent["intent_digest"]:
+                if (
+                    intent is None
+                    or snapshot["intent_digest"] != intent["intent_digest"]
+                ):
                     violations.append(f"snapshot_intent:{checkpoint}")
                     continue
                 if set(cuts) != set(json.loads(intent["inputs_json"])):
@@ -306,7 +313,9 @@ class CompositionOracle:
                         or cut["data"] != observation["cut_data_sequence"]
                         or cut["barrier_log"] != observation["log_sequence"]
                     ):
-                        violations.append(f"snapshot_cut_mismatch:{checkpoint}:{input_id}")
+                        violations.append(
+                            f"snapshot_cut_mismatch:{checkpoint}:{input_id}"
+                        )
                     before = [
                         turn
                         for turn in turns_by_input.get(input_id, [])
@@ -332,9 +341,17 @@ class CompositionOracle:
                         for turn in turns
                         if turn["apply_ordinal"] > highwater
                     ]
-                    if pre_outputs and max(pre_outputs) >= barrier_output["output_ordinal"]:
-                        violations.append(f"forwarded_barrier_overtook_data:{checkpoint}")
-                    if post_outputs and min(post_outputs) <= barrier_output["output_ordinal"]:
+                    if (
+                        pre_outputs
+                        and max(pre_outputs) >= barrier_output["output_ordinal"]
+                    ):
+                        violations.append(
+                            f"forwarded_barrier_overtook_data:{checkpoint}"
+                        )
+                    if (
+                        post_outputs
+                        and min(post_outputs) <= barrier_output["output_ordinal"]
+                    ):
                         violations.append(f"post_barrier_output_order:{checkpoint}")
 
             completed = [
@@ -399,22 +416,17 @@ class CompositionOracle:
                     ):
                         violations.append("recovery_run_mismatch")
                     else:
-                        target_cursors = json.loads(
-                            recovery["target_cursors_json"]
-                        )
+                        target_cursors = json.loads(recovery["target_cursors_json"])
                         recovery_state = snapshot["state_value"]
                         replayed_through = recovery["replayed_through_ordinal"]
                         expected_ordinal = highwater + 1
                         pre_recovery = [
                             turn
                             for turn in turns
-                            if turn["recovery_generation"]
-                            < recovery["generation"]
+                            if turn["recovery_generation"] < recovery["generation"]
                         ]
                         expected_through = (
-                            pre_recovery[-1]["apply_ordinal"]
-                            if pre_recovery
-                            else 0
+                            pre_recovery[-1]["apply_ordinal"] if pre_recovery else 0
                         )
                         cursors_at_ready = {input_id: 0 for input_id in inputs}
                         for turn in pre_recovery:
@@ -436,10 +448,7 @@ class CompositionOracle:
                                 continue
                             if turn["apply_ordinal"] != expected_ordinal:
                                 violations.append("recovery_suffix_order_gap")
-                            if (
-                                turn["recovery_generation"]
-                                >= recovery["generation"]
-                            ):
+                            if turn["recovery_generation"] >= recovery["generation"]:
                                 violations.append(
                                     "recovery_suffix_generation:"
                                     f"{turn['apply_ordinal']}"
@@ -455,8 +464,7 @@ class CompositionOracle:
                             violations.append("recovery_replayed_through_missing")
                         if (
                             recovery["checkpoint"] != selected
-                            or recovery["restored_state"]
-                            != snapshot["state_value"]
+                            or recovery["restored_state"] != snapshot["state_value"]
                             or recovery["recovered_state"] != recovery_state
                             or replayed_through != expected_through
                             or recovery["recovered_state"]

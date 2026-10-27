@@ -340,7 +340,9 @@ class DurableStream:
                 (ref.key,),
             ).fetchone()
             if existing is None:
-                self.connection.execute("INSERT INTO objects VALUES (?, ?, ?, ?, ?)", values)
+                self.connection.execute(
+                    "INSERT INTO objects VALUES (?, ?, ?, ?, ?)", values
+                )
             elif tuple(existing) != values[1:]:
                 raise StreamProtocolError("object reference drift")
             _hit(fault, "object_witness:after_insert_before_commit")
@@ -454,9 +456,19 @@ class DurableStream:
                 raise StreamProtocolError(
                     "turn output must be created by its completion transaction"
                 )
-            if tuple(existing[key] for key in (
-                "payload_key", "payload_digest", "payload_size", "schema_id", "lineage_digest"
-            )) != identity:
+            if (
+                tuple(
+                    existing[key]
+                    for key in (
+                        "payload_key",
+                        "payload_digest",
+                        "payload_size",
+                        "schema_id",
+                        "lineage_digest",
+                    )
+                )
+                != identity
+            ):
                 raise StreamProtocolError("record identity drift")
             return self._row_to_envelope(existing)
 
@@ -557,8 +569,13 @@ class DurableStream:
                    WHERE consumer_id = ? AND owner_epoch = ?
                      AND owner_id IS ? AND lease_expires_at IS ?""",
                 (
-                    owner_id, owner_epoch, now + lease_ttl, next_attempt,
-                    consumer_id, row["owner_epoch"], row["owner_id"],
+                    owner_id,
+                    owner_epoch,
+                    now + lease_ttl,
+                    next_attempt,
+                    consumer_id,
+                    row["owner_epoch"],
+                    row["owner_id"],
                     row["lease_expires_at"],
                 ),
             )
@@ -594,8 +611,13 @@ class DurableStream:
                          AND completed_through = ? AND in_flight_sequence IS NULL
                          AND lease_expires_at > ?""",
                     (
-                        sequence, attempt, consumer_id, owner_id, owner_epoch,
-                        consumer["completed_through"], self._now(),
+                        sequence,
+                        attempt,
+                        consumer_id,
+                        owner_id,
+                        owner_epoch,
+                        consumer["completed_through"],
+                        self._now(),
                     ),
                 )
                 if cursor.rowcount != 1:
@@ -648,9 +670,10 @@ class DurableStream:
             consumer = self._active_consumer(
                 token.consumer_id, token.owner_id, token.owner_epoch
             )
-            if (
-                consumer["in_flight_sequence"], consumer["in_flight_attempt"]
-            ) != (token.sequence, token.attempt):
+            if (consumer["in_flight_sequence"], consumer["in_flight_attempt"]) != (
+                token.sequence,
+                token.attempt,
+            ):
                 raise StreamProtocolError("invocation token is not current")
             now = self._now()
             current = self.connection.execute(
@@ -661,8 +684,12 @@ class DurableStream:
                 self.connection.execute(
                     "INSERT INTO runtime_invocations VALUES (?, ?, ?, ?, ?, ?, ?)",
                     (
-                        token.consumer_id, token.sequence, token.attempt,
-                        token.owner_id, token.owner_epoch, holder_id,
+                        token.consumer_id,
+                        token.sequence,
+                        token.attempt,
+                        token.owner_id,
+                        token.owner_epoch,
+                        holder_id,
                         now + invocation_ttl,
                     ),
                 )
@@ -680,9 +707,15 @@ class DurableStream:
                    owner_id=?, owner_epoch=?, holder_id=?, expires_at=?
                    WHERE consumer_id=? AND holder_id=? AND expires_at=?""",
                 (
-                    token.sequence, token.attempt, token.owner_id, token.owner_epoch,
-                    holder_id, now + invocation_ttl, token.consumer_id,
-                    current["holder_id"], current["expires_at"],
+                    token.sequence,
+                    token.attempt,
+                    token.owner_id,
+                    token.owner_epoch,
+                    holder_id,
+                    now + invocation_ttl,
+                    token.consumer_id,
+                    current["holder_id"],
+                    current["expires_at"],
                 ),
             )
             if cursor.rowcount != 1:
@@ -723,12 +756,19 @@ class DurableStream:
             ).fetchone()
             if existing is not None:
                 if (
-                    existing["attempt"], existing["owner_id"],
-                    existing["owner_epoch"], existing["kind"],
-                    existing["state_json"], existing["state_digest"],
+                    existing["attempt"],
+                    existing["owner_id"],
+                    existing["owner_epoch"],
+                    existing["kind"],
+                    existing["state_json"],
+                    existing["state_digest"],
                 ) != (
-                    token.attempt, token.owner_id, token.owner_epoch, kind.value,
-                    state_json, state_digest,
+                    token.attempt,
+                    token.owner_id,
+                    token.owner_epoch,
+                    kind.value,
+                    state_json,
+                    state_digest,
                 ):
                     raise StreamProtocolError("turn completion drift")
                 if output is None:
@@ -745,13 +785,22 @@ class DurableStream:
                         ),
                     ).fetchone()
                     if row is None or (
-                        row["channel_id"], row["partition_id"], row["record_id"],
-                        row["payload_key"], row["payload_digest"], row["payload_size"],
-                        row["schema_id"], row["lineage_digest"],
+                        row["channel_id"],
+                        row["partition_id"],
+                        row["record_id"],
+                        row["payload_key"],
+                        row["payload_digest"],
+                        row["payload_size"],
+                        row["schema_id"],
+                        row["lineage_digest"],
                     ) != (
-                        output.channel_id, output.partition_id, output.record_id,
-                        output.payload_ref.key, output.payload_ref.digest,
-                        output.payload_ref.size, output.payload_ref.schema_id,
+                        output.channel_id,
+                        output.partition_id,
+                        output.record_id,
+                        output.payload_ref.key,
+                        output.payload_ref.digest,
+                        output.payload_ref.size,
+                        output.payload_ref.schema_id,
                         output.lineage_digest,
                     ):
                         raise StreamProtocolError("turn completion output drift")
@@ -772,10 +821,9 @@ class DurableStream:
                     canonical = json.dumps(
                         stored_manifest, sort_keys=True, separators=(",", ":")
                     )
-                    if (
-                        existing["output_manifest_json"] != canonical
-                        or existing["output_manifest_digest"] != _digest(stored_manifest)
-                    ):
+                    if existing["output_manifest_json"] != canonical or existing[
+                        "output_manifest_digest"
+                    ] != _digest(stored_manifest):
                         raise StreamProtocolError("stored output manifest drift")
                 return
 
@@ -786,12 +834,18 @@ class DurableStream:
             if invocation is not None and (
                 invocation_holder_id is None
                 or (
-                    invocation["input_sequence"], invocation["attempt"],
-                    invocation["owner_id"], invocation["owner_epoch"],
+                    invocation["input_sequence"],
+                    invocation["attempt"],
+                    invocation["owner_id"],
+                    invocation["owner_epoch"],
                     invocation["holder_id"],
-                ) != (
-                    token.sequence, token.attempt, token.owner_id,
-                    token.owner_epoch, invocation_holder_id,
+                )
+                != (
+                    token.sequence,
+                    token.attempt,
+                    token.owner_id,
+                    token.owner_epoch,
+                    invocation_holder_id,
                 )
             ):
                 raise StreamProtocolError("completion lacks exact invocation holder")
@@ -846,18 +900,20 @@ class DurableStream:
                 _hit(fault, "completion:after_output_insert_before_marker")
             if fail_before_progress:
                 raise RuntimeError("injected crash before yield/return progress")
-            manifest = None if output_envelope is None else {
-                "channel": output_envelope.channel_id,
-                "partition": output_envelope.partition_id,
-                "sequence": output_envelope.sequence,
-                "record_id": output_envelope.record_id,
-                "payload": output_envelope.payload_ref.__dict__,
-                "lineage": output_envelope.lineage_digest,
-                "producer_epoch": output_envelope.producer_epoch,
-            }
-            manifest_json = json.dumps(
-                manifest, sort_keys=True, separators=(",", ":")
+            manifest = (
+                None
+                if output_envelope is None
+                else {
+                    "channel": output_envelope.channel_id,
+                    "partition": output_envelope.partition_id,
+                    "sequence": output_envelope.sequence,
+                    "record_id": output_envelope.record_id,
+                    "payload": output_envelope.payload_ref.__dict__,
+                    "lineage": output_envelope.lineage_digest,
+                    "producer_epoch": output_envelope.producer_epoch,
+                }
             )
+            manifest_json = json.dumps(manifest, sort_keys=True, separators=(",", ":"))
             manifest_digest = _digest(manifest)
             self.connection.execute(
                 """INSERT INTO turn_completions VALUES (
@@ -938,4 +994,3 @@ class DurableStream:
             (channel_id, partition_id),
         ).fetchall()
         return [self._row_to_envelope(row) for row in rows]
-

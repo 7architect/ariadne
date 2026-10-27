@@ -1,6 +1,6 @@
 """Runtime adapter for CHECKPOINT_MANAGED_SHARED state.
 
-Partition-local state continues to use ``PostgresGeneratorRuntime``.  This
+Partition-local state continues to use `PostgresGeneratorRuntime`.  This
 adapter is deliberately separate: it snapshots shared/multi-input state only
 against a coordinator-authored barrier vector and restores only a frozen
 recovery plan.
@@ -66,8 +66,11 @@ class PostgresCheckpointRuntime:
 
     def _common(self) -> tuple[str, str, str, str, int]:
         return (
-            self.revision_id, self.graph_version, self.graph_digest,
-            self.owner_id, self.owner_epoch,
+            self.revision_id,
+            self.graph_version,
+            self.graph_digest,
+            self.owner_id,
+            self.owner_epoch,
         )
 
     async def snapshot_aligned_checkpoint(
@@ -80,16 +83,19 @@ class PostgresCheckpointRuntime:
     ) -> str:
         participant = next(
             (
-                item for item in self.coordinator_revision_participants
+                item
+                for item in self.coordinator_revision_participants
                 if item["participant_id"] == self.contract.participant_id
             ),
             None,
         )
         if participant is None or (
-            participant["state_schema"], participant["state_version"],
+            participant["state_schema"],
+            participant["state_version"],
             participant["code_digest"],
         ) != (
-            self.contract.state_schema, self.contract.state_version,
+            self.contract.state_schema,
+            self.contract.state_version,
             self.contract.code_digest,
         ):
             raise PostgresProtocolError("shared state contract is incompatible")
@@ -98,7 +104,10 @@ class PostgresCheckpointRuntime:
         except (TypeError, ValueError) as exc:
             raise PostgresProtocolError("shared state is not canonical JSON") from exc
         return await self.coordinator.acknowledge_participant(
-            *self._common(), checkpoint_id, self.contract.participant_id, frozen,
+            *self._common(),
+            checkpoint_id,
+            self.contract.participant_id,
+            frozen,
             mailbox_highwater=mailbox_highwater,
             state_version=self.contract.state_version,
             fault=fault,
@@ -106,7 +115,7 @@ class PostgresCheckpointRuntime:
 
     @property
     def coordinator_revision_participants(self) -> list[dict[str, Any]]:
-        # The immutable manifest is injected by ``bind`` so task code cannot
+        # The immutable manifest is injected by `bind` so task code cannot
         # substitute a participant or state contract at snapshot time.
         manifest = getattr(self, "_participant_manifest", None)
         if manifest is None:
@@ -120,7 +129,8 @@ class PostgresCheckpointRuntime:
                 self.revision_id,
             )
         if revision is None or (
-            revision["graph_version"], revision["graph_digest"]
+            revision["graph_version"],
+            revision["graph_digest"],
         ) != (self.graph_version, self.graph_digest):
             raise PostgresProtocolError("checkpoint runtime graph is incompatible")
         manifest = revision["participant_manifest"]
@@ -128,23 +138,27 @@ class PostgresCheckpointRuntime:
             manifest = json.loads(manifest)
         participant = next(
             (
-                item for item in manifest
+                item
+                for item in manifest
                 if item["participant_id"] == self.contract.participant_id
             ),
             None,
         )
         if participant is None or (
-            participant["state_schema"], participant["state_version"],
+            participant["state_schema"],
+            participant["state_version"],
             participant["code_digest"],
         ) != (
-            self.contract.state_schema, self.contract.state_version,
+            self.contract.state_schema,
+            self.contract.state_version,
             self.contract.code_digest,
         ):
             raise PostgresProtocolError("shared state contract is incompatible")
         object.__setattr__(self, "_participant_manifest", list(manifest))
 
     async def restore_frozen_plan(
-        self, plan: RecoveryPlan,
+        self,
+        plan: RecoveryPlan,
     ) -> RestoredSharedState:
         if plan.revision_id != self.revision_id:
             raise PostgresProtocolError("recovery plan revision is incompatible")
@@ -176,15 +190,22 @@ class PostgresCheckpointRuntime:
                 authority["revision_id"] != self.revision_id
                 or authority["checkpoint_status"] != "COMPLETED"
                 or authority["completion_authority_ordinal"]
-                    >= authority["fence_authority_ordinal"]
+                >= authority["fence_authority_ordinal"]
                 or authority["plan_digest"] != digest(plan_identity)
                 or (
-                    plan.checkpoint_id, plan.revision_id,
-                    plan.target_data_sequences, plan.participant_snapshots,
-                    plan.plan_digest, plan.status,
-                ) != (
-                    authority["checkpoint_id"], authority["revision_id"],
-                    targets, snapshots, authority["plan_digest"],
+                    plan.checkpoint_id,
+                    plan.revision_id,
+                    plan.target_data_sequences,
+                    plan.participant_snapshots,
+                    plan.plan_digest,
+                    plan.status,
+                )
+                != (
+                    authority["checkpoint_id"],
+                    authority["revision_id"],
+                    targets,
+                    snapshots,
+                    authority["plan_digest"],
                     authority["status"],
                 )
             ):
@@ -201,17 +222,21 @@ class PostgresCheckpointRuntime:
                 """SELECT state_schema,state_version,code_digest,snapshot_object_key
                    FROM participant_checkpoint_acks
                    WHERE checkpoint_id=$1 AND participant_id=$2""",
-                plan.checkpoint_id, self.contract.participant_id,
+                plan.checkpoint_id,
+                self.contract.participant_id,
             )
         if row is None or acknowledgement is None:
             raise PostgresProtocolError("recovery snapshot is unavailable")
         if (
-            acknowledgement["state_schema"], acknowledgement["state_version"],
+            acknowledgement["state_schema"],
+            acknowledgement["state_version"],
             acknowledgement["code_digest"],
             acknowledgement["snapshot_object_key"],
         ) != (
-            self.contract.state_schema, self.contract.state_version,
-            self.contract.code_digest, object_key,
+            self.contract.state_schema,
+            self.contract.state_version,
+            self.contract.code_digest,
+            object_key,
         ):
             raise PostgresProtocolError("recovery state contract is incompatible")
         payload = bytes(row["payload"])
@@ -220,7 +245,9 @@ class PostgresCheckpointRuntime:
             content_object_key(payload, row["schema_id"]),
             row["schema_id"],
         ) != (
-            row["payload_digest"], object_key, self.contract.state_schema,
+            row["payload_digest"],
+            object_key,
+            self.contract.state_schema,
         ):
             raise PostgresProtocolError("recovery snapshot identity is corrupted")
         return RestoredSharedState(

@@ -20,7 +20,6 @@ from durable_stream_v2 import (
 )
 from durable_stream_v2_crash_worker import EXIT_CODE
 
-
 SEQUENCE_200_MATRIX = {
     "observe_yield": ("observe:yield_before_completion",),
     "observe_return": ("observe:return_before_completion",),
@@ -85,18 +84,12 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
                         expected_outputs = (
                             (200 if committed else 199) if kind == "yield" else 0
                         )
-                        self.assertEqual(
-                            observation["output_count"], expected_outputs
-                        )
+                        self.assertEqual(observation["output_count"], expected_outputs)
 
-                        recovery = self.run_recovery(
-                            fixture, kind, expected_resume
-                        )
+                        recovery = self.run_recovery(fixture, kind, expected_resume)
                         self.assertEqual(recovery["received"], expected_resume)
                         after = self.run_oracle(fixture, expect_pass=True)
-                        self.assertEqual(
-                            after["resume_by_consumer"]["anna"], 201
-                        )
+                        self.assertEqual(after["resume_by_consumer"]["anna"], 201)
                         self.assertEqual(
                             after["observations"]["anna"]["output_count"],
                             200 if kind == "yield" else 0,
@@ -118,22 +111,21 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
                 self.assertEqual(report["staging_uploads"], expected_staging)
 
                 stream = DurableStream(root / "stream.sqlite")
-                ref = ObjectRef.for_payload(
-                    "uploaded-object", b"payload", "raw/v1"
-                )
+                ref = ObjectRef.for_payload("uploaded-object", b"payload", "raw/v1")
                 stream.claim_producer("check", "p0", "worker", 1)
                 with self.assertRaisesRegex(StreamProtocolError, "must be durable"):
                     stream.append(
-                        "check", "p0", "worker", 1,
-                        "invisible", ref, "orphan",
+                        "check",
+                        "p0",
+                        "worker",
+                        1,
+                        "invisible",
+                        ref,
+                        "orphan",
                     )
-                DurableObjectStore(root / "objects").upload(
-                    stream, ref, b"payload"
-                )
+                DurableObjectStore(root / "objects").upload(stream, ref, b"payload")
                 with self.assertRaisesRegex(StreamProtocolError, "bytes drift"):
-                    drifted = ObjectRef.for_payload(
-                        ref.key, b"divergent", "raw/v1"
-                    )
+                    drifted = ObjectRef.for_payload(ref.key, b"divergent", "raw/v1")
                     DurableObjectStore(root / "objects").upload(
                         stream, drifted, b"divergent"
                     )
@@ -214,8 +206,13 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
         stream.claim_producer("anna-output", "p0", "anna-runtime", 1)
         for sequence in range(1, 202):
             stream.append(
-                "petya", "p0", "petya-worker", 1,
-                f"document-{sequence}", input_ref, f"source:{sequence}",
+                "petya",
+                "p0",
+                "petya-worker",
+                1,
+                f"document-{sequence}",
+                input_ref,
+                f"source:{sequence}",
             )
         stream.create_consumer("anna", "petya", "p0")
         stream.claim_consumer("anna", "anna-worker", 1, lease_ttl=10)
@@ -226,7 +223,10 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             output = None
             if completion_kind is CompletionKind.YIELD:
                 output = PendingOutput(
-                    "anna-output", "p0", f"signed-{sequence}", output_ref,
+                    "anna-output",
+                    "p0",
+                    f"signed-{sequence}",
+                    output_ref,
                     f"petya:{sequence}",
                 )
             stream.complete(
@@ -247,12 +247,18 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             [
                 sys.executable,
                 "durable_stream_v2_crash_worker.py",
-                "--db", str(root / "stream.sqlite"),
-                "--objects", str(root / "objects"),
-                "--effect", str(root / "client-effect"),
-                "--scenario", scenario,
-                "--point", point,
-                "--sequence", "200",
+                "--db",
+                str(root / "stream.sqlite"),
+                "--objects",
+                str(root / "objects"),
+                "--effect",
+                str(root / "client-effect"),
+                "--scenario",
+                scenario,
+                "--point",
+                point,
+                "--sequence",
+                "200",
             ],
             cwd=Path(__file__).parent,
             check=False,
@@ -260,7 +266,8 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(
-            result.returncode, EXIT_CODE,
+            result.returncode,
+            EXIT_CODE,
             msg=f"stdout={result.stdout!r}\nstderr={result.stderr!r}",
         )
 
@@ -269,9 +276,12 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             [
                 sys.executable,
                 "durable_stream_v2_recovery_worker.py",
-                "--db", str(root / "stream.sqlite"),
-                "--resume", str(resume),
-                "--kind", kind,
+                "--db",
+                str(root / "stream.sqlite"),
+                "--resume",
+                str(resume),
+                "--kind",
+                kind,
             ],
             cwd=Path(__file__).parent,
             check=False,
@@ -279,7 +289,8 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(
-            result.returncode, 0,
+            result.returncode,
+            0,
             msg=f"stdout={result.stdout!r}\nstderr={result.stderr!r}",
         )
         return json.loads(result.stdout)
@@ -289,9 +300,12 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             [
                 sys.executable,
                 "durable_stream_v2_oracle.py",
-                "--db", str(root / "stream.sqlite"),
-                "--objects", str(root / "objects"),
-                "--manifest", str(root / "manifest.json"),
+                "--db",
+                str(root / "stream.sqlite"),
+                "--objects",
+                str(root / "objects"),
+                "--manifest",
+                str(root / "manifest.json"),
             ],
             cwd=Path(__file__).parent,
             check=False,
@@ -299,7 +313,8 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(
-            result.returncode, 0 if expect_pass else 2,
+            result.returncode,
+            0 if expect_pass else 2,
             msg=f"stdout={result.stdout!r}\nstderr={result.stderr!r}",
         )
         report = json.loads(result.stdout)
@@ -333,19 +348,20 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
                 unknown["consumer_id"] = "ghost"
                 manifest["consumers"].append(unknown)
             else:
-                manifest["consumers"].append(
-                    dict(manifest["consumers"][0])
-                )
+                manifest["consumers"].append(dict(manifest["consumers"][0]))
             manifest_path.write_text(json.dumps(manifest, sort_keys=True))
             return
         stream = DurableStream(database)
         if name == "partial_output":
-            output_ref = ObjectRef.for_payload(
-                "output-1", b"signed-1", "signed/v1"
-            )
+            output_ref = ObjectRef.for_payload("output-1", b"signed-1", "signed/v1")
             stream.append(
-                "anna-output", "p0", "anna-runtime", 1,
-                "signed-200", output_ref, "petya:200",
+                "anna-output",
+                "p0",
+                "anna-runtime",
+                1,
+                "signed-200",
+                output_ref,
+                "petya:200",
             )
             stream.close()
             return
@@ -458,8 +474,7 @@ class DurableStreamV2R0GateTests(unittest.TestCase):
                 (input_sequence,),
             ).fetchone()
             columns = [
-                item[1]
-                for item in connection.execute("PRAGMA table_info(records)")
+                item[1] for item in connection.execute("PRAGMA table_info(records)")
             ]
             row = dict(zip(columns, output, strict=True))
             manifest = {

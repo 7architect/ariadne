@@ -10,14 +10,12 @@ import uuid
 from pathlib import Path
 
 import asyncpg
-
 from postgres_barrier_coordinator import PostgresBarrierCoordinator
 from postgres_checkpoint_runtime import (
     PostgresCheckpointRuntime,
     SharedStateContract,
 )
 from postgres_stream_v2 import PostgresProtocolError, PostgresStream, StaleOwner
-
 
 DSN = os.environ.get(
     "ARIADNE_STREAM_DSN",
@@ -47,23 +45,29 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             "output", "p0", max_records=500, max_bytes=1_000_000
         )
         self.coordinator = await PostgresBarrierCoordinator.install(self.stream)
-        max_retained = 1 if self._testMethodName == "test_checkpoint_budget_is_public_and_hard" else 100
+        max_retained = (
+            1
+            if self._testMethodName == "test_checkpoint_budget_is_public_and_hard"
+            else 100
+        )
         self.revision = await self.coordinator.register_revision(
             revision_id="revision-1",
             deployment_id="deployment-1",
             graph_version="graph-v1",
             sources=[("input", "left"), ("input", "right")],
-            participants=[{
-                "participant_id": "join",
-                "inputs": [
-                    {"channel": "input", "partition": "left"},
-                    {"channel": "input", "partition": "right"},
-                ],
-                "outputs": [{"channel": "output", "partition": "p0"}],
-                "code_digest": "join-code-v1",
-                "state_schema": "join-state/v1",
-                "state_version": 1,
-            }],
+            participants=[
+                {
+                    "participant_id": "join",
+                    "inputs": [
+                        {"channel": "input", "partition": "left"},
+                        {"channel": "input", "partition": "right"},
+                    ],
+                    "outputs": [{"channel": "output", "partition": "p0"}],
+                    "code_digest": "join-code-v1",
+                    "state_schema": "join-state/v1",
+                    "state_version": 1,
+                }
+            ],
             code_manifest_digest="code-manifest-v1",
             state_contract_digest="state-contract-v1",
             max_inflight_checkpoints=4,
@@ -84,9 +88,7 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             graph_digest=self.revision.graph_digest,
             owner_id=self.owner,
             owner_epoch=self.epoch,
-            contract=SharedStateContract(
-                "join", "join-state/v1", 1, "join-code-v1"
-            ),
+            contract=SharedStateContract("join", "join-state/v1", 1, "join-code-v1"),
         )
         await self.checkpoint_runtime.bind()
         for partition in ("left", "right"):
@@ -104,9 +106,13 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
 
     async def _append(self, partition: str, number: int) -> None:
         await self.stream.append(
-            f"attempt-{partition}-{number}", "input", partition,
-            f"record-{partition}-{number}", f"object-{partition}-{number}",
-            f"payload-{partition}-{number}".encode(), "bytes/v1",
+            f"attempt-{partition}-{number}",
+            "input",
+            partition,
+            f"record-{partition}-{number}",
+            f"object-{partition}-{number}",
+            f"payload-{partition}-{number}".encode(),
+            "bytes/v1",
             f"lineage-{partition}-{number}",
         )
 
@@ -129,26 +135,34 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             deployment_id=f"deployment-{label}",
             graph_version="graph-v1",
             sources=[(channel, "p0")],
-            participants=[{
-                "participant_id": "worker",
-                "inputs": [{"channel": channel, "partition": "p0"}],
-                "outputs": [],
-                "code_digest": "worker-code-v1",
-                "state_schema": "worker-state/v1",
-                "state_version": 1,
-            }],
+            participants=[
+                {
+                    "participant_id": "worker",
+                    "inputs": [{"channel": channel, "partition": "p0"}],
+                    "outputs": [],
+                    "code_digest": "worker-code-v1",
+                    "state_schema": "worker-state/v1",
+                    "state_version": 1,
+                }
+            ],
             code_manifest_digest="code-manifest-v1",
             state_contract_digest="state-contract-v1",
             **budgets,
         )
         owner = f"owner-{label}"
         epoch = await self.coordinator.claim_coordinator(
-            revision.revision_id, revision.graph_version,
-            revision.graph_digest, owner, lease_seconds=300,
+            revision.revision_id,
+            revision.graph_version,
+            revision.graph_digest,
+            owner,
+            lease_seconds=300,
         )
         return revision, (
-            revision.revision_id, revision.graph_version,
-            revision.graph_digest, owner, epoch,
+            revision.revision_id,
+            revision.graph_version,
+            revision.graph_digest,
+            owner,
+            epoch,
         )
 
     async def _aligned(self, request_id: str):
@@ -164,7 +178,9 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
     async def _completed(self, request_id: str):
         checkpoint = await self._aligned(request_id)
         await self.checkpoint_runtime.snapshot_aligned_checkpoint(
-            checkpoint.checkpoint_id, {"count": 2}, mailbox_highwater=2,
+            checkpoint.checkpoint_id,
+            {"count": 2},
+            mailbox_highwater=2,
         )
         await self.coordinator.complete_checkpoint(
             *self._common(), checkpoint.checkpoint_id
@@ -175,7 +191,10 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         return await asyncio.to_thread(
             subprocess.run,
             [sys.executable, str(ORACLE), DSN, self.schema],
-            cwd=HERE, text=True, capture_output=True, check=False,
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
 
     async def test_data_and_barrier_share_one_serial_order(self) -> None:
@@ -200,7 +219,8 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             )
             barrier = next(row for row in log if row["entry_kind"] == "BARRIER")
             preceding = [
-                row["data_sequence"] for row in log
+                row["data_sequence"]
+                for row in log
                 if row["entry_kind"] == "DATA"
                 and row["log_sequence"] < barrier["log_sequence"]
             ]
@@ -211,7 +231,10 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         data_oracle = await asyncio.to_thread(
             subprocess.run,
             [sys.executable, str(DATA_ORACLE), DSN, self.schema],
-            cwd=HERE, text=True, capture_output=True, check=False,
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(
             data_oracle.returncode, 0, data_oracle.stdout + data_oracle.stderr
@@ -249,16 +272,28 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         # The participant's output barrier is inserted through the same
         # ordered namespace after all output DATA already made durable.
         await self.stream.append(
-            "attempt-output-1", "output", "p0", "record-output-1",
-            "object-output-1", b"payload-output-1", "bytes/v1",
+            "attempt-output-1",
+            "output",
+            "p0",
+            "record-output-1",
+            "object-output-1",
+            b"payload-output-1",
+            "bytes/v1",
             "lineage-output-1",
         )
         await self.checkpoint_runtime.snapshot_aligned_checkpoint(
-            checkpoint.checkpoint_id, {"count": 2}, mailbox_highwater=2,
+            checkpoint.checkpoint_id,
+            {"count": 2},
+            mailbox_highwater=2,
         )
         await self.stream.append(
-            "attempt-output-2", "output", "p0", "record-output-2",
-            "object-output-2", b"payload-output-2", "bytes/v1",
+            "attempt-output-2",
+            "output",
+            "p0",
+            "record-output-2",
+            "object-output-2",
+            b"payload-output-2",
+            "bytes/v1",
             "lineage-output-2",
         )
         output_log = await self.coordinator.ordered_log("output", "p0")
@@ -291,8 +326,11 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         )
         with self.assertRaises(StaleOwner):
             await self.coordinator.claim_coordinator(
-                self.revision.revision_id, self.revision.graph_version,
-                self.revision.graph_digest, "coordinator-b", lease_seconds=30,
+                self.revision.revision_id,
+                self.revision.graph_version,
+                self.revision.graph_digest,
+                "coordinator-b",
+                lease_seconds=30,
             )
         await self.coordinator.renew_coordinator(
             self.revision.revision_id, self.owner, self.epoch, lease_seconds=0.05
@@ -300,33 +338,46 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         async with self.stream.pool.acquire() as conn:
             await conn.execute("SELECT pg_sleep(0.08)")
         new_epoch = await self.coordinator.claim_coordinator(
-            self.revision.revision_id, self.revision.graph_version,
-            self.revision.graph_digest, "coordinator-b", lease_seconds=30,
+            self.revision.revision_id,
+            self.revision.graph_version,
+            self.revision.graph_digest,
+            "coordinator-b",
+            lease_seconds=30,
         )
         with self.assertRaises(StaleOwner):
             await self.coordinator.inject_source_barrier(
                 *self._common(), checkpoint.checkpoint_id, "input", "right"
             )
         new_common = (
-            self.revision.revision_id, self.revision.graph_version,
-            self.revision.graph_digest, "coordinator-b", new_epoch,
+            self.revision.revision_id,
+            self.revision.graph_version,
+            self.revision.graph_digest,
+            "coordinator-b",
+            new_epoch,
         )
         await self.coordinator.inject_source_barrier(
             *new_common, checkpoint.checkpoint_id, "input", "right"
         )
         await self.coordinator.acknowledge_participant(
-            *new_common, checkpoint.checkpoint_id, "join", {"count": 2},
-            mailbox_highwater=2, state_version=1,
+            *new_common,
+            checkpoint.checkpoint_id,
+            "join",
+            {"count": 2},
+            mailbox_highwater=2,
+            state_version=1,
         )
         await self.coordinator.complete_checkpoint(
             *new_common, checkpoint.checkpoint_id
         )
         self.owner, self.epoch = "coordinator-b", new_epoch
         self.assertEqual(
-            (await self.coordinator.latest_completed(
-                self.revision.revision_id, self.revision.graph_version,
-                self.revision.graph_digest,
-            )).checkpoint_id,
+            (
+                await self.coordinator.latest_completed(
+                    self.revision.revision_id,
+                    self.revision.graph_version,
+                    self.revision.graph_digest,
+                )
+            ).checkpoint_id,
             checkpoint.checkpoint_id,
         )
         with self.assertRaisesRegex(PostgresProtocolError, "graph identity drift"):
@@ -354,10 +405,12 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         compacted = await self.stream.compact("input", "left", 2)
         self.assertEqual(compacted["safe_through"], 1)
         async with self.stream.pool.acquire() as conn:
-            self.assertTrue(await conn.fetchval(
-                """SELECT EXISTS(SELECT 1 FROM records
+            self.assertTrue(
+                await conn.fetchval(
+                    """SELECT EXISTS(SELECT 1 FROM records
                    WHERE channel='input' AND partition_id='left' AND sequence=2)"""
-            ))
+                )
+            )
         ready = await self.coordinator.finish_recovery(
             *self._common(), plan.recovery_id
         )
@@ -367,20 +420,33 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_ordered_log_has_a_hard_accounted_capacity(self) -> None:
         await self.stream.create_partition(
-            "bounded-log", "p0", max_records=10, max_bytes=10_000,
+            "bounded-log",
+            "p0",
+            max_records=10,
+            max_bytes=10_000,
             max_metadata_records=100,
         )
-        await self.coordinator.configure_ordered_log_capacity(
-            "bounded-log", "p0", 1
-        )
+        await self.coordinator.configure_ordered_log_capacity("bounded-log", "p0", 1)
         await self.stream.append(
-            "bounded-log-1", "bounded-log", "p0", "bounded-record-1",
-            "bounded-object-1", b"one", "bytes/v1", "bounded-lineage-1",
+            "bounded-log-1",
+            "bounded-log",
+            "p0",
+            "bounded-record-1",
+            "bounded-object-1",
+            b"one",
+            "bytes/v1",
+            "bounded-lineage-1",
         )
         with self.assertRaisesRegex(asyncpg.PostgresError, "metadata budget"):
             await self.stream.append(
-                "bounded-log-2", "bounded-log", "p0", "bounded-record-2",
-                "bounded-object-2", b"two", "bytes/v1", "bounded-lineage-2",
+                "bounded-log-2",
+                "bounded-log",
+                "p0",
+                "bounded-record-2",
+                "bounded-object-2",
+                b"two",
+                "bytes/v1",
+                "bounded-lineage-2",
             )
         async with self.stream.pool.acquire() as conn:
             head = await conn.fetchrow(
@@ -418,22 +484,23 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(report.returncode, 2, report.stdout + report.stderr)
         parsed = json.loads(report.stdout)
         self.assertFalse(parsed["passed"])
-        self.assertTrue(any(
-            item.startswith("participant_missing_input:")
-            for item in parsed["violations"]
-        ))
+        self.assertTrue(
+            any(
+                item.startswith("participant_missing_input:")
+                for item in parsed["violations"]
+            )
+        )
 
     async def test_complete_only_selection_and_frozen_recovery_plan(self) -> None:
         first = await self._completed("first-complete")
         second = await self._aligned("second-incomplete")
         latest = await self.coordinator.latest_completed(
-            self.revision.revision_id, self.revision.graph_version,
+            self.revision.revision_id,
+            self.revision.graph_version,
             self.revision.graph_digest,
         )
         self.assertEqual(latest.checkpoint_id, first.checkpoint_id)
-        plan = await self.coordinator.begin_recovery(
-            *self._common(), "recovery-one"
-        )
+        plan = await self.coordinator.begin_recovery(*self._common(), "recovery-one")
         self.assertEqual(plan.checkpoint_id, first.checkpoint_id)
         restored = await self.checkpoint_runtime.restore_frozen_plan(plan)
         self.assertEqual(restored.state, {"count": 2})
@@ -458,13 +525,9 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             graph_digest=self.revision.graph_digest,
             owner_id=self.owner,
             owner_epoch=self.epoch,
-            contract=SharedStateContract(
-                "join", "join-state/v1", 2, "join-code-v1"
-            ),
+            contract=SharedStateContract("join", "join-state/v1", 2, "join-code-v1"),
         )
-        with self.assertRaisesRegex(
-            PostgresProtocolError, "contract is incompatible"
-        ):
+        with self.assertRaisesRegex(PostgresProtocolError, "contract is incompatible"):
             await incompatible_version.bind()
         forged_plan = type(plan)(
             recovery_id="recovery:forged-without-row",
@@ -478,15 +541,17 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(PostgresProtocolError, "no durable authority"):
             await self.checkpoint_runtime.restore_frozen_plan(forged_plan)
         await self.coordinator.acknowledge_participant(
-            *self._common(), second.checkpoint_id, "join", {"count": 2},
-            mailbox_highwater=2, state_version=1,
+            *self._common(),
+            second.checkpoint_id,
+            "join",
+            {"count": 2},
+            mailbox_highwater=2,
+            state_version=1,
         )
         await self.coordinator.complete_checkpoint(
             *self._common(), second.checkpoint_id
         )
-        retry = await self.coordinator.begin_recovery(
-            *self._common(), "recovery-one"
-        )
+        retry = await self.coordinator.begin_recovery(*self._common(), "recovery-one")
         self.assertEqual(retry.plan_digest, plan.plan_digest)
         self.assertEqual(retry.checkpoint_id, first.checkpoint_id)
         ready = await self.coordinator.finish_recovery(
@@ -504,19 +569,28 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         checkpoint = await self._completed("immutable")
         with self.assertRaisesRegex(PostgresProtocolError, "state version"):
             await self.coordinator.acknowledge_participant(
-                *self._common(), checkpoint.checkpoint_id, "join", {"count": 2},
-                mailbox_highwater=2, state_version=999,
+                *self._common(),
+                checkpoint.checkpoint_id,
+                "join",
+                {"count": 2},
+                mailbox_highwater=2,
+                state_version=999,
             )
         with self.assertRaisesRegex(PostgresProtocolError, "acknowledgement drift"):
             await self.coordinator.acknowledge_participant(
-                *self._common(), checkpoint.checkpoint_id, "join", {"count": 999},
-                mailbox_highwater=2, state_version=1,
+                *self._common(),
+                checkpoint.checkpoint_id,
+                "join",
+                {"count": 999},
+                mailbox_highwater=2,
+                state_version=1,
             )
         async with self.stream.pool.acquire() as conn:
             with self.assertRaises(asyncpg.PostgresError):
                 await conn.execute(
                     "UPDATE checkpoint_intents_v2 SET graph_digest='forged' "
-                    "WHERE checkpoint_id=$1", checkpoint.checkpoint_id,
+                    "WHERE checkpoint_id=$1",
+                    checkpoint.checkpoint_id,
                 )
             await conn.execute(
                 "ALTER TABLE checkpoint_lifecycle_v2 DISABLE TRIGGER "
@@ -541,7 +615,8 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
                     """UPDATE checkpoint_completions_v2
                        SET completion_authority_ordinal=$2,writer_epoch=999
                        WHERE checkpoint_id=$1""",
-                    checkpoint.checkpoint_id, intent_ordinal,
+                    checkpoint.checkpoint_id,
+                    intent_ordinal,
                 )
             await conn.execute(
                 """ALTER TABLE checkpoint_completions_v2 DISABLE TRIGGER
@@ -551,11 +626,13 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
                 """UPDATE checkpoint_completions_v2
                    SET completion_authority_ordinal=$2,writer_epoch=999
                    WHERE checkpoint_id=$1""",
-                checkpoint.checkpoint_id, intent_ordinal,
+                checkpoint.checkpoint_id,
+                intent_ordinal,
             )
         authority_report = await self._oracle()
         self.assertEqual(
-            authority_report.returncode, 2,
+            authority_report.returncode,
+            2,
             authority_report.stdout + authority_report.stderr,
         )
         self.assertIn(
@@ -568,7 +645,8 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
                    SET completion_authority_ordinal=$2,writer_epoch=$3
                    WHERE checkpoint_id=$1""",
                 checkpoint.checkpoint_id,
-                original["completion_authority_ordinal"], original["writer_epoch"],
+                original["completion_authority_ordinal"],
+                original["writer_epoch"],
             )
             await conn.execute(
                 """ALTER TABLE checkpoint_completions_v2 ENABLE TRIGGER
@@ -589,15 +667,11 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         report = await self._oracle()
         self.assertEqual(report.returncode, 2, report.stdout + report.stderr)
         violations = json.loads(report.stdout)["violations"]
-        self.assertIn(
-            f"completion_projection:{checkpoint.checkpoint_id}", violations
-        )
+        self.assertIn(f"completion_projection:{checkpoint.checkpoint_id}", violations)
 
     async def test_checkpoint_budget_is_public_and_hard(self) -> None:
         await self._completed("only-retained-slot")
-        pressure = await self.coordinator.checkpoint_pressure(
-            self.revision.revision_id
-        )
+        pressure = await self.coordinator.checkpoint_pressure(self.revision.revision_id)
         self.assertIn("retained_checkpoints", pressure["binding_dimensions"])
         with self.assertRaisesRegex(PostgresProtocolError, "retention budget"):
             await self.coordinator.start_checkpoint(
@@ -605,14 +679,16 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             )
 
         _, inflight_common = await self._budget_revision(
-            "inflight", max_inflight_checkpoints=1,
+            "inflight",
+            max_inflight_checkpoints=1,
         )
         await self.coordinator.start_checkpoint(*inflight_common, "inflight-1")
         with self.assertRaisesRegex(PostgresProtocolError, "inflight budget"):
             await self.coordinator.start_checkpoint(*inflight_common, "inflight-2")
 
         metadata_revision, metadata_common = await self._budget_revision(
-            "metadata", max_checkpoint_metadata_bytes=1000,
+            "metadata",
+            max_checkpoint_metadata_bytes=1000,
         )
         with self.assertRaisesRegex(PostgresProtocolError, "metadata-byte budget"):
             await self.coordinator.start_checkpoint(*metadata_common, "metadata-1")
@@ -625,7 +701,8 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         )
 
         age_revision, age_common = await self._budget_revision(
-            "age", max_checkpoint_age_seconds=0.01,
+            "age",
+            max_checkpoint_age_seconds=0.01,
         )
         await self.coordinator.start_checkpoint(*age_common, "age-1")
         async with self.stream.pool.acquire() as conn:
@@ -638,21 +715,35 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             await self.coordinator.start_checkpoint(*age_common, "age-2")
 
         _, event_common = await self._budget_revision(
-            "events", max_authority_events=1,
+            "events",
+            max_authority_events=1,
         )
         with self.assertRaisesRegex(PostgresProtocolError, "authority-event budget"):
             await self.coordinator.start_checkpoint(*event_common, "event-1")
 
     async def test_real_process_crash_matrix_exact_retry(self) -> None:
-        def crash(operation: str, identity: str, point: str) -> subprocess.CompletedProcess[str]:
+        def crash(
+            operation: str, identity: str, point: str
+        ) -> subprocess.CompletedProcess[str]:
             return subprocess.run(
                 [
-                    sys.executable, str(CRASH_WORKER), DSN, self.schema,
-                    self.revision.revision_id, self.revision.graph_version,
-                    self.revision.graph_digest, self.owner, str(self.epoch),
-                    operation, identity, point,
+                    sys.executable,
+                    str(CRASH_WORKER),
+                    DSN,
+                    self.schema,
+                    self.revision.revision_id,
+                    self.revision.graph_version,
+                    self.revision.graph_digest,
+                    self.owner,
+                    str(self.epoch),
+                    operation,
+                    identity,
+                    point,
                 ],
-                cwd=HERE, text=True, capture_output=True, check=False,
+                cwd=HERE,
+                text=True,
+                capture_output=True,
+                check=False,
             )
 
         for point in ("intent_before_commit", "intent_after_commit"):
@@ -667,7 +758,8 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             )
 
         for point in (
-            "barrier_after_partition_lock", "barrier_before_commit",
+            "barrier_after_partition_lock",
+            "barrier_before_commit",
             "barrier_after_commit",
         ):
             checkpoint = await self.coordinator.start_checkpoint(
@@ -694,8 +786,12 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertEqual(result.returncode, 86, result.stdout + result.stderr)
             await self.coordinator.acknowledge_participant(
-                *self._common(), checkpoint.checkpoint_id, "join", {"count": 2},
-                mailbox_highwater=2, state_version=1,
+                *self._common(),
+                checkpoint.checkpoint_id,
+                "join",
+                {"count": 2},
+                mailbox_highwater=2,
+                state_version=1,
             )
             await self.coordinator.abort_checkpoint(
                 *self._common(), checkpoint.checkpoint_id, "matrix cleanup"
@@ -703,13 +799,18 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
 
         last_completed = None
         for point in (
-            "complete_after_validation", "complete_before_commit",
+            "complete_after_validation",
+            "complete_before_commit",
             "complete_after_commit",
         ):
             checkpoint = await self._aligned(f"crash-{point}")
             await self.coordinator.acknowledge_participant(
-                *self._common(), checkpoint.checkpoint_id, "join", {"count": 2},
-                mailbox_highwater=2, state_version=1,
+                *self._common(),
+                checkpoint.checkpoint_id,
+                "join",
+                {"count": 2},
+                mailbox_highwater=2,
+                state_version=1,
             )
             result = await asyncio.to_thread(
                 crash, "complete", checkpoint.checkpoint_id, point
@@ -723,16 +824,10 @@ class PostgresBarrierCoordinatorTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNotNone(last_completed)
         for point in ("recovery_plan_before_commit", "recovery_plan_after_commit"):
             request_id = f"crash-{point}"
-            result = await asyncio.to_thread(
-                crash, "recovery_plan", request_id, point
-            )
+            result = await asyncio.to_thread(crash, "recovery_plan", request_id, point)
             self.assertEqual(result.returncode, 86, result.stdout + result.stderr)
-            plan = await self.coordinator.begin_recovery(
-                *self._common(), request_id
-            )
-            await self.coordinator.finish_recovery(
-                *self._common(), plan.recovery_id
-            )
+            plan = await self.coordinator.begin_recovery(*self._common(), request_id)
+            await self.coordinator.finish_recovery(*self._common(), plan.recovery_id)
 
         plan = await self.coordinator.begin_recovery(
             *self._common(), "crash-ready-plan"

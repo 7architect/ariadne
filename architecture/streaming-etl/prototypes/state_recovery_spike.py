@@ -55,8 +55,7 @@ def required_state_class(requirements: StateRequirements) -> StateClass:
             not isinstance(input_id, str) or not input_id
             for input_id in requirements.input_bindings
         )
-        or len(set(requirements.input_bindings))
-        != len(requirements.input_bindings)
+        or len(set(requirements.input_bindings)) != len(requirements.input_bindings)
     ):
         raise StateRecoveryError(
             "managed state requires nonempty unique input bindings"
@@ -71,14 +70,15 @@ def required_state_class(requirements: StateRequirements) -> StateClass:
         and not requirements.has_timers_or_watermarks
     ):
         return StateClass.PARTITION_LOCAL_PER_TURN
-    if len(requirements.input_bindings) > 1 and not requirements.persisted_mailbox_order:
+    if (
+        len(requirements.input_bindings) > 1
+        and not requirements.persisted_mailbox_order
+    ):
         raise StateRecoveryError("multi-input state requires persisted mailbox order")
     return StateClass.CHECKPOINT_MANAGED_SHARED
 
 
-def validate_contract(
-    contract: StateContract, requirements: StateRequirements
-) -> None:
+def validate_contract(contract: StateContract, requirements: StateRequirements) -> None:
     required = required_state_class(requirements)
     if contract.state_class is not required:
         raise StateRecoveryError(
@@ -528,9 +528,7 @@ class StateRecoveryStore:
                 "authorization_ordinal": authorization_ordinal,
                 "inputs": sorted(cuts),
                 "cuts": cuts,
-                "snapshot_digest": hashlib.sha256(
-                    snapshot_state.encode()
-                ).hexdigest(),
+                "snapshot_digest": hashlib.sha256(snapshot_state.encode()).hexdigest(),
                 "state_schema": state_schema,
                 "code_version": code_version,
             }
@@ -580,9 +578,7 @@ class StateRecoveryStore:
             (checkpoint, intent_digest, completion_ordinal),
         )
 
-    def _append_authority_event(
-        self, event_type: str, checkpoint: int | None
-    ) -> int:
+    def _append_authority_event(self, event_type: str, checkpoint: int | None) -> int:
         ordinal = int(
             self.connection.execute(
                 "SELECT COALESCE(MAX(ordinal), 0) + 1 FROM authority_log"
@@ -604,8 +600,7 @@ class StateRecoveryStore:
             if intent is None:
                 raise StateRecoveryError("checkpoint intent missing")
             existing = self.connection.execute(
-                "SELECT intent_digest FROM checkpoint_completions "
-                "WHERE checkpoint = ?",
+                "SELECT intent_digest FROM checkpoint_completions WHERE checkpoint = ?",
                 (checkpoint,),
             ).fetchone()
             if existing is not None:

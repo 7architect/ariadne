@@ -11,7 +11,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Iterator
 
-
 FaultHook = Callable[[str], None] | None
 
 
@@ -902,9 +901,7 @@ class ComposedDurableStream:
         )
         hit(fault, "align:after_unblock_before_commit")
 
-    def complete_checkpoint(
-        self, checkpoint: int, *, fault: FaultHook = None
-    ) -> None:
+    def complete_checkpoint(self, checkpoint: int, *, fault: FaultHook = None) -> None:
         with self._write():
             if self.connection.execute("SELECT 1 FROM recovery_fence").fetchone():
                 raise ComposedProtocolError("completion after recovery fence")
@@ -925,12 +922,16 @@ class ComposedDurableStream:
 
     def begin_recovery(self, *, fault: FaultHook = None) -> int:
         with self._write():
-            row = self.connection.execute("SELECT authority_ordinal FROM recovery_fence").fetchone()
+            row = self.connection.execute(
+                "SELECT authority_ordinal FROM recovery_fence"
+            ).fetchone()
             if row is not None:
                 return row[0]
             ordinal = self._append_authority("RECOVERY_FENCE", None)
             hit(fault, "fence:after_authority_before_fence")
-            self.connection.execute("INSERT INTO recovery_fence VALUES (1, ?)", (ordinal,))
+            self.connection.execute(
+                "INSERT INTO recovery_fence VALUES (1, ?)", (ordinal,)
+            )
             hit(fault, "fence:after_insert_before_commit")
             return ordinal
 
@@ -1032,8 +1033,7 @@ class ComposedDurableStream:
                     or observation is None
                     or observation["log_sequence"] != barrier["log_sequence"]
                     or observation["cut_data_sequence"] != cut["data"]
-                    or observation["intent_digest"]
-                    != snapshot["authoritative_digest"]
+                    or observation["intent_digest"] != snapshot["authoritative_digest"]
                 ):
                     raise ComposedProtocolError("snapshot barrier authority mismatch")
 
@@ -1132,12 +1132,10 @@ class ComposedDurableStream:
                     raise ComposedProtocolError("recovery cursor does not match turns")
 
             if recovered_state != durable_live_state:
-                raise ComposedProtocolError("recovered state differs from durable state")
-            replayed_through = (
-                tail[-1]["apply_ordinal"]
-                if tail
-                else highwater
-            )
+                raise ComposedProtocolError(
+                    "recovered state differs from durable state"
+                )
+            replayed_through = tail[-1]["apply_ordinal"] if tail else highwater
             self.connection.execute(
                 "UPDATE recovery_runs SET phase = 'READY', recovered_state = ?, "
                 "replayed_through_ordinal = ? WHERE generation = ?",
@@ -1190,9 +1188,12 @@ class ComposedDurableStream:
         }
 
     def outputs(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM output_events ORDER BY output_ordinal"
-        )]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM output_events ORDER BY output_ordinal"
+            )
+        ]
 
     @staticmethod
     def _recovery_report(row: sqlite3.Row) -> dict[str, Any]:
@@ -1251,7 +1252,8 @@ class ComposedDurableStream:
         )
 
     def _next(self, table: str, column: str) -> int:
-        return int(self.connection.execute(
-            f"SELECT COALESCE(MAX({column}), 0) + 1 FROM {table}"
-        ).fetchone()[0])
-
+        return int(
+            self.connection.execute(
+                f"SELECT COALESCE(MAX({column}), 0) + 1 FROM {table}"
+            ).fetchone()[0]
+        )

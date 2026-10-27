@@ -7,12 +7,11 @@ import subprocess
 import sys
 import threading
 import time
-import uuid
 import unittest
+import uuid
 from pathlib import Path
 
 import asyncpg
-
 from postgres_generator_runtime import (
     OutputSpec,
     PostgresGeneratorRuntime,
@@ -20,7 +19,6 @@ from postgres_generator_runtime import (
     stream_task,
 )
 from postgres_stream_v2 import PostgresProtocolError, PostgresStream
-
 
 DSN = os.environ.get(
     "ARIADNE_STREAM_DSN",
@@ -34,8 +32,11 @@ ORACLE = HERE / "postgres_stream_oracle.py"
 class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
     def assert_independent_oracle(self, schema: str) -> None:
         result = subprocess.run(
-            [sys.executable, str(ORACLE), DSN, schema], cwd=HERE,
-            text=True, capture_output=True, check=False,
+            [sys.executable, str(ORACLE), DSN, schema],
+            cwd=HERE,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
@@ -48,8 +49,12 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             await probe.close()
         self.schema = "ds020_" + uuid.uuid4().hex[:12]
         self.store = await PostgresStream.open(DSN, self.schema)
-        await self.store.create_partition("input", "p0", max_records=100, max_bytes=1_000_000)
-        await self.store.create_partition("output", "p0", max_records=100, max_bytes=1_000_000)
+        await self.store.create_partition(
+            "input", "p0", max_records=100, max_bytes=1_000_000
+        )
+        await self.store.create_partition(
+            "output", "p0", max_records=100, max_bytes=1_000_000
+        )
 
     async def asyncTearDown(self) -> None:
         if not hasattr(self, "store"):
@@ -65,8 +70,13 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         await self.store.append_batch(
             [
                 (
-                    f"input-attempt-{n}", "input", "p0", f"input-record-{n}",
-                    f"input-object-{n}", f"document-{n}".encode(), "bytes/v1",
+                    f"input-attempt-{n}",
+                    "input",
+                    "p0",
+                    f"input-record-{n}",
+                    f"input-object-{n}",
+                    f"document-{n}".encode(),
+                    "bytes/v1",
                     f"source-{n}",
                 )
                 for n in range(1, count + 1)
@@ -97,7 +107,8 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         @stream_task
         def sync_task(ctx, envelope):
             yield OutputSpec(
-                b"signed-1", managed_state={"count": ctx.managed_state.get("count", 0) + 1}
+                b"signed-1",
+                managed_state={"count": ctx.managed_state.get("count", 0) + 1},
             )
 
         self.assertEqual(
@@ -144,13 +155,13 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             await runtime.run_async(
                 "reviewer", "anna", epoch, blocked, timeout_seconds=0.02
             )
-        with self.assertRaisesRegex(
-            RuntimeProtocolError, "worker-process supervision"
-        ):
+        with self.assertRaisesRegex(RuntimeProtocolError, "worker-process supervision"):
             await runtime.run_sync(
                 "reviewer", "anna", epoch, sync_task, timeout_seconds=0.02
             )
-        self.assertEqual((await self.store.position("reviewer"))["in_flight_sequence"], 3)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["in_flight_sequence"], 3
+        )
 
         @stream_task
         async def recovered(ctx, envelope):
@@ -165,7 +176,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         task.cancel()
         with self.assertRaises(asyncio.CancelledError):
             await task
-        self.assertEqual((await self.store.position("reviewer"))["in_flight_sequence"], 4)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["in_flight_sequence"], 4
+        )
 
         @stream_task
         def sync_return(ctx, envelope):
@@ -185,7 +198,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(
             await runtime.run_async("reviewer", "anna", epoch, async_return), "RETURN"
         )
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 5)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 5
+        )
         self.assertTrue((await self.store.invariant_report())["passed"])
         self.assert_independent_oracle(self.schema)
 
@@ -195,7 +210,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             "reviewer", "stable-worker", lease_seconds=0.05
         )
         runtime = PostgresGeneratorRuntime(
-            self.store, output_channel="output", invocation_lease_seconds=0.12,
+            self.store,
+            output_channel="output",
+            invocation_lease_seconds=0.12,
             heartbeat_interval_seconds=0.02,
         )
 
@@ -212,12 +229,22 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             yield OutputSpec(b"slow-async", managed_state={"count": 2})
 
         await runtime.run_async("reviewer", "stable-worker", epoch, slow_async)
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 2)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 2
+        )
 
-        await self.store.create_partition("same-owner", "p0", max_records=1, max_bytes=100)
+        await self.store.create_partition(
+            "same-owner", "p0", max_records=1, max_bytes=100
+        )
         await self.store.append(
-            "same-a", "same-owner", "p0", "same-r", "same-o", b"x",
-            "bytes/v1", "same-l",
+            "same-a",
+            "same-owner",
+            "p0",
+            "same-r",
+            "same-o",
+            b"x",
+            "bytes/v1",
+            "same-l",
         )
         await self.store.create_consumer("same-consumer", "same-owner", "p0")
         first_epoch = await self.store.claim_consumer(
@@ -226,7 +253,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         first_token, _ = await self.store.deliver_next(
             "same-consumer", "stable-worker", first_epoch
         )
-        await self.store.acquire_invocation(first_token, "dead-process", lease_seconds=0.05)
+        await self.store.acquire_invocation(
+            first_token, "dead-process", lease_seconds=0.05
+        )
         async with self.store.pool.acquire() as conn:
             await conn.execute("SELECT pg_sleep(0.08)")
         second_epoch = await self.store.claim_consumer(
@@ -237,9 +266,13 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertGreater(second_epoch, first_epoch)
         self.assertGreater(second_token.attempt, first_token.attempt)
-        await self.store.acquire_invocation(second_token, "replacement", lease_seconds=1)
+        await self.store.acquire_invocation(
+            second_token, "replacement", lease_seconds=1
+        )
         await self.store.complete(
-            second_token, "RETURN", managed_state={},
+            second_token,
+            "RETURN",
+            managed_state={},
             invocation_holder_id="replacement",
         )
         self.assert_independent_oracle(self.schema)
@@ -248,7 +281,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         await self.seed(1)
         epoch = await self.store.claim_consumer("reviewer", "anna", lease_seconds=1)
         runtime = PostgresGeneratorRuntime(
-            self.store, output_channel="output", invocation_lease_seconds=0.15,
+            self.store,
+            output_channel="output",
+            invocation_lease_seconds=0.15,
             heartbeat_interval_seconds=0.02,
         )
         entered = threading.Event()
@@ -260,9 +295,7 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             release.wait(timeout=2)
             yield OutputSpec(b"cancelled-result", managed_state={"count": 1})
 
-        running = asyncio.create_task(
-            runtime.run_sync("reviewer", "anna", epoch, slow)
-        )
+        running = asyncio.create_task(runtime.run_sync("reviewer", "anna", epoch, slow))
         self.assertTrue(await asyncio.to_thread(entered.wait, 1))
         running.cancel()
         await asyncio.sleep(0.06)
@@ -281,7 +314,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         release.set()
         with self.assertRaises(asyncio.CancelledError):
             await running
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 0)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 0
+        )
         async with self.store.pool.acquire() as conn:
             self.assertEqual(
                 await conn.fetchval("SELECT count(*) FROM runtime_invocations"), 0
@@ -308,7 +343,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         running.cancel()
         with self.assertRaises(asyncio.CancelledError):
             await running
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 0)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 0
+        )
 
         started.clear()
         with self.assertRaises(asyncio.TimeoutError):
@@ -361,7 +398,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         )
         with self.assertRaisesRegex(RuntimeProtocolError, "nondeterministic"):
             await v3.run_sync("reviewer", "anna", epoch, second)
-        self.assertEqual((await self.store.position("reviewer"))["completed_through"], 2)
+        self.assertEqual(
+            (await self.store.position("reviewer"))["completed_through"], 2
+        )
         incompatible = PostgresGeneratorRuntime(
             self.store, output_channel="output", state_schema="other", state_version=2
         )
@@ -370,7 +409,9 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
         missing = PostgresGeneratorRuntime(
             self.store, output_channel="output", state_schema="counter", state_version=4
         )
-        with self.assertRaisesRegex(RuntimeProtocolError, "missing state migration 2->3"):
+        with self.assertRaisesRegex(
+            RuntimeProtocolError, "missing state migration 2->3"
+        ):
             await missing.run_sync("reviewer", "anna", epoch, second)
         async with self.store.pool.acquire() as conn:
             await conn.execute(
@@ -432,10 +473,14 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             if sequence % 4 == 0:
                 with self.assertRaisesRegex(RuntimeError, "worker lost"):
                     await runtime.run_sync(
-                        "reviewer", owner, epoch, task,
+                        "reviewer",
+                        owner,
+                        epoch,
+                        task,
                         fault=lambda point: (
                             (_ for _ in ()).throw(RuntimeError("worker lost"))
-                            if point == "runtime:after_delivery" else None
+                            if point == "runtime:after_delivery"
+                            else None
                         ),
                     )
                 async with self.store.pool.acquire() as conn:
@@ -453,16 +498,24 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
                 )
             await runtime.run_sync("reviewer", owner, epoch, task)
         position = await self.store.position("reviewer")
-        state = json.loads(position["managed_state"]) if isinstance(
-            position["managed_state"], str
-        ) else position["managed_state"]
+        state = (
+            json.loads(position["managed_state"])
+            if isinstance(position["managed_state"], str)
+            else position["managed_state"]
+        )
         self.assertEqual(position["completed_through"], 20)
         self.assertEqual(state, {"count": 20})
         async with self.store.pool.acquire() as conn:
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM turn_completions"), 20)
-            self.assertEqual(await conn.fetchval("SELECT count(*) FROM runtime_invocations"), 0)
             self.assertEqual(
-                await conn.fetchval("SELECT count(*) FROM records WHERE channel='output'"),
+                await conn.fetchval("SELECT count(*) FROM turn_completions"), 20
+            )
+            self.assertEqual(
+                await conn.fetchval("SELECT count(*) FROM runtime_invocations"), 0
+            )
+            self.assertEqual(
+                await conn.fetchval(
+                    "SELECT count(*) FROM records WHERE channel='output'"
+                ),
                 20,
             )
         self.assertTrue((await self.store.invariant_report())["passed"])
@@ -478,68 +531,98 @@ class PostgresGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             "completion:after_commit_before_ack",
         )
         return_points = tuple(
-            point for point in yield_points
+            point
+            for point in yield_points
             if point != "completion:after_output_before_marker"
         )
         for mode in ("sync", "async"):
             for kind, points in (("yield", yield_points), ("return", return_points)):
-              for point in points:
-                with self.subTest(mode=mode, kind=kind, point=point):
-                    schema = "ds020_crash_" + uuid.uuid4().hex[:10]
-                    store = await PostgresStream.open(DSN, schema)
-                    await store.create_partition(
-                        "input", "p0", max_records=10, max_bytes=10_000
-                    )
-                    await store.create_partition(
-                        "output", "p0", max_records=10, max_bytes=10_000
-                    )
-                    await store.append_batch(
-                        [
-                            (
-                                f"a-{n}", "input", "p0", f"r-{n}", f"o-{n}",
-                                f"document-{n}".encode(), "bytes/v1", f"l-{n}",
-                            )
-                            for n in (1, 2)
-                        ]
-                    )
-                    await store.create_consumer("reviewer", "input", "p0")
-                    await store.claim_consumer("reviewer", "anna", lease_seconds=60)
-                    await store.close()
-                    crashed = subprocess.run(
-                        [
-                            sys.executable, str(CRASH_WORKER), DSN, schema, mode,
-                            point, "--kind", kind,
-                        ],
-                        cwd=HERE, check=False,
-                    )
-                    self.assertEqual(crashed.returncode, 86)
-                    recovered = subprocess.run(
-                        [
-                            sys.executable, str(CRASH_WORKER), DSN, schema, mode,
-                            point, "--kind", kind, "--recover",
-                        ],
-                        cwd=HERE, check=False,
-                    )
-                    self.assertEqual(recovered.returncode, 0)
-                    check = await PostgresStream.open(DSN, schema)
-                    expected = 2 if point == "completion:after_commit_before_ack" else 1
-                    self.assertEqual(
-                        (await check.position("reviewer"))["completed_through"], expected
-                    )
-                    async with check.pool.acquire() as conn:
+                for point in points:
+                    with self.subTest(mode=mode, kind=kind, point=point):
+                        schema = "ds020_crash_" + uuid.uuid4().hex[:10]
+                        store = await PostgresStream.open(DSN, schema)
+                        await store.create_partition(
+                            "input", "p0", max_records=10, max_bytes=10_000
+                        )
+                        await store.create_partition(
+                            "output", "p0", max_records=10, max_bytes=10_000
+                        )
+                        await store.append_batch(
+                            [
+                                (
+                                    f"a-{n}",
+                                    "input",
+                                    "p0",
+                                    f"r-{n}",
+                                    f"o-{n}",
+                                    f"document-{n}".encode(),
+                                    "bytes/v1",
+                                    f"l-{n}",
+                                )
+                                for n in (1, 2)
+                            ]
+                        )
+                        await store.create_consumer("reviewer", "input", "p0")
+                        await store.claim_consumer("reviewer", "anna", lease_seconds=60)
+                        await store.close()
+                        crashed = subprocess.run(
+                            [
+                                sys.executable,
+                                str(CRASH_WORKER),
+                                DSN,
+                                schema,
+                                mode,
+                                point,
+                                "--kind",
+                                kind,
+                            ],
+                            cwd=HERE,
+                            check=False,
+                        )
+                        self.assertEqual(crashed.returncode, 86)
+                        recovered = subprocess.run(
+                            [
+                                sys.executable,
+                                str(CRASH_WORKER),
+                                DSN,
+                                schema,
+                                mode,
+                                point,
+                                "--kind",
+                                kind,
+                                "--recover",
+                            ],
+                            cwd=HERE,
+                            check=False,
+                        )
+                        self.assertEqual(recovered.returncode, 0)
+                        check = await PostgresStream.open(DSN, schema)
+                        expected = (
+                            2 if point == "completion:after_commit_before_ack" else 1
+                        )
                         self.assertEqual(
-                            await conn.fetchval("SELECT count(*) FROM turn_completions"),
+                            (await check.position("reviewer"))["completed_through"],
                             expected,
                         )
-                        self.assertEqual(
-                            await conn.fetchval("SELECT count(*) FROM runtime_invocations"), 0
-                        )
-                    self.assertTrue((await check.invariant_report())["passed"])
-                    await check.close()
-                    self.assert_independent_oracle(schema)
-                    conn = await asyncpg.connect(DSN)
-                    await conn.execute(f'DROP SCHEMA "{schema}" CASCADE')
-                    await conn.close()
+                        async with check.pool.acquire() as conn:
+                            self.assertEqual(
+                                await conn.fetchval(
+                                    "SELECT count(*) FROM turn_completions"
+                                ),
+                                expected,
+                            )
+                            self.assertEqual(
+                                await conn.fetchval(
+                                    "SELECT count(*) FROM runtime_invocations"
+                                ),
+                                0,
+                            )
+                        self.assertTrue((await check.invariant_report())["passed"])
+                        await check.close()
+                        self.assert_independent_oracle(schema)
+                        conn = await asyncpg.connect(DSN)
+                        await conn.execute(f'DROP SCHEMA "{schema}" CASCADE')
+                        await conn.close()
 
 
 if __name__ == "__main__":

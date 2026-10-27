@@ -12,7 +12,6 @@ from pathlib import Path
 from durable_stream_v2 import DurableStream, ObjectRef
 from generator_runtime_v2 import GeneratorProtocolError, GeneratorRuntime, OutputSpec
 
-
 HERE = Path(__file__).resolve().parent
 ORACLE = HERE / "generator_runtime_oracle.py"
 WORKER = HERE / "generator_runtime_crash_worker.py"
@@ -36,7 +35,9 @@ class GeneratorRuntimeTests(unittest.TestCase):
                     yield OutputSpec(b"never")
                 return {"sum": 3}
 
-            self.assertEqual(runtime.run_sync("consumer", "anna", 1, returned), "RETURN")
+            self.assertEqual(
+                runtime.run_sync("consumer", "anna", 1, returned), "RETURN"
+            )
             self.assertEqual(store.position("consumer")["completed_through"], 2)
             store.close()
             self.oracle(path)
@@ -92,7 +93,14 @@ class GeneratorRuntimeTests(unittest.TestCase):
                         )
                         self.assertEqual(crashed.returncode, 86)
                         recovered = subprocess.run(
-                            [sys.executable, str(WORKER), str(path), mode, point, "--recover"],
+                            [
+                                sys.executable,
+                                str(WORKER),
+                                str(path),
+                                mode,
+                                point,
+                                "--recover",
+                            ],
                             cwd=HERE,
                             check=False,
                         )
@@ -108,11 +116,15 @@ class GeneratorRuntimeTests(unittest.TestCase):
                             expected_completed,
                         )
                         self.assertEqual(
-                            db.execute("SELECT COUNT(*) FROM turn_completions").fetchone()[0],
+                            db.execute(
+                                "SELECT COUNT(*) FROM turn_completions"
+                            ).fetchone()[0],
                             expected_completed,
                         )
                         self.assertEqual(
-                            db.execute("SELECT COUNT(*) FROM runtime_invocations").fetchone()[0],
+                            db.execute(
+                                "SELECT COUNT(*) FROM runtime_invocations"
+                            ).fetchone()[0],
                             0,
                         )
                         db.close()
@@ -138,7 +150,10 @@ class GeneratorRuntimeTests(unittest.TestCase):
 
     def test_false_non_dict_return_is_rejected(self) -> None:
         for returned in ([], 0, ""):
-            with self.subTest(returned=returned), tempfile.TemporaryDirectory() as directory:
+            with (
+                self.subTest(returned=returned),
+                tempfile.TemporaryDirectory() as directory,
+            ):
                 path = Path(directory) / "bad-return.sqlite"
                 store, runtime = self.seed(path)
 
@@ -172,12 +187,20 @@ class GeneratorRuntimeTests(unittest.TestCase):
                 )
             db.close()
             result = subprocess.run(
-                [sys.executable, str(ORACLE), str(path)], cwd=HERE,
-                text=True, capture_output=True, check=False,
+                [sys.executable, str(ORACLE), str(path)],
+                cwd=HERE,
+                text=True,
+                capture_output=True,
+                check=False,
             )
             self.assertEqual(result.returncode, 2)
-            self.assertIn("consumer_state_projection:consumer", json.loads(result.stdout)["violations"])
-            self.assertIn("terminal_invocation:consumer", json.loads(result.stdout)["violations"])
+            self.assertIn(
+                "consumer_state_projection:consumer",
+                json.loads(result.stdout)["violations"],
+            )
+            self.assertIn(
+                "terminal_invocation:consumer", json.loads(result.stdout)["violations"]
+            )
 
     @staticmethod
     def seed(path: Path) -> tuple[DurableStream, GeneratorRuntime]:
@@ -189,7 +212,13 @@ class GeneratorRuntimeTests(unittest.TestCase):
             ref = ObjectRef.for_payload(f"input-{sequence}", payload, "bytes/v1")
             store.register_object(ref)
             store.append(
-                "input", "p0", "petya", 1, f"record-{sequence}", ref, f"lineage-{sequence}"
+                "input",
+                "p0",
+                "petya",
+                1,
+                f"record-{sequence}",
+                ref,
+                f"lineage-{sequence}",
             )
         store.create_consumer("consumer", "input", "p0")
         store.claim_consumer("consumer", "anna", 1, lease_ttl=100)
@@ -210,7 +239,9 @@ class GeneratorRuntimeTests(unittest.TestCase):
 
 
 class AsyncGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
-    async def test_cancel_before_commit_redelivers_and_after_commit_advances(self) -> None:
+    async def test_cancel_before_commit_redelivers_and_after_commit_advances(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "async-cancel.sqlite"
             store, runtime = GeneratorRuntimeTests.seed(path)
@@ -245,7 +276,11 @@ class AsyncGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
 
             with self.assertRaises(asyncio.CancelledError):
                 await runtime.run_async(
-                    "consumer", "anna", 1, completed, completion_fault=cancel_after_commit
+                    "consumer",
+                    "anna",
+                    1,
+                    completed,
+                    completion_fault=cancel_after_commit,
                 )
             self.assertEqual(store.position("consumer")["completed_through"], 2)
             store.close()
@@ -263,7 +298,9 @@ class AsyncGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
                 await release.wait()
                 yield OutputSpec(b"one")
 
-            first = asyncio.create_task(runtime.run_async("consumer", "anna", 1, waiting))
+            first = asyncio.create_task(
+                runtime.run_async("consumer", "anna", 1, waiting)
+            )
             await started.wait()
             with self.assertRaisesRegex(GeneratorProtocolError, "already active"):
                 await runtime.run_async("consumer", "anna", 1, waiting)
@@ -299,7 +336,9 @@ class AsyncGeneratorRuntimeTests(unittest.IsolatedAsyncioTestCase):
             store.close()
             GeneratorRuntimeTests.oracle(path)
 
-    async def test_expired_invocation_cannot_be_stolen_with_same_owner_epoch(self) -> None:
+    async def test_expired_invocation_cannot_be_stolen_with_same_owner_epoch(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "same-owner-expiry.sqlite"
             store, first_runtime = GeneratorRuntimeTests.seed(path)

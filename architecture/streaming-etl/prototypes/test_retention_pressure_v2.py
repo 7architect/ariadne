@@ -12,7 +12,6 @@ from pathlib import Path
 
 from retention_pressure_v2 import CapacityBlocked, RetentionPressureStore
 
-
 HERE = Path(__file__).resolve().parent
 ORACLE = HERE / "retention_pressure_oracle.py"
 WORKER = HERE / "retention_pressure_crash_worker.py"
@@ -75,7 +74,9 @@ class RetentionPressureTests(unittest.TestCase):
                 self.append(store, 4)
             self.assertEqual(blocked.exception.view["record_credits"], 0)
             self.assertEqual(
-                store.connection.execute("SELECT next_sequence FROM partition_state").fetchone()[0],
+                store.connection.execute(
+                    "SELECT next_sequence FROM partition_state"
+                ).fetchone()[0],
                 4,
             )
             self.assertEqual(
@@ -149,7 +150,10 @@ class RetentionPressureTests(unittest.TestCase):
                     )
                     self.assertEqual(result.returncode, 86)
                     check = sqlite3.connect(path)
-                    self.assertEqual(check.execute("SELECT COUNT(*) FROM records").fetchone()[0], records)
+                    self.assertEqual(
+                        check.execute("SELECT COUNT(*) FROM records").fetchone()[0],
+                        records,
+                    )
                     self.assertEqual(
                         check.execute(
                             "SELECT COUNT(*) FROM compaction_manifests WHERE status = 'COMPLETED'"
@@ -158,10 +162,15 @@ class RetentionPressureTests(unittest.TestCase):
                     )
                     check.close()
                     reopened = RetentionPressureStore(path, max_records=4, max_bytes=40)
-                    if operation == "append" and point == "append:after_commit_before_ack":
+                    if (
+                        operation == "append"
+                        and point == "append:after_commit_before_ack"
+                    ):
                         retried = self.append(reopened, 3)
                         self.assertEqual(retried.sequence, 3)
-                        with self.assertRaisesRegex(Exception, "attempt identity drift"):
+                        with self.assertRaisesRegex(
+                            Exception, "attempt identity drift"
+                        ):
                             reopened.append(
                                 "attempt-3", "different", "different", b"x", "different"
                             )
@@ -259,28 +268,71 @@ class RetentionPressureTests(unittest.TestCase):
             path = Path(directory) / "retry-after-compaction.sqlite"
             store = RetentionPressureStore(path, max_records=2, max_bytes=20)
             original = store.append(
-                "stable-attempt", "stable-record", "stable-object", b"payload",
-                "stable-lineage", schema_id="document/v3",
+                "stable-attempt",
+                "stable-record",
+                "stable-object",
+                b"payload",
+                "stable-lineage",
+                schema_id="document/v3",
             )
             store.compact(original.sequence)
             retried = store.append(
-                "stable-attempt", "stable-record", "stable-object", b"payload",
-                "stable-lineage", schema_id="document/v3",
+                "stable-attempt",
+                "stable-record",
+                "stable-object",
+                b"payload",
+                "stable-lineage",
+                schema_id="document/v3",
             )
             self.assertEqual(retried, original)
             for changed in (
-                ("other-record", "stable-object", b"payload", "stable-lineage", "document/v3"),
-                ("stable-record", "other-object", b"payload", "stable-lineage", "document/v3"),
-                ("stable-record", "stable-object", b"changed", "stable-lineage", "document/v3"),
-                ("stable-record", "stable-object", b"payload", "other-lineage", "document/v3"),
-                ("stable-record", "stable-object", b"payload", "stable-lineage", "document/v4"),
+                (
+                    "other-record",
+                    "stable-object",
+                    b"payload",
+                    "stable-lineage",
+                    "document/v3",
+                ),
+                (
+                    "stable-record",
+                    "other-object",
+                    b"payload",
+                    "stable-lineage",
+                    "document/v3",
+                ),
+                (
+                    "stable-record",
+                    "stable-object",
+                    b"changed",
+                    "stable-lineage",
+                    "document/v3",
+                ),
+                (
+                    "stable-record",
+                    "stable-object",
+                    b"payload",
+                    "other-lineage",
+                    "document/v3",
+                ),
+                (
+                    "stable-record",
+                    "stable-object",
+                    b"payload",
+                    "stable-lineage",
+                    "document/v4",
+                ),
             ):
-                with self.subTest(changed=changed), self.assertRaisesRegex(
-                    Exception, "attempt identity drift"
+                with (
+                    self.subTest(changed=changed),
+                    self.assertRaisesRegex(Exception, "attempt identity drift"),
                 ):
                     record_id, object_key, payload, lineage, schema = changed
                     store.append(
-                        "stable-attempt", record_id, object_key, payload, lineage,
+                        "stable-attempt",
+                        record_id,
+                        object_key,
+                        payload,
+                        lineage,
                         schema_id=schema,
                     )
             store.close()
@@ -333,7 +385,10 @@ class RetentionPressureTests(unittest.TestCase):
                 "('object-2', 'forged', 10, 'forged/v1')",
             )
             for statement in statements:
-                with self.subTest(statement=statement), self.assertRaises(sqlite3.IntegrityError):
+                with (
+                    self.subTest(statement=statement),
+                    self.assertRaises(sqlite3.IntegrityError),
+                ):
                     with db:
                         db.execute(statement)
             db.close()
@@ -358,8 +413,14 @@ class RetentionPressureTests(unittest.TestCase):
             self.assertIn("root_lifecycle_authority", report["violations"])
 
     @staticmethod
-    def append(store: RetentionPressureStore, sequence: int, *, object_key: str | None = None):
-        payload = b"sharedxxxx" if object_key == "shared" else str(sequence).encode().ljust(10, b"x")
+    def append(
+        store: RetentionPressureStore, sequence: int, *, object_key: str | None = None
+    ):
+        payload = (
+            b"sharedxxxx"
+            if object_key == "shared"
+            else str(sequence).encode().ljust(10, b"x")
+        )
         return store.append(
             f"attempt-{sequence}",
             f"record-{sequence}",

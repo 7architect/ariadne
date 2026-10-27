@@ -14,9 +14,7 @@ def run(args: argparse.Namespace) -> None:
     stream = DurableStream(args.db)
     kind = CompletionKind(args.kind.upper())
     if args.resume == 201:
-        old_token = DeliveryToken(
-            "anna", "petya", "p0", 200, 200, "anna-worker", 1
-        )
+        old_token = DeliveryToken("anna", "petya", "p0", 200, 200, "anna-worker", 1)
         stream.complete(
             old_token,
             kind,
@@ -44,9 +42,7 @@ def run(args: argparse.Namespace) -> None:
     output_count = len(stream.records("anna-output", "p0"))
     expected_outputs = 200 if kind is CompletionKind.YIELD else 0
     if output_count != expected_outputs:
-        raise AssertionError(
-            f"expected {expected_outputs} outputs, got {output_count}"
-        )
+        raise AssertionError(f"expected {expected_outputs} outputs, got {output_count}")
     print(
         json.dumps(
             {

@@ -12,7 +12,6 @@ from pathlib import Path
 from durable_stream_barrier_crash_worker import EXIT_CODE
 from durable_stream_barrier_v2 import ComposedDurableStream, EntryKind
 
-
 HERE = Path(__file__).resolve().parent
 WORKER = HERE / "durable_stream_barrier_crash_worker.py"
 RECOVERY_WORKER = HERE / "durable_stream_barrier_recovery_worker.py"
@@ -141,9 +140,7 @@ class DurableStreamBarrierSubprocessTests(unittest.TestCase):
         store.process_next("right")
         return store
 
-    def assert_boundary(
-        self, path: Path, ack: Path, scenario: str, point: str
-    ) -> None:
+    def assert_boundary(self, path: Path, ack: Path, scenario: str, point: str) -> None:
         postcommit = point in {
             f"{scenario}:after_durable_before_ack",
             f"{scenario}:after_ack",
@@ -178,7 +175,9 @@ class DurableStreamBarrierSubprocessTests(unittest.TestCase):
             observations = connection.execute(
                 "SELECT COUNT(*) FROM barrier_observations"
             ).fetchone()[0]
-            snapshots = connection.execute("SELECT COUNT(*) FROM snapshots").fetchone()[0]
+            snapshots = connection.execute("SELECT COUNT(*) FROM snapshots").fetchone()[
+                0
+            ]
             barriers = connection.execute(
                 "SELECT COUNT(*) FROM output_events WHERE kind = 'BARRIER'"
             ).fetchone()[0]
@@ -199,17 +198,28 @@ class DurableStreamBarrierSubprocessTests(unittest.TestCase):
             ).fetchone()[0]
             self.assertEqual(status, "COMPLETED" if postcommit else "ALIGNED")
         elif scenario == "fence":
-            fences = connection.execute("SELECT COUNT(*) FROM recovery_fence").fetchone()[0]
-            authority = connection.execute("SELECT COUNT(*) FROM authority_log").fetchone()[0]
+            fences = connection.execute(
+                "SELECT COUNT(*) FROM recovery_fence"
+            ).fetchone()[0]
+            authority = connection.execute(
+                "SELECT COUNT(*) FROM authority_log"
+            ).fetchone()[0]
             self.assertEqual(fences, int(postcommit))
             self.assertEqual(authority, 2 if postcommit else 1)
         elif scenario == "recover":
-            runs = connection.execute("SELECT COUNT(*) FROM recovery_runs").fetchone()[0]
+            runs = connection.execute("SELECT COUNT(*) FROM recovery_runs").fetchone()[
+                0
+            ]
             self.assertEqual(runs, int(postcommit))
             if postcommit:
                 row = connection.execute("SELECT * FROM recovery_runs").fetchone()
-                self.assertEqual((row["phase"], row["replayed_through_ordinal"]), ("READY", 6))
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM output_events").fetchone()[0], 7)
+                self.assertEqual(
+                    (row["phase"], row["replayed_through_ordinal"]), ("READY", 6)
+                )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM output_events").fetchone()[0],
+                7,
+            )
         connection.close()
 
     def converge(self, path: Path, scenario: str) -> dict[str, object]:
@@ -276,7 +286,9 @@ class DurableStreamBarrierSubprocessTests(unittest.TestCase):
 
     def assert_integrity(self, path: Path) -> None:
         connection = sqlite3.connect(path)
-        self.assertEqual(connection.execute("PRAGMA integrity_check").fetchone()[0], "ok")
+        self.assertEqual(
+            connection.execute("PRAGMA integrity_check").fetchone()[0], "ok"
+        )
         self.assertEqual(connection.execute("PRAGMA foreign_key_check").fetchall(), [])
         connection.close()
 

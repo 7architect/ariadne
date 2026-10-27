@@ -29,7 +29,9 @@ def evaluate(path: Path) -> dict[str, Any]:
         tombstones = db.execute(
             "SELECT * FROM compaction_tombstones ORDER BY sequence"
         ).fetchall()
-        objects = {row["object_key"]: row for row in db.execute("SELECT * FROM objects")}
+        objects = {
+            row["object_key"]: row for row in db.execute("SELECT * FROM objects")
+        }
         sequences = [row["sequence"] for row in records]
         tombstone_sequences = [row["sequence"] for row in tombstones]
         covered = sorted(sequences + tombstone_sequences)
@@ -40,16 +42,18 @@ def evaluate(path: Path) -> dict[str, Any]:
         if sequences and sequences[-1] >= state["next_sequence"]:
             violations.append("partition_head")
         used_bytes = sum(
-            objects[key]["payload_size"] for key in {row["object_key"] for row in records}
+            objects[key]["payload_size"]
+            for key in {row["object_key"] for row in records}
             if key in objects
         )
         if len(records) > config["max_records"] or used_bytes > config["max_bytes"]:
             violations.append("capacity_exceeded")
         for row in records:
             obj = objects.get(row["object_key"])
-            if obj is None or (
-                obj["payload_digest"], obj["payload_size"]
-            ) != (row["payload_digest"], row["payload_size"]):
+            if obj is None or (obj["payload_digest"], obj["payload_size"]) != (
+                row["payload_digest"],
+                row["payload_size"],
+            ):
                 violations.append(f"object_identity:{row['sequence']}")
         referenced = {row["object_key"] for row in records}
         for key in objects:
@@ -71,7 +75,8 @@ def evaluate(path: Path) -> dict[str, Any]:
             if start is None:
                 continue
             completions = [
-                item for item in db.execute(
+                item
+                for item in db.execute(
                     "SELECT sequence FROM consumer_completions "
                     "WHERE consumer_id = ? ORDER BY sequence",
                     (row["consumer_id"],),
@@ -97,21 +102,35 @@ def evaluate(path: Path) -> dict[str, Any]:
             roots.append(("CONSUMER", row["consumer_id"], row["completed_through"] + 1))
             expected_events.add(("CONSUMER", row["consumer_id"], start, "ACTIVE"))
             if row["in_flight_sequence"] is not None:
-                roots.append(("IN_FLIGHT", row["consumer_id"], row["in_flight_sequence"]))
+                roots.append(
+                    ("IN_FLIGHT", row["consumer_id"], row["in_flight_sequence"])
+                )
         for row in db.execute("SELECT * FROM checkpoints"):
             if row["intent_digest"] != digest(
                 {"checkpoint": row["checkpoint"], "cut": row["cut_sequence"]}
             ):
                 violations.append(f"checkpoint_identity:{row['checkpoint']}")
             expected_events.add(
-                ("CHECKPOINT", str(row["checkpoint"]), row["cut_sequence"] + 1, "ACTIVE")
+                (
+                    "CHECKPOINT",
+                    str(row["checkpoint"]),
+                    row["cut_sequence"] + 1,
+                    "ACTIVE",
+                )
             )
             if row["status"] == "RELEASED":
                 expected_events.add(
-                    ("CHECKPOINT", str(row["checkpoint"]), row["cut_sequence"] + 1, "RELEASED")
+                    (
+                        "CHECKPOINT",
+                        str(row["checkpoint"]),
+                        row["cut_sequence"] + 1,
+                        "RELEASED",
+                    )
                 )
             if row["status"] == "SEALED":
-                roots.append(("CHECKPOINT", str(row["checkpoint"]), row["cut_sequence"] + 1))
+                roots.append(
+                    ("CHECKPOINT", str(row["checkpoint"]), row["cut_sequence"] + 1)
+                )
         for row in db.execute("SELECT * FROM durable_refs"):
             expected_events.add(
                 (row["ref_kind"], row["ref_id"], row["sequence"], "ACTIVE")
@@ -140,7 +159,9 @@ def evaluate(path: Path) -> dict[str, Any]:
                 violations.append(f"root_event_id:{event['event_id']}")
             actual_events.add(
                 (
-                    event["root_kind"], event["root_id"], event["sequence"],
+                    event["root_kind"],
+                    event["root_id"],
+                    event["sequence"],
                     event["transition"],
                 )
             )
@@ -152,8 +173,12 @@ def evaluate(path: Path) -> dict[str, Any]:
         deleted_before: set[int] = set()
         tombstones_by_manifest: dict[int, list[sqlite3.Row]] = {}
         for tombstone in tombstones:
-            tombstones_by_manifest.setdefault(tombstone["manifest_id"], []).append(tombstone)
-        for row in db.execute("SELECT * FROM compaction_manifests ORDER BY manifest_id"):
+            tombstones_by_manifest.setdefault(tombstone["manifest_id"], []).append(
+                tombstone
+            )
+        for row in db.execute(
+            "SELECT * FROM compaction_manifests ORDER BY manifest_id"
+        ):
             value = {
                 "requested_through": row["requested_through"],
                 "safe_through": row["safe_through"],
@@ -170,7 +195,8 @@ def evaluate(path: Path) -> dict[str, Any]:
             if row["safe_through"] != min(row["requested_through"], oldest):
                 violations.append(f"manifest_safe_cut:{row['manifest_id']}")
             expected_records = [
-                sequence for sequence in range(1, row["safe_through"] + 1)
+                sequence
+                for sequence in range(1, row["safe_through"] + 1)
                 if sequence not in deleted_before
             ]
             if value["records"] != expected_records:
@@ -203,11 +229,19 @@ def evaluate(path: Path) -> dict[str, Any]:
                 violations.append(f"append_attempt_identity:{attempt['attempt_id']}")
             if attempt["status"] == "APPENDED":
                 record = next(
-                    (item for item in records if item["sequence"] == attempt["sequence"]),
+                    (
+                        item
+                        for item in records
+                        if item["sequence"] == attempt["sequence"]
+                    ),
                     None,
                 )
                 tombstone = next(
-                    (item for item in tombstones if item["sequence"] == attempt["sequence"]),
+                    (
+                        item
+                        for item in tombstones
+                        if item["sequence"] == attempt["sequence"]
+                    ),
                     None,
                 )
                 witness = record or tombstone
@@ -216,15 +250,25 @@ def evaluate(path: Path) -> dict[str, Any]:
                     schema_id = None if obj is None else obj["schema_id"]
                 else:
                     schema_id = None if tombstone is None else tombstone["schema_id"]
-                actual_identity = None if witness is None else (
-                    witness["record_id"], witness["object_key"],
-                    witness["payload_digest"], witness["payload_size"], schema_id,
-                    witness["lineage_digest"],
+                actual_identity = (
+                    None
+                    if witness is None
+                    else (
+                        witness["record_id"],
+                        witness["object_key"],
+                        witness["payload_digest"],
+                        witness["payload_size"],
+                        schema_id,
+                        witness["lineage_digest"],
+                    )
                 )
                 expected_identity = (
-                    attempt["record_id"], attempt["object_key"],
-                    attempt["payload_digest"], attempt["payload_size"],
-                    attempt["schema_id"], attempt["lineage_digest"],
+                    attempt["record_id"],
+                    attempt["object_key"],
+                    attempt["payload_digest"],
+                    attempt["payload_size"],
+                    attempt["schema_id"],
+                    attempt["lineage_digest"],
                 )
                 if actual_identity != expected_identity:
                     violations.append(f"append_attempt_result:{attempt['attempt_id']}")

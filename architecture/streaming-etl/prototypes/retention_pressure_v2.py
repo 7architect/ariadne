@@ -40,7 +40,9 @@ class AppendResult:
 
 
 class RetentionPressureStore:
-    def __init__(self, path: Path, *, max_records: int = 100, max_bytes: int = 1_000_000):
+    def __init__(
+        self, path: Path, *, max_records: int = 100, max_bytes: int = 1_000_000
+    ):
         if max_records < 1 or max_bytes < 1:
             raise RetentionProtocolError("capacity must be positive")
         self.connection = sqlite3.connect(path, timeout=10)
@@ -389,7 +391,9 @@ class RetentionPressureStore:
 
     def capacity(self) -> dict[str, int]:
         config = self.connection.execute("SELECT * FROM channel_config").fetchone()
-        used_records = self.connection.execute("SELECT COUNT(*) FROM records").fetchone()[0]
+        used_records = self.connection.execute(
+            "SELECT COUNT(*) FROM records"
+        ).fetchone()[0]
         used_bytes = self.connection.execute(
             "SELECT COALESCE(SUM(payload_size), 0) FROM objects "
             "WHERE object_key IN (SELECT DISTINCT object_key FROM records)"
@@ -433,8 +437,12 @@ class RetentionPressureStore:
     @staticmethod
     def _witness_identity(row: sqlite3.Row, schema_id: str) -> tuple[Any, ...]:
         return (
-            row["record_id"], row["object_key"], row["payload_digest"],
-            row["payload_size"], schema_id, row["lineage_digest"],
+            row["record_id"],
+            row["object_key"],
+            row["payload_digest"],
+            row["payload_size"],
+            schema_id,
+            row["lineage_digest"],
         )
 
     def append(
@@ -466,20 +474,29 @@ class RetentionPressureStore:
                 "SELECT * FROM append_attempts WHERE attempt_id = ?", (attempt_id,)
             ).fetchone()
             expected_attempt = (
-                record_id, object_key, payload_digest, len(payload), schema_id,
-                lineage_digest, identity_digest,
+                record_id,
+                object_key,
+                payload_digest,
+                len(payload),
+                schema_id,
+                lineage_digest,
+                identity_digest,
             )
             if attempt is not None:
                 if (
-                    attempt["record_id"], attempt["object_key"],
-                    attempt["payload_digest"], attempt["payload_size"],
-                    attempt["schema_id"], attempt["lineage_digest"],
+                    attempt["record_id"],
+                    attempt["object_key"],
+                    attempt["payload_digest"],
+                    attempt["payload_size"],
+                    attempt["schema_id"],
+                    attempt["lineage_digest"],
                     attempt["identity_digest"],
                 ) != expected_attempt:
                     raise RetentionProtocolError("append attempt identity drift")
                 if attempt["status"] == "APPENDED":
                     record = self.connection.execute(
-                        "SELECT * FROM records WHERE sequence = ?", (attempt["sequence"],)
+                        "SELECT * FROM records WHERE sequence = ?",
+                        (attempt["sequence"],),
                     ).fetchone()
                     if record is not None:
                         obj = self.connection.execute(
@@ -487,7 +504,8 @@ class RetentionPressureStore:
                             (record["object_key"],),
                         ).fetchone()
                         witness = (
-                            None if obj is None
+                            None
+                            if obj is None
                             else self._witness_identity(record, obj["schema_id"])
                         )
                     else:
@@ -496,8 +514,11 @@ class RetentionPressureStore:
                             (attempt["sequence"],),
                         ).fetchone()
                         witness = (
-                            None if tombstone is None
-                            else self._witness_identity(tombstone, tombstone["schema_id"])
+                            None
+                            if tombstone is None
+                            else self._witness_identity(
+                                tombstone, tombstone["schema_id"]
+                            )
                         )
                     if witness != expected_attempt[:-1]:
                         raise RetentionProtocolError("append result witness missing")
@@ -513,8 +534,14 @@ class RetentionPressureStore:
                     "INSERT INTO append_attempts VALUES "
                     "(?, ?, ?, ?, ?, ?, ?, ?, 'BLOCKED', NULL)",
                     (
-                        attempt_id, record_id, object_key, payload_digest, len(payload),
-                        schema_id, lineage_digest, identity_digest,
+                        attempt_id,
+                        record_id,
+                        object_key,
+                        payload_digest,
+                        len(payload),
+                        schema_id,
+                        lineage_digest,
+                        identity_digest,
                     ),
                 )
                 if fault is not None:
@@ -522,7 +549,11 @@ class RetentionPressureStore:
             obj = self.connection.execute(
                 "SELECT * FROM objects WHERE object_key = ?", (object_key,)
             ).fetchone()
-            if obj is not None and tuple(obj)[1:] != (payload_digest, len(payload), schema_id):
+            if obj is not None and tuple(obj)[1:] != (
+                payload_digest,
+                len(payload),
+                schema_id,
+            ):
                 raise RetentionProtocolError("object identity drift")
             view = self.capacity()
             added_bytes = 0 if obj is not None else len(payload)
@@ -543,7 +574,14 @@ class RetentionPressureStore:
                 ).fetchone()[0]
                 self.connection.execute(
                     "INSERT INTO records VALUES (?, ?, ?, ?, ?, ?)",
-                    (sequence, record_id, object_key, payload_digest, len(payload), lineage_digest),
+                    (
+                        sequence,
+                        record_id,
+                        object_key,
+                        payload_digest,
+                        len(payload),
+                        lineage_digest,
+                    ),
                 )
                 self.connection.execute(
                     "UPDATE partition_state SET next_sequence = next_sequence + 1"
@@ -566,14 +604,19 @@ class RetentionPressureStore:
             fault("append:after_commit_before_ack")
         return result
 
-    def create_consumer(self, consumer_id: str, start_sequence: int | None = None) -> None:
+    def create_consumer(
+        self, consumer_id: str, start_sequence: int | None = None
+    ) -> None:
         with self._write():
             exists = self.connection.execute(
                 "SELECT start_sequence FROM consumer_manifest WHERE consumer_id = ?",
                 (consumer_id,),
             ).fetchone()
             if exists:
-                if start_sequence is not None and exists["start_sequence"] != start_sequence:
+                if (
+                    start_sequence is not None
+                    and exists["start_sequence"] != start_sequence
+                ):
                     raise RetentionProtocolError("consumer start identity drift")
                 return
             floor = self.retained_floor()
@@ -617,7 +660,9 @@ class RetentionPressureStore:
                 "SELECT * FROM consumers WHERE consumer_id = ?", (consumer_id,)
             ).fetchone()
             if row is None or row["in_flight_sequence"] != sequence:
-                raise RetentionProtocolError("completion lacks exact in-flight delivery")
+                raise RetentionProtocolError(
+                    "completion lacks exact in-flight delivery"
+                )
             witness = digest({"consumer": consumer_id, "sequence": sequence})
             self.connection.execute(
                 "INSERT INTO consumer_completions VALUES (?, ?, ?)",
@@ -673,9 +718,12 @@ class RetentionPressureStore:
             if cursor.rowcount != 1:
                 raise RetentionProtocolError("checkpoint is not sealed")
             row = self.connection.execute(
-                "SELECT cut_sequence FROM checkpoints WHERE checkpoint = ?", (checkpoint,)
+                "SELECT cut_sequence FROM checkpoints WHERE checkpoint = ?",
+                (checkpoint,),
             ).fetchone()
-            self._root_event("CHECKPOINT", str(checkpoint), row["cut_sequence"] + 1, "RELEASED")
+            self._root_event(
+                "CHECKPOINT", str(checkpoint), row["cut_sequence"] + 1, "RELEASED"
+            )
 
     def add_ref(self, kind: str, ref_id: str, sequence: int) -> None:
         if kind not in {"JOIN_BUFFER", "BRANCH_OUTPUT", "COMPLETION", "RECOVERY_PIN"}:
@@ -719,30 +767,68 @@ class RetentionPressureStore:
 
     def roots(self) -> list[dict[str, Any]]:
         roots: list[dict[str, Any]] = []
-        for row in self.connection.execute("SELECT * FROM consumers ORDER BY consumer_id"):
-            roots.append({"kind": "CONSUMER", "id": row["consumer_id"], "sequence": row["completed_through"] + 1})
+        for row in self.connection.execute(
+            "SELECT * FROM consumers ORDER BY consumer_id"
+        ):
+            roots.append(
+                {
+                    "kind": "CONSUMER",
+                    "id": row["consumer_id"],
+                    "sequence": row["completed_through"] + 1,
+                }
+            )
             if row["in_flight_sequence"] is not None:
-                roots.append({"kind": "IN_FLIGHT", "id": row["consumer_id"], "sequence": row["in_flight_sequence"]})
-        for row in self.connection.execute("SELECT * FROM checkpoints WHERE status = 'SEALED' ORDER BY checkpoint"):
-            roots.append({"kind": "CHECKPOINT", "id": str(row["checkpoint"]), "sequence": row["cut_sequence"] + 1})
-        for row in self.connection.execute("SELECT * FROM durable_refs WHERE status = 'ACTIVE' ORDER BY ref_kind, ref_id"):
-            roots.append({"kind": row["ref_kind"], "id": row["ref_id"], "sequence": row["sequence"]})
+                roots.append(
+                    {
+                        "kind": "IN_FLIGHT",
+                        "id": row["consumer_id"],
+                        "sequence": row["in_flight_sequence"],
+                    }
+                )
+        for row in self.connection.execute(
+            "SELECT * FROM checkpoints WHERE status = 'SEALED' ORDER BY checkpoint"
+        ):
+            roots.append(
+                {
+                    "kind": "CHECKPOINT",
+                    "id": str(row["checkpoint"]),
+                    "sequence": row["cut_sequence"] + 1,
+                }
+            )
+        for row in self.connection.execute(
+            "SELECT * FROM durable_refs WHERE status = 'ACTIVE' ORDER BY ref_kind, ref_id"
+        ):
+            roots.append(
+                {
+                    "kind": row["ref_kind"],
+                    "id": row["ref_id"],
+                    "sequence": row["sequence"],
+                }
+            )
         return roots
 
-    def compact(self, requested_through: int, *, fault: FaultHook | None = None) -> dict[str, Any]:
+    def compact(
+        self, requested_through: int, *, fault: FaultHook | None = None
+    ) -> dict[str, Any]:
         result: dict[str, Any]
         with self._write():
             roots = self.roots()
-            safe = min(requested_through, min((r["sequence"] - 1 for r in roots), default=requested_through))
+            safe = min(
+                requested_through,
+                min((r["sequence"] - 1 for r in roots), default=requested_through),
+            )
             records = [
-                row[0] for row in self.connection.execute(
-                    "SELECT sequence FROM records WHERE sequence <= ? ORDER BY sequence", (safe,)
+                row[0]
+                for row in self.connection.execute(
+                    "SELECT sequence FROM records WHERE sequence <= ? ORDER BY sequence",
+                    (safe,),
                 )
             ]
             placeholders = ",".join("?" for _ in records)
             if records:
                 objects = [
-                    row[0] for row in self.connection.execute(
+                    row[0]
+                    for row in self.connection.execute(
                         f"SELECT object_key FROM objects WHERE object_key IN ("
                         f"SELECT object_key FROM records WHERE sequence IN ({placeholders})) "
                         f"AND object_key NOT IN (SELECT object_key FROM records WHERE sequence NOT IN ({placeholders})) "
@@ -765,8 +851,13 @@ class RetentionPressureStore:
             self.connection.execute(
                 "INSERT INTO compaction_manifests VALUES (?, ?, ?, ?, ?, ?, ?, 'PLANNED')",
                 (
-                    manifest_id, requested_through, safe, canonical(roots),
-                    canonical(records), canonical(objects), digest(value),
+                    manifest_id,
+                    requested_through,
+                    safe,
+                    canonical(roots),
+                    canonical(records),
+                    canonical(objects),
+                    digest(value),
                 ),
             )
             if fault is not None:
@@ -782,16 +873,25 @@ class RetentionPressureStore:
                 self.connection.execute(
                     "INSERT INTO compaction_tombstones VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     (
-                        row["sequence"], manifest_id, row["record_id"], row["object_key"],
-                        row["payload_digest"], row["payload_size"], obj["schema_id"],
+                        row["sequence"],
+                        manifest_id,
+                        row["record_id"],
+                        row["object_key"],
+                        row["payload_digest"],
+                        row["payload_size"],
+                        obj["schema_id"],
                         row["lineage_digest"],
                     ),
                 )
-                self.connection.execute("DELETE FROM records WHERE sequence = ?", (sequence,))
+                self.connection.execute(
+                    "DELETE FROM records WHERE sequence = ?", (sequence,)
+                )
             if fault is not None:
                 fault("compaction:after_records_before_objects")
             for object_key in objects:
-                self.connection.execute("DELETE FROM objects WHERE object_key = ?", (object_key,))
+                self.connection.execute(
+                    "DELETE FROM objects WHERE object_key = ?", (object_key,)
+                )
             self.connection.execute(
                 "UPDATE compaction_manifests SET status = 'COMPLETED' WHERE manifest_id = ?",
                 (manifest_id,),

@@ -96,7 +96,11 @@ def _canonical_metadata_cuts(
     if not cuts or len(cut_map) != len(cuts):
         raise ValueError("metadata cuts must be non-empty and unique")
     canonical = [
-        {"channel": channel, "partition": partition, "through": cut_map[(channel, partition)]}
+        {
+            "channel": channel,
+            "partition": partition,
+            "through": cut_map[(channel, partition)],
+        }
         for channel, partition in sorted(cut_map)
     ]
     encoded = json.dumps(canonical, sort_keys=True, separators=(",", ":"))
@@ -395,30 +399,46 @@ class PostgresStream:
         max_producers: int = 128,
         max_consumers: int = 128,
     ) -> None:
-        metadata_limit = max_records * 4 if max_metadata_records is None else max_metadata_records
+        metadata_limit = (
+            max_records * 4 if max_metadata_records is None else max_metadata_records
+        )
         async with self.pool.acquire() as conn:
             result = await conn.execute(
                 """INSERT INTO partitions(
                    channel,partition_id,max_records,max_bytes,max_age_seconds,
                    max_metadata_records,max_producers,max_consumers)
                    VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING""",
-                channel, partition, max_records, max_bytes, max_age_seconds,
-                metadata_limit, max_producers, max_consumers,
+                channel,
+                partition,
+                max_records,
+                max_bytes,
+                max_age_seconds,
+                metadata_limit,
+                max_producers,
+                max_consumers,
             )
             if result == "INSERT 0 0":
                 row = await conn.fetchrow(
                     "SELECT max_records,max_bytes,max_age_seconds,max_metadata_records,"
                     "max_producers,max_consumers FROM partitions "
                     "WHERE channel=$1 AND partition_id=$2",
-                    channel, partition,
+                    channel,
+                    partition,
                 )
                 if (
-                    row["max_records"], row["max_bytes"], row["max_age_seconds"],
-                    row["max_metadata_records"], row["max_producers"],
+                    row["max_records"],
+                    row["max_bytes"],
+                    row["max_age_seconds"],
+                    row["max_metadata_records"],
+                    row["max_producers"],
                     row["max_consumers"],
                 ) != (
-                    max_records, max_bytes, float(max_age_seconds), metadata_limit,
-                    max_producers, max_consumers,
+                    max_records,
+                    max_bytes,
+                    float(max_age_seconds),
+                    metadata_limit,
+                    max_producers,
+                    max_consumers,
                 ):
                     raise PostgresProtocolError("partition capacity drift")
 
@@ -441,13 +461,19 @@ class PostgresStream:
             dimensions.append("bytes")
         if projected_metadata > part["max_metadata_records"]:
             dimensions.append("metadata")
-        if oldest_age_seconds is not None and oldest_age_seconds >= part["max_age_seconds"]:
+        if (
+            oldest_age_seconds is not None
+            and oldest_age_seconds >= part["max_age_seconds"]
+        ):
             dimensions.append("age")
         return {
-            "channel": part["channel"], "partition": part["partition_id"],
-            "used_records": part["used_records"], "max_records": part["max_records"],
+            "channel": part["channel"],
+            "partition": part["partition_id"],
+            "used_records": part["used_records"],
+            "max_records": part["max_records"],
             "projected_records": projected_records,
-            "used_bytes": part["used_bytes"], "max_bytes": part["max_bytes"],
+            "used_bytes": part["used_bytes"],
+            "max_bytes": part["max_bytes"],
             "projected_bytes": projected_bytes,
             "used_metadata_records": part["used_metadata_records"],
             "max_metadata_records": part["max_metadata_records"],
@@ -459,23 +485,34 @@ class PostgresStream:
         }
 
     async def pressure_snapshot(
-        self, channel: str, partition: str, *,
-        proposed_records: int = 0, proposed_bytes: int = 0,
+        self,
+        channel: str,
+        partition: str,
+        *,
+        proposed_records: int = 0,
+        proposed_bytes: int = 0,
         proposed_metadata_records: int = 0,
         proposed_consumers: int = 0,
     ) -> dict[str, Any]:
         """Return public, predictive record/byte/time pressure state."""
-        if min(
-            proposed_records, proposed_bytes, proposed_metadata_records,
-            proposed_consumers,
-        ) < 0:
+        if (
+            min(
+                proposed_records,
+                proposed_bytes,
+                proposed_metadata_records,
+                proposed_consumers,
+            )
+            < 0
+        ):
             raise ValueError("proposed pressure must be non-negative")
-        async with self.pool.acquire() as conn, conn.transaction(
-            isolation="repeatable_read", readonly=True
+        async with (
+            self.pool.acquire() as conn,
+            conn.transaction(isolation="repeatable_read", readonly=True),
         ):
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
@@ -483,38 +520,49 @@ class PostgresStream:
                 """SELECT EXTRACT(EPOCH FROM clock_timestamp()-min(created_at))
                    ::double precision FROM records
                    WHERE channel=$1 AND partition_id=$2""",
-                channel, partition,
+                channel,
+                partition,
             )
             pressure = self._pressure_values(
-                part, added_records=proposed_records, added_bytes=proposed_bytes,
+                part,
+                added_records=proposed_records,
+                added_bytes=proposed_bytes,
                 added_metadata_records=proposed_metadata_records,
                 oldest_age_seconds=oldest_age,
             )
             counts = {}
             counts["append_attempts"] = await conn.fetchval(
                 "SELECT count(*) FROM append_attempts WHERE channel=$1 AND partition_id=$2",
-                channel, partition,
+                channel,
+                partition,
             )
             counts["tombstones"] = await conn.fetchval(
                 "SELECT count(*) FROM compaction_tombstones WHERE channel=$1 "
-                "AND partition_id=$2", channel, partition,
+                "AND partition_id=$2",
+                channel,
+                partition,
             )
             counts["completions"] = await conn.fetchval(
                 """SELECT count(*) FROM turn_completions t JOIN consumers c USING(consumer_id)
                    WHERE c.channel=$1 AND c.partition_id=$2""",
-                channel, partition,
+                channel,
+                partition,
             )
             counts["manifests"] = await conn.fetchval(
                 "SELECT count(*) FROM compaction_manifests WHERE channel=$1 "
-                "AND partition_id=$2", channel, partition,
+                "AND partition_id=$2",
+                channel,
+                partition,
             )
             counts["producers"] = await conn.fetchval(
                 "SELECT count(*) FROM producer_progress WHERE channel=$1 AND partition_id=$2",
-                channel, partition,
+                channel,
+                partition,
             )
             counts["consumers"] = await conn.fetchval(
                 "SELECT count(*) FROM consumers WHERE channel=$1 AND partition_id=$2",
-                channel, partition,
+                channel,
+                partition,
             )
             pressure["used_consumers"] = counts["consumers"]
             pressure["max_consumers"] = part["max_consumers"]
@@ -532,26 +580,36 @@ class PostgresStream:
                 """SELECT EXTRACT(EPOCH FROM clock_timestamp()-min(created_at))
                    ::double precision FROM append_attempts
                    WHERE channel=$1 AND partition_id=$2""",
-                channel, partition,
+                channel,
+                partition,
             )
             return pressure
 
     @staticmethod
     async def _bind_object_identity(
-        conn: asyncpg.Connection, object_key: str, payload_digest: str,
-        payload_size: int, schema_id: str,
+        conn: asyncpg.Connection,
+        object_key: str,
+        payload_digest: str,
+        payload_size: int,
+        schema_id: str,
     ) -> None:
         await conn.execute(
             """INSERT INTO object_identities(
                object_key,payload_digest,payload_size,schema_id)
                VALUES($1,$2,$3,$4) ON CONFLICT (object_key) DO NOTHING""",
-            object_key, payload_digest, payload_size, schema_id,
+            object_key,
+            payload_digest,
+            payload_size,
+            schema_id,
         )
         identity = await conn.fetchrow(
-            "SELECT * FROM object_identities WHERE object_key=$1 FOR UPDATE", object_key,
+            "SELECT * FROM object_identities WHERE object_key=$1 FOR UPDATE",
+            object_key,
         )
         if identity is None or (
-            identity["payload_digest"], identity["payload_size"], identity["schema_id"]
+            identity["payload_digest"],
+            identity["payload_size"],
+            identity["schema_id"],
         ) != (payload_digest, payload_size, schema_id):
             raise PostgresProtocolError("object identity drift")
 
@@ -582,7 +640,9 @@ class PostgresStream:
         for row in rows:
             expected = identities[row["object_key"]]
             if (
-                row["payload_digest"], row["payload_size"], row["schema_id"]
+                row["payload_digest"],
+                row["payload_size"],
+                row["schema_id"],
             ) != expected:
                 raise PostgresProtocolError("object identity drift")
 
@@ -601,10 +661,16 @@ class PostgresStream:
                 await conn.execute(
                     "INSERT INTO objects(object_key,payload,payload_digest,payload_size,schema_id) "
                     "VALUES($1,$2,$3,$4,$5)",
-                    object_key, payload, payload_digest, len(payload), schema_id,
+                    object_key,
+                    payload,
+                    payload_digest,
+                    len(payload),
+                    schema_id,
                 )
             elif (
-                bytes(row["payload"]), row["payload_digest"], row["payload_size"],
+                bytes(row["payload"]),
+                row["payload_digest"],
+                row["payload_size"],
                 row["schema_id"],
             ) != (payload, payload_digest, len(payload), schema_id):
                 raise PostgresProtocolError("object identity drift")
@@ -617,38 +683,55 @@ class PostgresStream:
         async with self.pool.acquire() as conn, conn.transaction():
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
             current = await conn.fetchval(
                 "SELECT count(*) FROM producer_progress WHERE channel=$1 AND partition_id=$2",
-                channel, partition,
+                channel,
+                partition,
             )
             exists = await conn.fetchval(
                 "SELECT EXISTS(SELECT 1 FROM producer_progress WHERE channel=$1 "
                 "AND partition_id=$2 AND producer_id=$3)",
-                channel, partition, producer_id,
+                channel,
+                partition,
+                producer_id,
             )
             if not exists and current >= part["max_producers"]:
                 raise CapacityBlocked(
                     [f"producer:{producer_id}"],
-                    {**self._pressure_values(
-                        part, added_records=0, added_bytes=0,
-                        added_metadata_records=0, oldest_age_seconds=None,
-                    ), "binding_dimensions": ["producers"]},
+                    {
+                        **self._pressure_values(
+                            part,
+                            added_records=0,
+                            added_bytes=0,
+                            added_metadata_records=0,
+                            oldest_age_seconds=None,
+                        ),
+                        "binding_dimensions": ["producers"],
+                    },
                 )
             await conn.execute(
                 """INSERT INTO producer_progress(channel,partition_id,producer_id)
                    VALUES($1,$2,$3) ON CONFLICT DO NOTHING""",
-                channel, partition, producer_id,
+                channel,
+                partition,
+                producer_id,
             )
 
     @staticmethod
     async def _check_producer(
-        conn: asyncpg.Connection, channel: str, partition: str,
-        producer_id: str | None, producer_sequence: int | None,
-        object_key: str, payload: bytes, schema_id: str,
+        conn: asyncpg.Connection,
+        channel: str,
+        partition: str,
+        producer_id: str | None,
+        producer_sequence: int | None,
+        object_key: str,
+        payload: bytes,
+        schema_id: str,
     ) -> asyncpg.Record | None:
         if (producer_id is None) != (producer_sequence is None):
             raise PostgresProtocolError("producer identity requires id and sequence")
@@ -657,11 +740,15 @@ class PostgresStream:
         if producer_sequence is None or producer_sequence <= 0:
             raise PostgresProtocolError("producer sequence must be positive")
         if object_key != content_object_key(payload, schema_id):
-            raise PostgresProtocolError("structured producer requires content object key")
+            raise PostgresProtocolError(
+                "structured producer requires content object key"
+            )
         progress = await conn.fetchrow(
             "SELECT * FROM producer_progress WHERE channel=$1 AND partition_id=$2 "
             "AND producer_id=$3 FOR UPDATE",
-            channel, partition, producer_id,
+            channel,
+            partition,
+            producer_id,
         )
         if progress is None:
             raise PostgresProtocolError("producer is not registered")
@@ -671,7 +758,9 @@ class PostgresStream:
                 f"{progress['retired_through']}"
             )
         if producer_sequence <= progress["accepted_through"]:
-            raise PostgresProtocolError("producer sequence detail missing inside hot horizon")
+            raise PostgresProtocolError(
+                "producer sequence detail missing inside hot horizon"
+            )
         if producer_sequence != progress["accepted_through"] + 1:
             raise PostgresProtocolError("producer sequence gap")
         return progress
@@ -720,9 +809,17 @@ class PostgresStream:
     ) -> AppendResult:
         async with self.pool.acquire() as conn:
             return await self._append_with_connection(
-                conn, attempt_id, channel, partition, record_id, object_key,
-                payload, schema_id, lineage_digest,
-                producer_id, producer_sequence,
+                conn,
+                attempt_id,
+                channel,
+                partition,
+                record_id,
+                object_key,
+                payload,
+                schema_id,
+                lineage_digest,
+                producer_id,
+                producer_sequence,
             )
 
     async def append_batch(
@@ -749,13 +846,28 @@ class PostgresStream:
         channel, partition = next(iter(locations))
         identities = [
             self._append_identity(
-                attempt_id, item_channel, item_partition, record_id, object_key,
-                payload, schema_id, lineage_digest,
-                producer_id, producer_sequence,
+                attempt_id,
+                item_channel,
+                item_partition,
+                record_id,
+                object_key,
+                payload,
+                schema_id,
+                lineage_digest,
+                producer_id,
+                producer_sequence,
             )
             for (
-                attempt_id, item_channel, item_partition, record_id, object_key,
-                payload, schema_id, lineage_digest, producer_id, producer_sequence,
+                attempt_id,
+                item_channel,
+                item_partition,
+                record_id,
+                object_key,
+                payload,
+                schema_id,
+                lineage_digest,
+                producer_id,
+                producer_sequence,
             ) in items
         ]
         blocked = False
@@ -777,14 +889,17 @@ class PostgresStream:
                 return results
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
             producer_pairs = [(item[8], item[9]) for item in items]
             if any(pair != (None, None) for pair in producer_pairs):
                 if any(pair == (None, None) for pair in producer_pairs):
-                    raise PostgresProtocolError("cannot mix structured and legacy producers")
+                    raise PostgresProtocolError(
+                        "cannot mix structured and legacy producers"
+                    )
                 producer_ids = {pair[0] for pair in producer_pairs}
                 if len(producer_ids) != 1:
                     raise PostgresProtocolError("one batch requires one producer")
@@ -798,15 +913,21 @@ class PostgresStream:
                 progress = await conn.fetchrow(
                     "SELECT * FROM producer_progress WHERE channel=$1 AND partition_id=$2 "
                     "AND producer_id=$3 FOR UPDATE",
-                    channel, partition, producer_id,
+                    channel,
+                    partition,
+                    producer_id,
                 )
                 if progress is None:
                     raise PostgresProtocolError("producer is not registered")
-                if any(sequence <= progress["retired_through"] for sequence in sequences):
+                if any(
+                    sequence <= progress["retired_through"] for sequence in sequences
+                ):
                     raise IdempotencyHorizonExpired("producer batch is retired")
                 expected = list(
-                    range(progress["accepted_through"] + 1,
-                          progress["accepted_through"] + len(items) + 1)
+                    range(
+                        progress["accepted_through"] + 1,
+                        progress["accepted_through"] + len(items) + 1,
+                    )
                 )
                 if sequences != expected:
                     raise PostgresProtocolError("producer sequence gap")
@@ -825,8 +946,11 @@ class PostgresStream:
                 conn,
                 {
                     key: (payload_digest, len(payload), schema_id)
-                    for key, (payload, payload_digest, schema_id)
-                    in representative.items()
+                    for key, (
+                        payload,
+                        payload_digest,
+                        schema_id,
+                    ) in representative.items()
                 },
             )
             # Another partition may have published the same content-addressed
@@ -842,10 +966,15 @@ class PostgresStream:
             }
             for key, expected in representative.items():
                 existing = existing_objects.get(key)
-                if existing is not None and (
-                    bytes(existing["payload"]), existing["payload_digest"],
-                    existing["schema_id"],
-                ) != expected:
+                if (
+                    existing is not None
+                    and (
+                        bytes(existing["payload"]),
+                        existing["payload_digest"],
+                        existing["schema_id"],
+                    )
+                    != expected
+                ):
                     raise PostgresProtocolError("object identity drift")
             if await conn.fetchval(
                 "SELECT EXISTS(SELECT 1 FROM records WHERE record_id=ANY($1::text[])) "
@@ -859,20 +988,27 @@ class PostgresStream:
                 for row in await conn.fetch(
                     "SELECT DISTINCT object_key FROM records WHERE channel=$1 "
                     "AND partition_id=$2 AND object_key=ANY($3::text[])",
-                    channel, partition, object_keys,
+                    channel,
+                    partition,
+                    object_keys,
                 )
             }
             added_bytes = sum(
-                len(representative[key][0]) for key in object_keys if key not in locally_used
+                len(representative[key][0])
+                for key in object_keys
+                if key not in locally_used
             )
             oldest_age = await conn.fetchval(
                 """SELECT EXTRACT(EPOCH FROM clock_timestamp()-min(created_at))
                    ::double precision FROM records
                    WHERE channel=$1 AND partition_id=$2""",
-                channel, partition,
+                channel,
+                partition,
             )
             pressure = self._pressure_values(
-                part, added_records=len(items), added_bytes=added_bytes,
+                part,
+                added_records=len(items),
+                added_bytes=added_bytes,
                 added_metadata_records=len(items),
                 oldest_age_seconds=oldest_age,
             )
@@ -885,9 +1021,18 @@ class PostgresStream:
                    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'BLOCKED',$11,$12)""",
                 [
                     (
-                        item[0], item[1], item[2], item[3], item[4], identity["payload_digest"],
-                        identity["payload_size"], item[6], item[7], identity_digest,
-                        item[8], item[9],
+                        item[0],
+                        item[1],
+                        item[2],
+                        item[3],
+                        item[4],
+                        identity["payload_digest"],
+                        identity["payload_size"],
+                        item[6],
+                        item[7],
+                        identity_digest,
+                        item[8],
+                        item[9],
                     )
                     for item, (identity, identity_digest) in zip(items, identities)
                 ],
@@ -897,7 +1042,8 @@ class PostgresStream:
                     """UPDATE append_attempts SET block_reason=$2,
                        pressure_snapshot=$3::jsonb
                        WHERE attempt_id=ANY($1::text[])""",
-                    attempt_ids, ",".join(pressure["binding_dimensions"]),
+                    attempt_ids,
+                    ",".join(pressure["binding_dimensions"]),
                     json.dumps(pressure, sort_keys=True),
                 )
             if not blocked:
@@ -908,20 +1054,26 @@ class PostgresStream:
                        VALUES($1,$2,$3,$4,$5,clock_timestamp())""",
                     [
                         (
-                            key, representative[key][0], representative[key][1],
-                            len(representative[key][0]), representative[key][2],
+                            key,
+                            representative[key][0],
+                            representative[key][1],
+                            len(representative[key][0]),
+                            representative[key][2],
                         )
                         for key in new_keys
                     ],
                 )
                 staged_keys = [
-                    key for key in object_keys
-                    if key in existing_objects and existing_objects[key]["published_at"] is None
+                    key
+                    for key in object_keys
+                    if key in existing_objects
+                    and existing_objects[key]["published_at"] is None
                 ]
                 if staged_keys:
                     await conn.execute(
                         "UPDATE objects SET published_at=clock_timestamp() "
-                        "WHERE object_key=ANY($1::text[])", staged_keys,
+                        "WHERE object_key=ANY($1::text[])",
+                        staged_keys,
                     )
                 first_sequence = part["next_sequence"]
                 record_rows = []
@@ -929,9 +1081,15 @@ class PostgresStream:
                     sequence = first_sequence + offset
                     record_rows.append(
                         (
-                            channel, partition, sequence, item[3], item[4],
-                            identity["payload_digest"], identity["payload_size"],
-                            item[6], item[7],
+                            channel,
+                            partition,
+                            sequence,
+                            item[3],
+                            item[4],
+                            identity["payload_digest"],
+                            identity["payload_size"],
+                            item[6],
+                            item[7],
                         )
                     )
                     results.append(AppendResult(sequence, item[3], item[4]))
@@ -947,19 +1105,28 @@ class PostgresStream:
                        used_records=used_records+$3,used_bytes=used_bytes+$4,
                        used_metadata_records=used_metadata_records+$3
                        WHERE channel=$1 AND partition_id=$2""",
-                    channel, partition, len(items), added_bytes,
+                    channel,
+                    partition,
+                    len(items),
+                    added_bytes,
                 )
                 await conn.executemany(
                     "UPDATE append_attempts SET status='APPENDED',sequence=$2,"
                     "block_reason=NULL,pressure_snapshot=NULL "
                     "WHERE attempt_id=$1 AND status='BLOCKED'",
-                    [(item[0], first_sequence + offset) for offset, item in enumerate(items)],
+                    [
+                        (item[0], first_sequence + offset)
+                        for offset, item in enumerate(items)
+                    ],
                 )
                 if producer_id is not None:
                     await conn.execute(
                         """UPDATE producer_progress SET accepted_through=$4
                            WHERE channel=$1 AND partition_id=$2 AND producer_id=$3""",
-                        channel, partition, producer_id, sequences[-1],
+                        channel,
+                        partition,
+                        producer_id,
+                        sequences[-1],
                     )
         if blocked:
             assert pressure is not None
@@ -981,9 +1148,16 @@ class PostgresStream:
         producer_sequence: int | None = None,
     ) -> AppendResult:
         identity, identity_digest = self._append_identity(
-            attempt_id, channel, partition, record_id, object_key, payload,
-            schema_id, lineage_digest,
-            producer_id, producer_sequence,
+            attempt_id,
+            channel,
+            partition,
+            record_id,
+            object_key,
+            payload,
+            schema_id,
+            lineage_digest,
+            producer_id,
+            producer_sequence,
         )
         blocked = False
         pressure: dict[str, Any] | None = None
@@ -994,7 +1168,8 @@ class PostgresStream:
                 f"{self.schema}|{channel}|{partition}",
             )
             attempt = await conn.fetchrow(
-                "SELECT * FROM append_attempts WHERE attempt_id=$1 FOR UPDATE", attempt_id
+                "SELECT * FROM append_attempts WHERE attempt_id=$1 FOR UPDATE",
+                attempt_id,
             )
             if attempt is not None:
                 if attempt["identity_digest"] != identity_digest:
@@ -1003,22 +1178,37 @@ class PostgresStream:
                     witness = await conn.fetchrow(
                         "SELECT * FROM records WHERE channel=$1 AND partition_id=$2 "
                         "AND sequence=$3",
-                        channel, partition, attempt["sequence"],
+                        channel,
+                        partition,
+                        attempt["sequence"],
                     )
                     if witness is None:
                         witness = await conn.fetchrow(
                             "SELECT * FROM compaction_tombstones WHERE channel=$1 "
                             "AND partition_id=$2 AND sequence=$3",
-                            channel, partition, attempt["sequence"],
+                            channel,
+                            partition,
+                            attempt["sequence"],
                         )
                     expected = (
-                        record_id, object_key, identity["payload_digest"],
-                        identity["payload_size"], schema_id, lineage_digest,
+                        record_id,
+                        object_key,
+                        identity["payload_digest"],
+                        identity["payload_size"],
+                        schema_id,
+                        lineage_digest,
                     )
-                    actual = None if witness is None else (
-                        witness["record_id"], witness["object_key"],
-                        witness["payload_digest"], witness["payload_size"],
-                        witness["schema_id"], witness["lineage_digest"],
+                    actual = (
+                        None
+                        if witness is None
+                        else (
+                            witness["record_id"],
+                            witness["object_key"],
+                            witness["payload_digest"],
+                            witness["payload_size"],
+                            witness["schema_id"],
+                            witness["lineage_digest"],
+                        )
                     )
                     if actual != expected:
                         raise PostgresProtocolError("append result witness missing")
@@ -1036,20 +1226,35 @@ class PostgresStream:
                         payload_digest,payload_size,schema_id,lineage_digest,
                         identity_digest,status,producer_id,producer_sequence)
                        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'BLOCKED',$11,$12)""",
-                    attempt_id, channel, partition, record_id, object_key,
-                    identity["payload_digest"], identity["payload_size"], schema_id,
-                    lineage_digest, identity_digest,
-                    producer_id, producer_sequence,
+                    attempt_id,
+                    channel,
+                    partition,
+                    record_id,
+                    object_key,
+                    identity["payload_digest"],
+                    identity["payload_size"],
+                    schema_id,
+                    lineage_digest,
+                    identity_digest,
+                    producer_id,
+                    producer_sequence,
                 )
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
             progress = await self._check_producer(
-                conn, channel, partition, producer_id, producer_sequence,
-                object_key, payload, schema_id,
+                conn,
+                channel,
+                partition,
+                producer_id,
+                producer_sequence,
+                object_key,
+                payload,
+                schema_id,
             )
             await self._bind_object_identity(
                 conn, object_key, identity["payload_digest"], len(payload), schema_id
@@ -1058,24 +1263,31 @@ class PostgresStream:
                 "SELECT * FROM objects WHERE object_key=$1 FOR UPDATE", object_key
             )
             if obj is not None and (
-                bytes(obj["payload"]), obj["payload_digest"], obj["payload_size"],
+                bytes(obj["payload"]),
+                obj["payload_digest"],
+                obj["payload_size"],
                 obj["schema_id"],
             ) != (payload, identity["payload_digest"], len(payload), schema_id):
                 raise PostgresProtocolError("object identity drift")
             partition_has_object = await conn.fetchval(
                 "SELECT EXISTS(SELECT 1 FROM records WHERE channel=$1 AND partition_id=$2 "
                 "AND object_key=$3)",
-                channel, partition, object_key,
+                channel,
+                partition,
+                object_key,
             )
             added_bytes = 0 if partition_has_object else len(payload)
             oldest_age = await conn.fetchval(
                 """SELECT EXTRACT(EPOCH FROM clock_timestamp()-min(created_at))
                    ::double precision FROM records
                    WHERE channel=$1 AND partition_id=$2""",
-                channel, partition,
+                channel,
+                partition,
             )
             pressure = self._pressure_values(
-                part, added_records=1, added_bytes=added_bytes,
+                part,
+                added_records=1,
+                added_bytes=added_bytes,
                 added_metadata_records=1,
                 oldest_age_seconds=oldest_age,
             )
@@ -1084,7 +1296,8 @@ class PostgresStream:
                 await conn.execute(
                     """UPDATE append_attempts SET block_reason=$2,
                        pressure_snapshot=$3::jsonb WHERE attempt_id=$1""",
-                    attempt_id, ",".join(pressure["binding_dimensions"]),
+                    attempt_id,
+                    ",".join(pressure["binding_dimensions"]),
                     json.dumps(pressure, sort_keys=True),
                 )
             else:
@@ -1093,7 +1306,11 @@ class PostgresStream:
                         """INSERT INTO objects(
                             object_key,payload,payload_digest,payload_size,schema_id,published_at)
                            VALUES($1,$2,$3,$4,$5,clock_timestamp())""",
-                        object_key, payload, identity["payload_digest"], len(payload), schema_id,
+                        object_key,
+                        payload,
+                        identity["payload_digest"],
+                        len(payload),
+                        schema_id,
                     )
                 elif obj["published_at"] is None:
                     await conn.execute(
@@ -1106,27 +1323,40 @@ class PostgresStream:
                         channel,partition_id,sequence,record_id,object_key,payload_digest,
                         payload_size,schema_id,lineage_digest)
                        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)""",
-                    channel, partition, sequence, record_id, object_key,
-                    identity["payload_digest"], len(payload), schema_id, lineage_digest,
+                    channel,
+                    partition,
+                    sequence,
+                    record_id,
+                    object_key,
+                    identity["payload_digest"],
+                    len(payload),
+                    schema_id,
+                    lineage_digest,
                 )
                 await conn.execute(
                     """UPDATE partitions SET next_sequence=next_sequence+1,
                        used_records=used_records+1, used_bytes=used_bytes+$3,
                        used_metadata_records=used_metadata_records+1
                        WHERE channel=$1 AND partition_id=$2""",
-                    channel, partition, added_bytes,
+                    channel,
+                    partition,
+                    added_bytes,
                 )
                 await conn.execute(
                     "UPDATE append_attempts SET status='APPENDED',sequence=$2,"
                     "block_reason=NULL,pressure_snapshot=NULL "
                     "WHERE attempt_id=$1 AND status='BLOCKED'",
-                    attempt_id, sequence,
+                    attempt_id,
+                    sequence,
                 )
                 if progress is not None:
                     await conn.execute(
                         """UPDATE producer_progress SET accepted_through=$4
                            WHERE channel=$1 AND partition_id=$2 AND producer_id=$3""",
-                        channel, partition, producer_id, producer_sequence,
+                        channel,
+                        partition,
+                        producer_id,
+                        producer_sequence,
                     )
                 result = AppendResult(sequence, record_id, object_key)
         if blocked:
@@ -1137,7 +1367,12 @@ class PostgresStream:
         return result
 
     async def create_consumer(
-        self, consumer_id: str, channel: str, partition: str, *, start_sequence: int | None = None
+        self,
+        consumer_id: str,
+        channel: str,
+        partition: str,
+        *,
+        start_sequence: int | None = None,
     ) -> None:
         async with self.pool.acquire() as conn, conn.transaction():
             await conn.execute(
@@ -1146,7 +1381,8 @@ class PostgresStream:
             )
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
@@ -1156,23 +1392,32 @@ class PostgresStream:
             )
             consumer_count = await conn.fetchval(
                 "SELECT count(*) FROM consumers WHERE channel=$1 AND partition_id=$2",
-                channel, partition,
+                channel,
+                partition,
             )
             if not exists and consumer_count >= part["max_consumers"]:
                 pressure = self._pressure_values(
-                    part, added_records=0, added_bytes=0,
-                    added_metadata_records=0, oldest_age_seconds=None,
+                    part,
+                    added_records=0,
+                    added_bytes=0,
+                    added_metadata_records=0,
+                    oldest_age_seconds=None,
                 )
-                pressure.update({
-                    "used_consumers": consumer_count,
-                    "max_consumers": part["max_consumers"],
-                    "projected_consumers": consumer_count + 1,
-                    "binding_dimensions": ["consumers"],
-                })
+                pressure.update(
+                    {
+                        "used_consumers": consumer_count,
+                        "max_consumers": part["max_consumers"],
+                        "projected_consumers": consumer_count + 1,
+                        "binding_dimensions": ["consumers"],
+                    }
+                )
                 raise CapacityBlocked([f"consumer:{consumer_id}"], pressure)
             floor = await conn.fetchval(
                 "SELECT COALESCE(min(sequence),$3) FROM records WHERE channel=$1 "
-                "AND partition_id=$2", channel, partition, part["next_sequence"],
+                "AND partition_id=$2",
+                channel,
+                partition,
+                part["next_sequence"],
             )
             start = floor if start_sequence is None else start_sequence
             if start < floor or start > part["next_sequence"]:
@@ -1181,7 +1426,10 @@ class PostgresStream:
                 """INSERT INTO consumers(
                     consumer_id,channel,partition_id,start_sequence,completed_through)
                    VALUES($1,$2,$3,$4::bigint,$4::bigint-1) ON CONFLICT DO NOTHING""",
-                consumer_id, channel, partition, start,
+                consumer_id,
+                channel,
+                partition,
+                start,
             )
             row = await conn.fetchrow(
                 "SELECT channel,partition_id,start_sequence FROM consumers WHERE consumer_id=$1",
@@ -1196,7 +1444,8 @@ class PostgresStream:
                 "SELECT COALESCE((SELECT min(sequence) FROM records WHERE channel=$1 "
                 "AND partition_id=$2), (SELECT next_sequence FROM partitions "
                 "WHERE channel=$1 AND partition_id=$2))",
-                channel, partition,
+                channel,
+                partition,
             )
 
     async def seal_checkpoint(
@@ -1205,7 +1454,8 @@ class PostgresStream:
         async with self.pool.acquire() as conn, conn.transaction():
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
@@ -1213,13 +1463,17 @@ class PostgresStream:
                 "SELECT COALESCE((SELECT min(sequence) FROM records WHERE channel=$1 "
                 "AND partition_id=$2), (SELECT next_sequence FROM partitions "
                 "WHERE channel=$1 AND partition_id=$2))",
-                channel, partition,
+                channel,
+                partition,
             )
             if cut_sequence + 1 < floor or cut_sequence + 1 > part["next_sequence"]:
                 raise PostgresProtocolError("checkpoint outside retained suffix")
             await conn.execute(
                 "INSERT INTO checkpoints VALUES($1,$2,$3,$4,'SEALED')",
-                checkpoint_id, channel, partition, cut_sequence,
+                checkpoint_id,
+                channel,
+                partition,
+                cut_sequence,
             )
 
     async def release_checkpoint(self, checkpoint_id: str) -> None:
@@ -1232,11 +1486,13 @@ class PostgresStream:
                 raise PostgresProtocolError("checkpoint is not sealed")
             await conn.fetchrow(
                 "SELECT 1 FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                root["channel"], root["partition_id"],
+                root["channel"],
+                root["partition_id"],
             )
             result = await conn.execute(
                 "UPDATE checkpoints SET status='RELEASED' WHERE checkpoint_id=$1 "
-                "AND status='SEALED'", checkpoint_id,
+                "AND status='SEALED'",
+                checkpoint_id,
             )
             if result != "UPDATE 1":
                 raise PostgresProtocolError("checkpoint is not sealed")
@@ -1247,7 +1503,8 @@ class PostgresStream:
         async with self.pool.acquire() as conn, conn.transaction():
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
@@ -1255,30 +1512,39 @@ class PostgresStream:
                 "SELECT COALESCE((SELECT min(sequence) FROM records WHERE channel=$1 "
                 "AND partition_id=$2), (SELECT next_sequence FROM partitions "
                 "WHERE channel=$1 AND partition_id=$2))",
-                channel, partition,
+                channel,
+                partition,
             )
             if sequence < floor or sequence >= part["next_sequence"]:
                 raise PostgresProtocolError("reference outside retained suffix")
             await conn.execute(
                 "INSERT INTO durable_refs VALUES($1,$2,$3,$4,$5,'ACTIVE')",
-                kind, ref_id, channel, partition, sequence,
+                kind,
+                ref_id,
+                channel,
+                partition,
+                sequence,
             )
 
     async def release_ref(self, kind: str, ref_id: str) -> None:
         async with self.pool.acquire() as conn, conn.transaction():
             root = await conn.fetchrow(
                 "SELECT channel,partition_id FROM durable_refs WHERE ref_kind=$1 AND ref_id=$2",
-                kind, ref_id,
+                kind,
+                ref_id,
             )
             if root is None:
                 raise PostgresProtocolError("reference is not active")
             await conn.fetchrow(
                 "SELECT 1 FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                root["channel"], root["partition_id"],
+                root["channel"],
+                root["partition_id"],
             )
             result = await conn.execute(
                 "UPDATE durable_refs SET status='RELEASED' WHERE ref_kind=$1 "
-                "AND ref_id=$2 AND status='ACTIVE'", kind, ref_id,
+                "AND ref_id=$2 AND status='ACTIVE'",
+                kind,
+                ref_id,
             )
             if result != "UPDATE 1":
                 raise PostgresProtocolError("reference is not active")
@@ -1298,58 +1564,101 @@ class PostgresStream:
             )
             part = await conn.fetchrow(
                 "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 FOR UPDATE",
-                channel, partition,
+                channel,
+                partition,
             )
             if part is None:
                 raise PostgresProtocolError("unknown partition")
             roots: list[dict[str, Any]] = []
             for row in await conn.fetch(
                 "SELECT consumer_id,completed_through,in_flight_sequence FROM consumers "
-                "WHERE channel=$1 AND partition_id=$2", channel, partition,
+                "WHERE channel=$1 AND partition_id=$2",
+                channel,
+                partition,
             ):
-                roots.append({"kind": "CONSUMER", "id": row["consumer_id"],
-                              "sequence": row["completed_through"] + 1})
+                roots.append(
+                    {
+                        "kind": "CONSUMER",
+                        "id": row["consumer_id"],
+                        "sequence": row["completed_through"] + 1,
+                    }
+                )
                 if row["in_flight_sequence"] is not None:
-                    roots.append({"kind": "IN_FLIGHT", "id": row["consumer_id"],
-                                  "sequence": row["in_flight_sequence"]})
+                    roots.append(
+                        {
+                            "kind": "IN_FLIGHT",
+                            "id": row["consumer_id"],
+                            "sequence": row["in_flight_sequence"],
+                        }
+                    )
             for row in await conn.fetch(
                 "SELECT checkpoint_id,cut_sequence FROM checkpoints WHERE channel=$1 "
-                "AND partition_id=$2 AND status='SEALED'", channel, partition,
+                "AND partition_id=$2 AND status='SEALED'",
+                channel,
+                partition,
             ):
-                roots.append({"kind": "CHECKPOINT", "id": row["checkpoint_id"],
-                              "sequence": row["cut_sequence"] + 1})
+                roots.append(
+                    {
+                        "kind": "CHECKPOINT",
+                        "id": row["checkpoint_id"],
+                        "sequence": row["cut_sequence"] + 1,
+                    }
+                )
             for row in await conn.fetch(
                 "SELECT ref_kind,ref_id,sequence FROM durable_refs WHERE channel=$1 "
-                "AND partition_id=$2 AND status='ACTIVE'", channel, partition,
+                "AND partition_id=$2 AND status='ACTIVE'",
+                channel,
+                partition,
             ):
-                roots.append({"kind": row["ref_kind"], "id": row["ref_id"],
-                              "sequence": row["sequence"]})
+                roots.append(
+                    {
+                        "kind": row["ref_kind"],
+                        "id": row["ref_id"],
+                        "sequence": row["sequence"],
+                    }
+                )
             if after_root_snapshot is not None:
                 await after_root_snapshot()
             safe = min(
                 requested_through,
-                min((root["sequence"] - 1 for root in roots), default=requested_through),
+                min(
+                    (root["sequence"] - 1 for root in roots), default=requested_through
+                ),
             )
             rows = await conn.fetch(
                 "SELECT * FROM records WHERE channel=$1 AND partition_id=$2 "
-                "AND sequence<=$3 ORDER BY sequence", channel, partition, safe,
+                "AND sequence<=$3 ORDER BY sequence",
+                channel,
+                partition,
+                safe,
             )
             sequences = [row["sequence"] for row in rows]
             manifest_id = await conn.fetchval(
                 """INSERT INTO compaction_manifests(
                     channel,partition_id,requested_through,safe_through,roots,sequences,status)
                    VALUES($1,$2,$3,$4,$5::jsonb,$6::jsonb,'PLANNED') RETURNING manifest_id""",
-                channel, partition, requested_through, safe,
-                json.dumps(roots, sort_keys=True), json.dumps(sequences),
+                channel,
+                partition,
+                requested_through,
+                safe,
+                json.dumps(roots, sort_keys=True),
+                json.dumps(sequences),
             )
             await conn.executemany(
                 """INSERT INTO compaction_tombstones VALUES(
                    $1,$2,$3,$4,$5,$6,$7,$8,$9,$10)""",
                 [
                     (
-                        channel, partition, row["sequence"], manifest_id,
-                        row["record_id"], row["object_key"], row["payload_digest"],
-                        row["payload_size"], row["schema_id"], row["lineage_digest"],
+                        channel,
+                        partition,
+                        row["sequence"],
+                        manifest_id,
+                        row["record_id"],
+                        row["object_key"],
+                        row["payload_digest"],
+                        row["payload_size"],
+                        row["schema_id"],
+                        row["lineage_digest"],
                     )
                     for row in rows
                 ],
@@ -1358,13 +1667,19 @@ class PostgresStream:
             if sequences:
                 await conn.execute(
                     "DELETE FROM records WHERE channel=$1 AND partition_id=$2 "
-                    "AND sequence=ANY($3::bigint[])", channel, partition, sequences,
+                    "AND sequence=ANY($3::bigint[])",
+                    channel,
+                    partition,
+                    sequences,
                 )
             remaining_local = {
-                row["object_key"] for row in await conn.fetch(
+                row["object_key"]
+                for row in await conn.fetch(
                     "SELECT DISTINCT object_key FROM records WHERE channel=$1 "
                     "AND partition_id=$2 AND object_key=ANY($3::text[])",
-                    channel, partition, candidate_keys,
+                    channel,
+                    partition,
+                    candidate_keys,
                 )
             }
             size_by_key = {row["object_key"]: row["payload_size"] for row in rows}
@@ -1381,16 +1696,23 @@ class PostgresStream:
             await conn.execute(
                 "UPDATE partitions SET used_records=used_records-$3,used_bytes=used_bytes-$4 "
                 "WHERE channel=$1 AND partition_id=$2",
-                channel, partition, len(rows), reclaimed_bytes,
+                channel,
+                partition,
+                len(rows),
+                reclaimed_bytes,
             )
             await conn.execute(
                 "UPDATE compaction_manifests SET status='COMPLETED' WHERE manifest_id=$1",
                 manifest_id,
             )
             return {
-                "manifest_id": manifest_id, "requested_through": requested_through,
-                "safe_through": safe, "roots": roots, "sequences": sequences,
-                "reclaimed_records": len(rows), "reclaimed_bytes": reclaimed_bytes,
+                "manifest_id": manifest_id,
+                "requested_through": requested_through,
+                "safe_through": safe,
+                "roots": roots,
+                "sequences": sequences,
+                "reclaimed_records": len(rows),
+                "reclaimed_bytes": reclaimed_bytes,
             }
 
     async def compact_metadata(
@@ -1424,8 +1746,10 @@ class PostgresStream:
                     prior_operation["cuts_digest"] != cuts_digest
                     or json.dumps(
                         json.loads(prior_operation["cuts"]),
-                        sort_keys=True, separators=(",", ":"),
-                    ) != cuts_json
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    )
+                    != cuts_json
                 ):
                     raise PostgresProtocolError("metadata operation identity drift")
                 outcome = json.loads(prior_operation["outcome"])
@@ -1447,7 +1771,8 @@ class PostgresStream:
                 parts[location] = part
                 summaries[location] = await conn.fetchrow(
                     "SELECT * FROM metadata_summaries WHERE channel=$1 AND partition_id=$2 "
-                    "FOR UPDATE", *location,
+                    "FOR UPDATE",
+                    *location,
                 )
             material: dict[tuple[str, str], dict[str, Any]] = {}
             all_object_keys: set[str] = set()
@@ -1460,27 +1785,41 @@ class PostgresStream:
                     raise PostgresProtocolError("metadata cut exceeds appended prefix")
                 if await conn.fetchval(
                     "SELECT EXISTS(SELECT 1 FROM records WHERE channel=$1 "
-                    "AND partition_id=$2 AND sequence<=$3)", *location, through,
+                    "AND partition_id=$2 AND sequence<=$3)",
+                    *location,
+                    through,
                 ):
-                    raise PostgresProtocolError("metadata retirement requires data compaction")
+                    raise PostgresProtocolError(
+                        "metadata retirement requires data compaction"
+                    )
                 tombstones = await conn.fetch(
                     "SELECT * FROM compaction_tombstones WHERE channel=$1 "
                     "AND partition_id=$2 AND sequence>$3 AND sequence<=$4 ORDER BY sequence",
-                    *location, retired, through,
+                    *location,
+                    retired,
+                    through,
                 )
                 if [row["sequence"] for row in tombstones] != list(
                     range(retired + 1, through + 1)
                 ):
-                    raise PostgresProtocolError("metadata retirement prefix is not contiguous")
+                    raise PostgresProtocolError(
+                        "metadata retirement prefix is not contiguous"
+                    )
                 if await conn.fetchval(
                     "SELECT EXISTS(SELECT 1 FROM consumers WHERE channel=$1 "
-                    "AND partition_id=$2 AND in_flight_sequence<=$3)", *location, through,
+                    "AND partition_id=$2 AND in_flight_sequence<=$3)",
+                    *location,
+                    through,
                 ):
-                    raise PostgresProtocolError("metadata prefix has in-flight delivery")
+                    raise PostgresProtocolError(
+                        "metadata prefix has in-flight delivery"
+                    )
                 attempts = await conn.fetch(
                     "SELECT * FROM append_attempts WHERE channel=$1 AND partition_id=$2 "
                     "AND status='APPENDED' AND sequence>$3 AND sequence<=$4 ORDER BY sequence",
-                    *location, retired, through,
+                    *location,
+                    retired,
+                    through,
                 )
                 if len(attempts) != through - retired or any(
                     row["producer_id"] is None or row["producer_sequence"] is None
@@ -1491,18 +1830,24 @@ class PostgresStream:
                     )
                 for row in attempts:
                     if not row["object_key"].startswith("sha256:"):
-                        raise PostgresProtocolError("metadata prefix is not content addressed")
+                        raise PostgresProtocolError(
+                            "metadata prefix is not content addressed"
+                        )
                     all_object_keys.add(row["object_key"])
                 completions = await conn.fetch(
                     """SELECT t.* FROM turn_completions t JOIN consumers c USING(consumer_id)
                        WHERE c.channel=$1 AND c.partition_id=$2
                          AND t.input_sequence>$3 AND t.input_sequence<=$4
                        ORDER BY t.consumer_id,t.input_sequence""",
-                    *location, retired, through,
+                    *location,
+                    retired,
+                    through,
                 )
                 material[location] = {
-                    "retired": retired, "through": through,
-                    "attempts": attempts, "tombstones": tombstones,
+                    "retired": retired,
+                    "through": through,
+                    "attempts": attempts,
+                    "tombstones": tombstones,
                     "completions": completions,
                 }
 
@@ -1511,7 +1856,8 @@ class PostgresStream:
                     if completion["completion_kind"] != "YIELD":
                         continue
                     output_location = (
-                        completion["output_channel"], completion["output_partition"]
+                        completion["output_channel"],
+                        completion["output_partition"],
                     )
                     output_cut = cut_map.get(output_location)
                     if output_cut is None or completion["output_sequence"] > output_cut:
@@ -1522,18 +1868,27 @@ class PostgresStream:
             result_locations: dict[str, Any] = {}
             for location, rows in material.items():
                 summary = summaries[location]
-                prior_digest = "0" * 64 if summary is None else summary["rolling_digest"]
+                prior_digest = (
+                    "0" * 64 if summary is None else summary["rolling_digest"]
+                )
                 canonical = {
-                    "location": location, "from": rows["retired"] + 1,
+                    "location": location,
+                    "from": rows["retired"] + 1,
                     "through": rows["through"],
                     "attempts": [dict(row) for row in rows["attempts"]],
                     "tombstones": [dict(row) for row in rows["tombstones"]],
                     "completions": [dict(row) for row in rows["completions"]],
                 }
                 rolling = hashlib.sha256(
-                    (prior_digest + json.dumps(
-                        canonical, sort_keys=True, separators=(",", ":"), default=str
-                    )).encode()
+                    (
+                        prior_digest
+                        + json.dumps(
+                            canonical,
+                            sort_keys=True,
+                            separators=(",", ":"),
+                            default=str,
+                        )
+                    ).encode()
                 ).hexdigest()
                 completion_delete_count = await conn.fetchval(
                     """WITH deleted AS (
@@ -1542,36 +1897,44 @@ class PostgresStream:
                          AND c.partition_id=$2 AND t.input_sequence<=$3
                          AND t.input_sequence<c.completed_through
                        RETURNING 1) SELECT count(*) FROM deleted""",
-                    *location, rows["through"],
+                    *location,
+                    rows["through"],
                 )
                 await conn.execute(
                     """UPDATE consumers SET completion_retired_through=GREATEST(
                        completion_retired_through,LEAST($3,completed_through-1))
                        WHERE channel=$1 AND partition_id=$2""",
-                    *location, rows["through"],
+                    *location,
+                    rows["through"],
                 )
                 for attempt in rows["attempts"]:
                     await conn.execute(
                         """UPDATE producer_progress SET retired_through=GREATEST(
                            retired_through,$4) WHERE channel=$1 AND partition_id=$2
                            AND producer_id=$3""",
-                        *location, attempt["producer_id"], attempt["producer_sequence"],
+                        *location,
+                        attempt["producer_id"],
+                        attempt["producer_sequence"],
                     )
                 await conn.execute(
                     "DELETE FROM compaction_tombstones WHERE channel=$1 "
-                    "AND partition_id=$2 AND sequence<=$3", *location, rows["through"],
+                    "AND partition_id=$2 AND sequence<=$3",
+                    *location,
+                    rows["through"],
                 )
                 deleted_attempts = await conn.fetchval(
                     """WITH deleted AS (
                        DELETE FROM append_attempts WHERE channel=$1 AND partition_id=$2
                          AND status='APPENDED' AND sequence<=$3 RETURNING 1)
                        SELECT count(*) FROM deleted""",
-                    *location, rows["through"],
+                    *location,
+                    rows["through"],
                 )
                 await conn.execute(
                     """UPDATE partitions SET used_metadata_records=
                        used_metadata_records-$3 WHERE channel=$1 AND partition_id=$2""",
-                    *location, deleted_attempts,
+                    *location,
+                    deleted_attempts,
                 )
                 previous_records = 0 if summary is None else summary["retired_records"]
                 previous_completions = (
@@ -1590,12 +1953,17 @@ class PostgresStream:
                          prior_digest=EXCLUDED.prior_digest,
                          operation_id=EXCLUDED.operation_id,
                          updated_at=clock_timestamp()""",
-                    *location, rows["through"], previous_records + deleted_attempts,
+                    *location,
+                    rows["through"],
+                    previous_records + deleted_attempts,
                     previous_completions + completion_delete_count,
-                    rolling, prior_digest, operation_id,
+                    rolling,
+                    prior_digest,
+                    operation_id,
                 )
                 producer_anchors = [
-                    dict(row) for row in await conn.fetch(
+                    dict(row)
+                    for row in await conn.fetch(
                         """SELECT producer_id,retired_through
                            FROM producer_progress
                            WHERE channel=$1 AND partition_id=$2
@@ -1605,7 +1973,8 @@ class PostgresStream:
                     )
                 ]
                 consumer_anchors = [
-                    dict(row) for row in await conn.fetch(
+                    dict(row)
+                    for row in await conn.fetch(
                         """SELECT consumer_id,completion_retired_through
                            FROM consumers
                            WHERE channel=$1 AND partition_id=$2
@@ -1619,9 +1988,7 @@ class PostgresStream:
                     "consumers": consumer_anchors,
                 }
                 anchor_digest = hashlib.sha256(
-                    json.dumps(
-                        anchors, sort_keys=True, separators=(",", ":")
-                    ).encode()
+                    json.dumps(anchors, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
                 result_locations[f"{location[0]}/{location[1]}"] = {
                     "retired_through": rows["through"],
@@ -1649,14 +2016,17 @@ class PostgresStream:
                     sorted(all_object_keys),
                 )
             outcome = {
-                "operation_id": operation_id, "idempotent_retry": False,
+                "operation_id": operation_id,
+                "idempotent_retry": False,
                 "locations": result_locations,
             }
             await conn.execute(
                 """INSERT INTO metadata_operations(
                    operation_id,cuts_digest,cuts,outcome)
                    VALUES($1,$2,$3::jsonb,$4::jsonb)""",
-                operation_id, cuts_digest, cuts_json,
+                operation_id,
+                cuts_digest,
+                cuts_json,
                 json.dumps(outcome, sort_keys=True),
             )
             await conn.execute(
@@ -1678,7 +2048,9 @@ class PostgresStream:
                 raise PostgresProtocolError("unknown consumer")
             available = await conn.fetchval(
                 "SELECT $1::timestamptz IS NULL OR $1 <= clock_timestamp() OR $2=$3",
-                row["lease_expires_at"], row["owner_id"], owner_id,
+                row["lease_expires_at"],
+                row["owner_id"],
+                owner_id,
             )
             if not available:
                 raise PostgresProtocolError("consumer lease held")
@@ -1689,7 +2061,9 @@ class PostgresStream:
                      WHEN in_flight_sequence IS NOT NULL
                      THEN 1 ELSE 0 END
                    WHERE consumer_id=$1 RETURNING owner_epoch""",
-                consumer_id, owner_id, lease_seconds,
+                consumer_id,
+                owner_id,
+                lease_seconds,
             )
 
     async def renew(
@@ -1702,7 +2076,10 @@ class PostgresStream:
                    WHERE consumer_id=$1 AND owner_id=$2 AND owner_epoch=$3
                      AND lease_expires_at > clock_timestamp()
                    RETURNING owner_epoch""",
-                consumer_id, owner_id, owner_epoch, lease_seconds,
+                consumer_id,
+                owner_id,
+                owner_epoch,
+                lease_seconds,
             )
             if value is None:
                 raise StaleOwner("lease renewal fenced")
@@ -1718,7 +2095,8 @@ class PostgresStream:
         async with self.pool.acquire() as conn, conn.transaction():
             consumer = await conn.fetchrow(
                 "SELECT *,lease_expires_at>clock_timestamp() AS lease_valid "
-                "FROM consumers WHERE consumer_id=$1 FOR UPDATE", token.consumer_id,
+                "FROM consumers WHERE consumer_id=$1 FOR UPDATE",
+                token.consumer_id,
             )
             if consumer is None:
                 raise PostgresProtocolError("unknown consumer")
@@ -1729,25 +2107,37 @@ class PostgresStream:
                 token.consumer_id,
             )
             if invocation is None or (
-                invocation["input_sequence"], invocation["attempt"],
-                invocation["owner_id"], invocation["owner_epoch"],
-                invocation["holder_id"], invocation["lease_valid"],
+                invocation["input_sequence"],
+                invocation["attempt"],
+                invocation["owner_id"],
+                invocation["owner_epoch"],
+                invocation["holder_id"],
+                invocation["lease_valid"],
             ) != (
-                token.sequence, token.attempt, token.owner_id, token.owner_epoch,
-                holder_id, True,
+                token.sequence,
+                token.attempt,
+                token.owner_id,
+                token.owner_epoch,
+                holder_id,
+                True,
             ):
                 raise StaleOwner("runtime invocation renewal fenced")
             await conn.execute(
                 """UPDATE consumers SET
                    lease_expires_at=clock_timestamp()+make_interval(secs=>$4)
                    WHERE consumer_id=$1 AND owner_id=$2 AND owner_epoch=$3""",
-                token.consumer_id, token.owner_id, token.owner_epoch, lease_seconds,
+                token.consumer_id,
+                token.owner_id,
+                token.owner_epoch,
+                lease_seconds,
             )
             await conn.execute(
                 """UPDATE runtime_invocations SET
                    expires_at=clock_timestamp()+make_interval(secs=>$3)
                    WHERE consumer_id=$1 AND holder_id=$2""",
-                token.consumer_id, holder_id, lease_seconds,
+                token.consumer_id,
+                holder_id,
+                lease_seconds,
             )
 
     @staticmethod
@@ -1770,16 +2160,18 @@ class PostgresStream:
                 raise PostgresProtocolError("unknown consumer")
             self._assert_owner(row, owner_id, owner_epoch)
             sequence = row["in_flight_sequence"] or row["completed_through"] + 1
-            if (
-                row["in_flight_sequence"] is not None
-                and row["in_flight_end"] not in (None, row["in_flight_sequence"])
+            if row["in_flight_sequence"] is not None and row["in_flight_end"] not in (
+                None,
+                row["in_flight_sequence"],
             ):
                 raise PostgresProtocolError("bounded batch is already in flight")
             record = await conn.fetchrow(
                 """SELECT r.*,o.payload FROM records r JOIN objects o USING(object_key)
                    WHERE r.channel=$1 AND r.partition_id=$2 AND r.sequence=$3
                      AND o.published_at IS NOT NULL""",
-                row["channel"], row["partition_id"], sequence,
+                row["channel"],
+                row["partition_id"],
+                sequence,
             )
             if record is None:
                 return None
@@ -1790,13 +2182,21 @@ class PostgresStream:
                     "UPDATE consumers SET in_flight_sequence=$2,in_flight_end=$2,"
                     "delivery_attempt=$3 "
                     "WHERE consumer_id=$1",
-                    consumer_id, sequence, attempt,
+                    consumer_id,
+                    sequence,
+                    attempt,
                 )
             token = DeliveryToken(consumer_id, sequence, owner_id, owner_epoch, attempt)
             envelope = Envelope(
-                record["channel"], record["partition_id"], record["sequence"],
-                record["record_id"], record["object_key"], record["payload_digest"],
-                record["payload_size"], record["schema_id"], record["lineage_digest"],
+                record["channel"],
+                record["partition_id"],
+                record["sequence"],
+                record["record_id"],
+                record["object_key"],
+                record["payload_digest"],
+                record["payload_size"],
+                record["schema_id"],
+                record["lineage_digest"],
                 bytes(record["payload"]),
             )
             return token, envelope
@@ -1812,7 +2212,7 @@ class PostgresStream:
         """Durably deliver one bounded contiguous range.
 
         The consumer may process records individually, but progress for the
-        range is committed atomically by ``complete_return_batch``.  A crash
+        range is committed atomically by `complete_return_batch`.  A crash
         before that commit redelivers the whole range from its first record.
         """
         if not 1 <= max_records <= 32:
@@ -1820,7 +2220,8 @@ class PostgresStream:
         async with self.pool.acquire() as conn, conn.transaction():
             consumer = await conn.fetchrow(
                 "SELECT *,lease_expires_at>clock_timestamp() AS lease_valid "
-                "FROM consumers WHERE consumer_id=$1 FOR UPDATE", consumer_id,
+                "FROM consumers WHERE consumer_id=$1 FOR UPDATE",
+                consumer_id,
             )
             if consumer is None:
                 raise PostgresProtocolError("unknown consumer")
@@ -1840,7 +2241,11 @@ class PostgresStream:
                      AND ($4::bigint IS NULL OR r.sequence<=$4)
                      AND o.published_at IS NOT NULL
                    ORDER BY r.sequence LIMIT $5""",
-                consumer["channel"], consumer["partition_id"], first, last, limit,
+                consumer["channel"],
+                consumer["partition_id"],
+                first,
+                last,
+                limit,
             )
             if not records:
                 return []
@@ -1854,7 +2259,10 @@ class PostgresStream:
                 await conn.execute(
                     """UPDATE consumers SET in_flight_sequence=$2,in_flight_end=$3,
                        delivery_attempt=$4 WHERE consumer_id=$1""",
-                    consumer_id, first, last, attempt,
+                    consumer_id,
+                    first,
+                    last,
+                    attempt,
                 )
             return [
                 (
@@ -1862,10 +2270,15 @@ class PostgresStream:
                         consumer_id, record["sequence"], owner_id, owner_epoch, attempt
                     ),
                     Envelope(
-                        record["channel"], record["partition_id"], record["sequence"],
-                        record["record_id"], record["object_key"],
-                        record["payload_digest"], record["payload_size"],
-                        record["schema_id"], record["lineage_digest"],
+                        record["channel"],
+                        record["partition_id"],
+                        record["sequence"],
+                        record["record_id"],
+                        record["object_key"],
+                        record["payload_digest"],
+                        record["payload_size"],
+                        record["schema_id"],
+                        record["lineage_digest"],
                         bytes(record["payload"]),
                     ),
                 )
@@ -1878,13 +2291,15 @@ class PostgresStream:
         async with self.pool.acquire() as conn, conn.transaction():
             consumer = await conn.fetchrow(
                 "SELECT *,lease_expires_at>clock_timestamp() AS lease_valid "
-                "FROM consumers WHERE consumer_id=$1 FOR UPDATE", token.consumer_id,
+                "FROM consumers WHERE consumer_id=$1 FOR UPDATE",
+                token.consumer_id,
             )
             if consumer is None:
                 raise PostgresProtocolError("unknown consumer")
             self._assert_owner(consumer, token.owner_id, token.owner_epoch)
             if (consumer["in_flight_sequence"], consumer["delivery_attempt"]) != (
-                token.sequence, token.attempt,
+                token.sequence,
+                token.attempt,
             ):
                 raise PostgresProtocolError("invocation token is not current")
             current = await conn.fetchrow(
@@ -1896,14 +2311,22 @@ class PostgresStream:
                 await conn.execute(
                     """INSERT INTO runtime_invocations VALUES(
                        $1,$2,$3,$4,$5,$6,clock_timestamp()+make_interval(secs=>$7))""",
-                    token.consumer_id, token.sequence, token.attempt, token.owner_id,
-                    token.owner_epoch, holder_id, lease_seconds,
+                    token.consumer_id,
+                    token.sequence,
+                    token.attempt,
+                    token.owner_id,
+                    token.owner_epoch,
+                    holder_id,
+                    lease_seconds,
                 )
                 await conn.execute(
                     """UPDATE consumers SET
                        lease_expires_at=clock_timestamp()+make_interval(secs=>$4)
                        WHERE consumer_id=$1 AND owner_id=$2 AND owner_epoch=$3""",
-                    token.consumer_id, token.owner_id, token.owner_epoch, lease_seconds,
+                    token.consumer_id,
+                    token.owner_id,
+                    token.owner_epoch,
+                    lease_seconds,
                 )
                 return
             if current["holder_id"] == holder_id:
@@ -1911,13 +2334,18 @@ class PostgresStream:
                     "UPDATE runtime_invocations SET "
                     "expires_at=clock_timestamp()+make_interval(secs=>$3) "
                     "WHERE consumer_id=$1 AND holder_id=$2",
-                    token.consumer_id, holder_id, lease_seconds,
+                    token.consumer_id,
+                    holder_id,
+                    lease_seconds,
                 )
                 await conn.execute(
                     """UPDATE consumers SET
                        lease_expires_at=clock_timestamp()+make_interval(secs=>$4)
                        WHERE consumer_id=$1 AND owner_id=$2 AND owner_epoch=$3""",
-                    token.consumer_id, token.owner_id, token.owner_epoch, lease_seconds,
+                    token.consumer_id,
+                    token.owner_id,
+                    token.owner_epoch,
+                    lease_seconds,
                 )
                 return
             if (
@@ -1931,21 +2359,30 @@ class PostgresStream:
                    owner_id=$4,owner_epoch=$5,holder_id=$6,
                    expires_at=clock_timestamp()+make_interval(secs=>$7)
                    WHERE consumer_id=$1""",
-                token.consumer_id, token.sequence, token.attempt, token.owner_id,
-                token.owner_epoch, holder_id, lease_seconds,
+                token.consumer_id,
+                token.sequence,
+                token.attempt,
+                token.owner_id,
+                token.owner_epoch,
+                holder_id,
+                lease_seconds,
             )
             await conn.execute(
                 """UPDATE consumers SET
                    lease_expires_at=clock_timestamp()+make_interval(secs=>$4)
                    WHERE consumer_id=$1 AND owner_id=$2 AND owner_epoch=$3""",
-                token.consumer_id, token.owner_id, token.owner_epoch, lease_seconds,
+                token.consumer_id,
+                token.owner_id,
+                token.owner_epoch,
+                lease_seconds,
             )
 
     async def release_invocation(self, consumer_id: str, holder_id: str) -> None:
         async with self.pool.acquire() as conn:
             await conn.execute(
                 "DELETE FROM runtime_invocations WHERE consumer_id=$1 AND holder_id=$2",
-                consumer_id, holder_id,
+                consumer_id,
+                holder_id,
             )
 
     async def complete(
@@ -1976,10 +2413,13 @@ class PostgresStream:
                 raise PostgresProtocolError("unknown consumer")
             self._assert_owner(row, token.owner_id, token.owner_epoch)
             if token.sequence <= row["completion_retired_through"]:
-                raise IdempotencyHorizonExpired("completion retry is outside hot horizon")
+                raise IdempotencyHorizonExpired(
+                    "completion retry is outside hot horizon"
+                )
             prior = await conn.fetchrow(
                 "SELECT * FROM turn_completions WHERE consumer_id=$1 AND input_sequence=$2",
-                token.consumer_id, token.sequence,
+                token.consumer_id,
+                token.sequence,
             )
             if prior is not None:
                 stored_state = prior["managed_state"]
@@ -2005,19 +2445,33 @@ class PostgresStream:
                            schema_id,lineage_digest FROM compaction_tombstones
                            WHERE channel=$1 AND partition_id=$2 AND sequence=$3
                            LIMIT 1""",
-                        prior["output_channel"], prior["output_partition"],
+                        prior["output_channel"],
+                        prior["output_partition"],
                         prior["output_sequence"],
                     )
-                    exact = exact and witness is not None and (
-                        prior["output_channel"], prior["output_partition"],
-                        witness["record_id"], witness["object_key"],
-                        witness["payload_digest"], witness["payload_size"],
-                        witness["schema_id"], witness["lineage_digest"],
-                    ) == (
-                        output.channel, output.partition, output.record_id,
-                        output.object_key, _sha256(output.payload), len(output.payload),
-                        output.schema_id,
-                        output.lineage_digest,
+                    exact = (
+                        exact
+                        and witness is not None
+                        and (
+                            prior["output_channel"],
+                            prior["output_partition"],
+                            witness["record_id"],
+                            witness["object_key"],
+                            witness["payload_digest"],
+                            witness["payload_size"],
+                            witness["schema_id"],
+                            witness["lineage_digest"],
+                        )
+                        == (
+                            output.channel,
+                            output.partition,
+                            output.record_id,
+                            output.object_key,
+                            _sha256(output.payload),
+                            len(output.payload),
+                            output.schema_id,
+                            output.lineage_digest,
+                        )
                     )
                 if not exact:
                     raise PostgresProtocolError("completion identity drift")
@@ -2029,12 +2483,18 @@ class PostgresStream:
             if invocation is not None and (
                 invocation_holder_id is None
                 or (
-                    invocation["input_sequence"], invocation["attempt"],
-                    invocation["owner_id"], invocation["owner_epoch"],
+                    invocation["input_sequence"],
+                    invocation["attempt"],
+                    invocation["owner_id"],
+                    invocation["owner_epoch"],
                     invocation["holder_id"],
-                ) != (
-                    token.sequence, token.attempt, token.owner_id,
-                    token.owner_epoch, invocation_holder_id,
+                )
+                != (
+                    token.sequence,
+                    token.attempt,
+                    token.owner_id,
+                    token.owner_epoch,
+                    invocation_holder_id,
                 )
             ):
                 raise PostgresProtocolError("completion lacks exact invocation holder")
@@ -2049,29 +2509,39 @@ class PostgresStream:
             output_sequence: int | None = None
             if output is not None:
                 output_producer = (
-                    f"turn:{token.consumer_id}" if invocation_holder_id is not None else None
+                    f"turn:{token.consumer_id}"
+                    if invocation_holder_id is not None
+                    else None
                 )
                 if output_producer is not None:
                     registered = await conn.fetchval(
                         "SELECT EXISTS(SELECT 1 FROM producer_progress WHERE channel=$1 "
                         "AND partition_id=$2 AND producer_id=$3)",
-                        output.channel, output.partition, output_producer,
+                        output.channel,
+                        output.partition,
+                        output_producer,
                     )
                     if not registered:
                         output_part = await conn.fetchrow(
                             "SELECT * FROM partitions WHERE channel=$1 AND partition_id=$2 "
-                            "FOR UPDATE", output.channel, output.partition,
+                            "FOR UPDATE",
+                            output.channel,
+                            output.partition,
                         )
                         count = await conn.fetchval(
                             "SELECT count(*) FROM producer_progress WHERE channel=$1 "
-                            "AND partition_id=$2", output.channel, output.partition,
+                            "AND partition_id=$2",
+                            output.channel,
+                            output.partition,
                         )
                         if output_part is None or count >= output_part["max_producers"]:
                             raise PostgresProtocolError("output producer registry full")
                         await conn.execute(
                             """INSERT INTO producer_progress(
                                channel,partition_id,producer_id) VALUES($1,$2,$3)""",
-                            output.channel, output.partition, output_producer,
+                            output.channel,
+                            output.partition,
+                            output_producer,
                         )
                 appended = await self._append_with_connection(
                     conn,
@@ -2086,7 +2556,8 @@ class PostgresStream:
                     output_producer,
                     (
                         token.sequence - row["start_sequence"] + 1
-                        if output_producer is not None else None
+                        if output_producer is not None
+                        else None
                     ),
                 )
                 output_sequence = appended.sequence
@@ -2098,10 +2569,17 @@ class PostgresStream:
                     output_channel,output_partition,output_sequence,state_schema,
                     state_version,managed_state)
                    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb)""",
-                token.consumer_id, token.sequence, kind, token.owner_id,
-                token.owner_epoch, None if output is None else output.channel,
-                None if output is None else output.partition, output_sequence,
-                state_schema, state_version, json.dumps(state),
+                token.consumer_id,
+                token.sequence,
+                kind,
+                token.owner_id,
+                token.owner_epoch,
+                None if output is None else output.channel,
+                None if output is None else output.partition,
+                output_sequence,
+                state_schema,
+                state_version,
+                json.dumps(state),
             )
             if fault is not None:
                 fault("completion:after_marker_before_progress")
@@ -2112,15 +2590,21 @@ class PostgresStream:
                    WHERE consumer_id=$1 AND owner_id=$2 AND owner_epoch=$3
                      AND lease_expires_at > clock_timestamp()
                      AND in_flight_sequence=$4 RETURNING completed_through""",
-                token.consumer_id, token.owner_id, token.owner_epoch, token.sequence,
-                json.dumps(state), state_schema, state_version,
+                token.consumer_id,
+                token.owner_id,
+                token.owner_epoch,
+                token.sequence,
+                json.dumps(state),
+                state_schema,
+                state_version,
             )
             if advanced is None:
                 raise StaleOwner("completion fenced")
             if invocation_holder_id is not None:
                 deleted = await conn.execute(
                     "DELETE FROM runtime_invocations WHERE consumer_id=$1 AND holder_id=$2",
-                    token.consumer_id, invocation_holder_id,
+                    token.consumer_id,
+                    invocation_holder_id,
                 )
                 if deleted != "DELETE 1":
                     raise PostgresProtocolError("completion invocation retire failed")
@@ -2151,18 +2635,16 @@ class PostgresStream:
         if [token.sequence for token in tokens] != expected_sequences:
             raise PostgresProtocolError("completion batch is not contiguous")
         if any(
-            (
-                token.consumer_id, token.owner_id, token.owner_epoch, token.attempt
-            ) != (
-                head.consumer_id, head.owner_id, head.owner_epoch, head.attempt
-            )
+            (token.consumer_id, token.owner_id, token.owner_epoch, token.attempt)
+            != (head.consumer_id, head.owner_id, head.owner_epoch, head.attempt)
             for token in tokens
         ):
             raise PostgresProtocolError("completion batch token identity drift")
         async with self.pool.acquire() as conn, conn.transaction():
             consumer = await conn.fetchrow(
                 "SELECT *,lease_expires_at>clock_timestamp() AS lease_valid "
-                "FROM consumers WHERE consumer_id=$1 FOR UPDATE", head.consumer_id,
+                "FROM consumers WHERE consumer_id=$1 FOR UPDATE",
+                head.consumer_id,
             )
             if consumer is None:
                 raise PostgresProtocolError("unknown consumer")
@@ -2187,21 +2669,34 @@ class PostgresStream:
                    WHERE t.channel=$1 AND t.partition_id=$2
                      AND t.sequence BETWEEN $3 AND $4
                    ORDER BY sequence""",
-                consumer["channel"], consumer["partition_id"], head.sequence, final,
+                consumer["channel"],
+                consumer["partition_id"],
+                head.sequence,
+                final,
             )
             if [row["sequence"] for row in witnesses] != expected_sequences:
                 raise PostgresProtocolError("completion input witness missing")
             for (_, envelope), witness in zip(deliveries, witnesses):
                 identity_matches = (
-                    envelope.channel, envelope.partition, envelope.sequence,
-                    envelope.record_id, envelope.object_key,
-                    envelope.payload_digest, envelope.payload_size, envelope.schema_id,
+                    envelope.channel,
+                    envelope.partition,
+                    envelope.sequence,
+                    envelope.record_id,
+                    envelope.object_key,
+                    envelope.payload_digest,
+                    envelope.payload_size,
+                    envelope.schema_id,
                     envelope.lineage_digest,
                 ) == (
-                    witness["channel"], witness["partition_id"], witness["sequence"],
-                    witness["record_id"], witness["object_key"],
-                    witness["payload_digest"], witness["payload_size"],
-                    witness["schema_id"], witness["lineage_digest"],
+                    witness["channel"],
+                    witness["partition_id"],
+                    witness["sequence"],
+                    witness["record_id"],
+                    witness["object_key"],
+                    witness["payload_digest"],
+                    witness["payload_size"],
+                    witness["schema_id"],
+                    witness["lineage_digest"],
                 )
                 payload_matches = (
                     len(envelope.payload) == witness["payload_size"]
@@ -2216,7 +2711,9 @@ class PostgresStream:
             prior_rows = await conn.fetch(
                 "SELECT * FROM turn_completions WHERE consumer_id=$1 "
                 "AND input_sequence BETWEEN $2 AND $3 ORDER BY input_sequence",
-                head.consumer_id, head.sequence, final,
+                head.consumer_id,
+                head.sequence,
+                final,
             )
             if prior_rows:
                 exact = len(prior_rows) == len(tokens)
@@ -2237,8 +2734,10 @@ class PostgresStream:
                     raise PostgresProtocolError("completion batch identity drift")
                 return len(tokens)
             if (
-                consumer["in_flight_sequence"], consumer["in_flight_end"],
-                consumer["delivery_attempt"], consumer["completed_through"] + 1,
+                consumer["in_flight_sequence"],
+                consumer["in_flight_end"],
+                consumer["delivery_attempt"],
+                consumer["completed_through"] + 1,
             ) != (head.sequence, final, head.attempt, head.sequence):
                 raise PostgresProtocolError("completion lacks exact in-flight batch")
             if any(row["compacted"] for row in witnesses):
@@ -2247,8 +2746,12 @@ class PostgresStream:
             for (token, _), state in zip(deliveries, states):
                 completion_rows.append(
                     (
-                        head.consumer_id, token.sequence, head.owner_id,
-                        head.owner_epoch, state_schema, state_version,
+                        head.consumer_id,
+                        token.sequence,
+                        head.owner_id,
+                        head.owner_epoch,
+                        state_schema,
+                        state_version,
                         json.dumps(state),
                     )
                 )
@@ -2266,8 +2769,14 @@ class PostgresStream:
                    AND owner_epoch=$3 AND lease_expires_at>clock_timestamp()
                    AND in_flight_sequence=$8 AND in_flight_end=$4
                    RETURNING completed_through""",
-                head.consumer_id, head.owner_id, head.owner_epoch, final,
-                json.dumps(states[-1]), state_schema, state_version, head.sequence,
+                head.consumer_id,
+                head.owner_id,
+                head.owner_epoch,
+                final,
+                json.dumps(states[-1]),
+                state_schema,
+                state_version,
+                head.sequence,
             )
             if advanced is None:
                 raise StaleOwner("batch completion fenced")
@@ -2275,13 +2784,16 @@ class PostgresStream:
 
     async def position(self, consumer_id: str) -> dict[str, Any]:
         async with self.pool.acquire() as conn:
-            row = await conn.fetchrow("SELECT * FROM consumers WHERE consumer_id=$1", consumer_id)
+            row = await conn.fetchrow(
+                "SELECT * FROM consumers WHERE consumer_id=$1", consumer_id
+            )
             return dict(row)
 
     async def verified_position(self, consumer_id: str) -> dict[str, Any]:
         """Read managed state only when its terminal completion agrees exactly."""
-        async with self.pool.acquire() as conn, conn.transaction(
-            isolation="repeatable_read", readonly=True
+        async with (
+            self.pool.acquire() as conn,
+            conn.transaction(isolation="repeatable_read", readonly=True),
         ):
             row = await conn.fetchrow(
                 "SELECT * FROM consumers WHERE consumer_id=$1", consumer_id
@@ -2292,13 +2804,17 @@ class PostgresStream:
                 completion = await conn.fetchrow(
                     "SELECT managed_state,state_schema,state_version "
                     "FROM turn_completions WHERE consumer_id=$1 AND input_sequence=$2",
-                    consumer_id, row["completed_through"],
+                    consumer_id,
+                    row["completed_through"],
                 )
                 if completion is None or (
-                    completion["managed_state"], completion["state_schema"],
+                    completion["managed_state"],
+                    completion["state_schema"],
                     completion["state_version"],
                 ) != (
-                    row["managed_state"], row["state_schema"], row["state_version"],
+                    row["managed_state"],
+                    row["state_schema"],
+                    row["state_version"],
                 ):
                     raise PostgresProtocolError("managed state projection corrupted")
             return dict(row)
@@ -2359,7 +2875,12 @@ class PostgresStream:
                      OR i.owner_epoch<>c.owner_epoch"""
             )
             return {
-                "passed": gaps == bad_objects == bad_capacity == bad_progress == bad_invocations == 0,
+                "passed": gaps
+                == bad_objects
+                == bad_capacity
+                == bad_progress
+                == bad_invocations
+                == 0,
                 "sequence_gaps": gaps,
                 "bad_objects": bad_objects,
                 "bad_capacity": bad_capacity,

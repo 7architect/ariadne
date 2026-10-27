@@ -1,7 +1,7 @@
 """Lifecycle CLI for the persistent, segmented long-soak service.
 
 The detached Docker deployment survives individual CI jobs.  Eighteen
-sequential four-hour ``watch`` invocations refresh CI credentials and publish
+sequential four-hour `watch` invocations refresh CI credentials and publish
 small evidence segments without resetting PostgreSQL or the ETL service.
 """
 

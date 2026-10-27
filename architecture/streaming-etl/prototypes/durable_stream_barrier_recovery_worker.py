@@ -59,8 +59,7 @@ def run(args: argparse.Namespace) -> None:
         append(store, "left", 4)
         store.process_next("left")
         generation = store.connection.execute(
-            "SELECT recovery_generation FROM turns "
-            "ORDER BY apply_ordinal DESC LIMIT 1"
+            "SELECT recovery_generation FROM turns ORDER BY apply_ordinal DESC LIMIT 1"
         ).fetchone()[0]
         if generation != 1:
             raise AssertionError("post-recovery turn has wrong generation")

@@ -8,7 +8,6 @@ from pathlib import Path
 
 from durable_stream_barrier_v2 import ComposedDurableStream
 
-
 EXIT_CODE = 86
 
 

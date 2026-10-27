@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from integrated_protocol import Coordinator
 from source_oracle import inspect_source
 from source_v1 import (
     AcceptedInputLedger,
@@ -15,7 +16,6 @@ from source_v1 import (
     source_record_id,
     value_digest,
 )
-from integrated_protocol import Coordinator
 from test_integrated_protocol import ExternalWorld, intent, prepare_to_decision
 
 
@@ -31,7 +31,9 @@ def envelope(position: str) -> SourceEnvelope:
     )
 
 
-def durable_ack(path: Path, partition: str, position: str, ordinal: int, epoch: int) -> None:
+def durable_ack(
+    path: Path, partition: str, position: str, ordinal: int, epoch: int
+) -> None:
     connection = sqlite3.connect(path)
     with connection:
         connection.execute(
@@ -84,7 +86,12 @@ class SourceSubprocessRecoveryTests(unittest.TestCase):
         return ledger
 
     def test_accept_hard_crash_matrix(self) -> None:
-        for point in ("before", "after_insert_before_commit", "after_durable_before_ack", "after_ack"):
+        for point in (
+            "before",
+            "after_insert_before_commit",
+            "after_durable_before_ack",
+            "after_ack",
+        ):
             with self.subTest(point=point), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 ledger_path = root / "source.sqlite"
@@ -103,19 +110,26 @@ if point=='after_insert_before_commit':
     ledger.accept(record,'worker',10,crash_hook=lambda _: os._exit(17))
 ledger.accept(record,'worker',10)
 if point=='after_durable_before_ack': os._exit(17)
-Path({str(root / 'caller_ack')!r}).write_text('ack')
+Path({str(root / "caller_ack")!r}).write_text('ack')
 os._exit(17)
 """
                 self.run_child(program)
                 observed = inspect_source(ledger_path, {})
                 expected = 0 if point in {"before", "after_insert_before_commit"} else 1
                 self.assertEqual(observed.accepted.get("p0", 0), expected)
-                self.assertEqual(observed.replay_start["p0"], None if expected == 0 else 1)
+                self.assertEqual(
+                    observed.replay_start["p0"], None if expected == 0 else 1
+                )
                 self.assertEqual((root / "caller_ack").exists(), point == "after_ack")
                 self.assertEqual(observed.violations, ())
 
     def test_ack_hard_crash_matrix_and_unknown_result_recovery(self) -> None:
-        for point in ("before", "after_intent_before_external", "after_external_before_local", "after_local_before_caller_ack"):
+        for point in (
+            "before",
+            "after_intent_before_external",
+            "after_external_before_local",
+            "after_local_before_caller_ack",
+        ):
             with self.subTest(point=point), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 ledger_path = root / "source.sqlite"
@@ -231,10 +245,15 @@ os._exit(17)
                 {"p0": (999, "ghost", 4), "unknown": (1, "x", 1)},
             )
             self.assertTrue(
-                any("external ACK is not accepted" in v for v in bad_external.violations)
+                any(
+                    "external ACK is not accepted" in v for v in bad_external.violations
+                )
             )
             self.assertTrue(
-                any("external ACK lacks committed cut" in v for v in bad_external.violations)
+                any(
+                    "external ACK lacks committed cut" in v
+                    for v in bad_external.violations
+                )
             )
             self.assertTrue(
                 any("unknown partition" in v for v in bad_external.violations)
@@ -247,7 +266,9 @@ os._exit(17)
                 )
             observed = inspect_source(ledger_path, {})
             self.assertIn("noncanonical record ID", observed.violations[0])
-            self.assertTrue(any("invalid payload JSON" in v for v in observed.violations))
+            self.assertTrue(
+                any("invalid payload JSON" in v for v in observed.violations)
+            )
 
 
 if __name__ == "__main__":

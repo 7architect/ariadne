@@ -6,6 +6,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from integrated_protocol import Coordinator, ProtocolError
+from source_oracle import inspect_source
 from source_v1 import (
     AcceptedInputLedger,
     CombinedDecisionRef,
@@ -14,41 +15,72 @@ from source_v1 import (
     source_record_id,
     value_digest,
 )
-from source_oracle import inspect_source
 from test_integrated_protocol import ExternalWorld, intent, prepare_to_decision
 
 
 class SourceDecisionIntegrationTests(unittest.TestCase):
     def test_repeated_cut_keeps_earliest_valid_ack_epoch(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory); coordinator=Coordinator(root/"coordinator.sqlite")
-            world=ExternalWorld(); first=intent(sources=(("p0","one"),))
-            prepare_to_decision(coordinator,first,world); coordinator.decide_commit(first)
-            ledger=AcceptedInputLedger(root/"source.sqlite",root/"coordinator.sqlite")
-            ledger.claim_partition("p0","worker",10,lambda _p,epoch: epoch)
-            payload={"position":"one"}
-            record=ledger.accept(SourceEnvelope("p0","one",source_record_id("p0","one"),
-                "lineage:p0:one",value_digest(payload),payload),"worker",10)
-            cut=(("p0",record.ordinal,"one"),)
-            first_ref=CombinedDecisionRef(**coordinator.source_decision_reference(first))
-            ledger.bind_committed_checkpoint(first_ref,cut)
-            external={}
-            def ack(p,pos,ordinal,epoch): external[p]=(ordinal,pos,epoch)
-            ledger.acknowledge(first.checkpoint_id,first_ref.digest,"p0","worker",10,ack)
-            ledger.claim_partition("p0","takeover",11,lambda _p,epoch: epoch)
+            root = Path(directory)
+            coordinator = Coordinator(root / "coordinator.sqlite")
+            world = ExternalWorld()
+            first = intent(sources=(("p0", "one"),))
+            prepare_to_decision(coordinator, first, world)
+            coordinator.decide_commit(first)
+            ledger = AcceptedInputLedger(
+                root / "source.sqlite", root / "coordinator.sqlite"
+            )
+            ledger.claim_partition("p0", "worker", 10, lambda _p, epoch: epoch)
+            payload = {"position": "one"}
+            record = ledger.accept(
+                SourceEnvelope(
+                    "p0",
+                    "one",
+                    source_record_id("p0", "one"),
+                    "lineage:p0:one",
+                    value_digest(payload),
+                    payload,
+                ),
+                "worker",
+                10,
+            )
+            cut = (("p0", record.ordinal, "one"),)
+            first_ref = CombinedDecisionRef(
+                **coordinator.source_decision_reference(first)
+            )
+            ledger.bind_committed_checkpoint(first_ref, cut)
+            external = {}
 
-            second=intent(sequence=2,sources=(("p0","one"),))
-            second=replace(second,generation_manifest=tuple(
-                (participant,11 if participant=="p0" else epoch)
-                for participant,epoch in second.generation_manifest
-            ))
-            prepare_to_decision(coordinator,second,world); coordinator.decide_commit(second)
-            second_ref=CombinedDecisionRef(**coordinator.source_decision_reference(second))
-            ledger.bind_committed_checkpoint(second_ref,cut)
-            ledger.acknowledge(second.checkpoint_id,second_ref.digest,"p0","takeover",11,ack)
-            observed=inspect_source(root/"source.sqlite",external,root/"coordinator.sqlite")
-            self.assertEqual(observed.violations,())
-            self.assertEqual(external,{"p0":(1,"one",10)})
+            def ack(p, pos, ordinal, epoch):
+                external[p] = (ordinal, pos, epoch)
+
+            ledger.acknowledge(
+                first.checkpoint_id, first_ref.digest, "p0", "worker", 10, ack
+            )
+            ledger.claim_partition("p0", "takeover", 11, lambda _p, epoch: epoch)
+
+            second = intent(sequence=2, sources=(("p0", "one"),))
+            second = replace(
+                second,
+                generation_manifest=tuple(
+                    (participant, 11 if participant == "p0" else epoch)
+                    for participant, epoch in second.generation_manifest
+                ),
+            )
+            prepare_to_decision(coordinator, second, world)
+            coordinator.decide_commit(second)
+            second_ref = CombinedDecisionRef(
+                **coordinator.source_decision_reference(second)
+            )
+            ledger.bind_committed_checkpoint(second_ref, cut)
+            ledger.acknowledge(
+                second.checkpoint_id, second_ref.digest, "p0", "takeover", 11, ack
+            )
+            observed = inspect_source(
+                root / "source.sqlite", external, root / "coordinator.sqlite"
+            )
+            self.assertEqual(observed.violations, ())
+            self.assertEqual(external, {"p0": (1, "one", 10)})
 
     def test_source_cut_requires_exact_global_commit_decision(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -14,7 +14,6 @@ from durable_stream_v2 import (
     PendingOutput,
 )
 
-
 EXIT_CODE = 86
 
 

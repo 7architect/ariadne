@@ -22,7 +22,6 @@ from state_recovery_spike import (
     validate_contract,
 )
 
-
 HERE = Path(__file__).resolve().parent
 ORACLE = HERE / "state_recovery_oracle.py"
 
@@ -30,9 +29,7 @@ ORACLE = HERE / "state_recovery_oracle.py"
 class StateRecoverySpikeTests(unittest.TestCase):
     def test_state_classification_and_unsupported_contracts(self) -> None:
         self.assertEqual(
-            required_state_class(
-                StateRequirements(False, ("input:p0",), True, True)
-            ),
+            required_state_class(StateRequirements(False, ("input:p0",), True, True)),
             StateClass.EPHEMERAL,
         )
         local = StateRequirements(True, ("input:p0",), True, True)
@@ -85,12 +82,8 @@ class StateRecoverySpikeTests(unittest.TestCase):
                 with self.assertRaisesRegex(
                     StateRecoveryError, "nonempty unique input bindings"
                 ):
-                    required_state_class(
-                        StateRequirements(True, bindings, True, True)
-                    )
-        with self.assertRaisesRegex(
-            StateRecoveryError, "CHECKPOINT_MANAGED_SHARED"
-        ):
+                    required_state_class(StateRequirements(True, bindings, True, True))
+        with self.assertRaisesRegex(StateRecoveryError, "CHECKPOINT_MANAGED_SHARED"):
             validate_contract(
                 StateContract(
                     StateClass.PARTITION_LOCAL_PER_TURN,
@@ -109,9 +102,7 @@ class StateRecoverySpikeTests(unittest.TestCase):
                     shared_across_partitions=True,
                 ),
             )
-        with self.assertRaisesRegex(
-            StateRecoveryError, "deterministic replay drift"
-        ):
+        with self.assertRaisesRegex(StateRecoveryError, "deterministic replay drift"):
             validate_contract(
                 StateContract(
                     StateClass.PARTITION_LOCAL_PER_TURN,
@@ -249,7 +240,9 @@ class StateRecoverySpikeTests(unittest.TestCase):
             report = self.oracle(split, False)
             self.assertIn("mixed_recovery_authority", report["violations"])
 
-    def test_checkpoint_state_restores_completed_cut_and_exact_ordered_tail(self) -> None:
+    def test_checkpoint_state_restores_completed_cut_and_exact_ordered_tail(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "shared.sqlite"
             self.seed_shared(path)
@@ -508,9 +501,7 @@ class StateRecoverySpikeTests(unittest.TestCase):
                 insert_early_completion,
             )
             report = self.oracle(path, False)
-            self.assertIn(
-                "checkpoint_completion_order_invalid:1", report["violations"]
-            )
+            self.assertIn("checkpoint_completion_order_invalid:1", report["violations"])
 
     def test_seal_and_completion_cannot_be_published_after_recovery(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

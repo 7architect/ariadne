@@ -1,7 +1,7 @@
-from pathlib import Path
-from tempfile import TemporaryDirectory
 import sqlite3
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from durable_stream_v2 import (
     CompletionKind,
@@ -27,7 +27,12 @@ class DurableStreamV2Tests(unittest.TestCase):
             value = ref(number)
             self.stream.register_object(value)
             self.stream.append(
-                "petya", "p0", "petya-worker", 1, f"document-{number}", value,
+                "petya",
+                "p0",
+                "petya-worker",
+                1,
+                f"document-{number}",
+                value,
                 f"source-document-{number}",
             )
         self.stream.create_consumer("anna", "petya", "p0")
@@ -46,7 +51,10 @@ class DurableStreamV2Tests(unittest.TestCase):
             token,
             CompletionKind.YIELD,
             output=PendingOutput(
-                "anna-output", "p0", f"signed-{expected}", output_ref,
+                "anna-output",
+                "p0",
+                f"signed-{expected}",
+                output_ref,
                 f"petya:{expected}",
             ),
             managed_state={"signed": expected},
@@ -61,9 +69,7 @@ class DurableStreamV2Tests(unittest.TestCase):
 
         self.stream.advance_time(10)
         self.stream.claim_consumer("anna", "tanya-worker", 2)
-        tanya_token, redelivered = self.stream.deliver_next(
-            "anna", "tanya-worker", 2
-        )
+        tanya_token, redelivered = self.stream.deliver_next("anna", "tanya-worker", 2)
 
         self.assertEqual(redelivered.sequence, 200)
         self.assertEqual(tanya_token.attempt, anna_token.attempt + 1)
@@ -111,7 +117,12 @@ class DurableStreamV2Tests(unittest.TestCase):
         self.stream.register_object(pending, durable=False)
         with self.assertRaisesRegex(StreamProtocolError, "must be durable"):
             self.stream.append(
-                "petya", "p0", "petya-worker", 1, "pending-record", pending,
+                "petya",
+                "p0",
+                "petya-worker",
+                1,
+                "pending-record",
+                pending,
                 "pending-lineage",
             )
 
@@ -174,7 +185,7 @@ class DurableStreamV2Tests(unittest.TestCase):
         ).fetchone()
         self.assertEqual(completion[0], "document-1")
         self.assertEqual(completion[1], "signed-1")
-        self.assertIn('\"record_id\":\"signed-1\"', completion[2])
+        self.assertIn('"record_id":"signed-1"', completion[2])
 
     def test_forged_completion_cannot_authorize_progress(self):
         token, _ = self.stream.deliver_next("anna", "anna-worker", 1)
@@ -189,8 +200,14 @@ class DurableStreamV2Tests(unittest.TestCase):
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'RETURN', NULL, NULL, NULL,
                           NULL, 'null', 'forged', '{}', 'forged')""",
                 (
-                    token.consumer_id, token.channel_id, token.partition_id,
-                    token.sequence, "ghost-input", 999, "attacker", 999,
+                    token.consumer_id,
+                    token.channel_id,
+                    token.partition_id,
+                    token.sequence,
+                    "ghost-input",
+                    999,
+                    "attacker",
+                    999,
                 ),
             )
         self.assertEqual(self.stream.position("anna")["completed_through"], 0)
@@ -215,8 +232,13 @@ class DurableStreamV2Tests(unittest.TestCase):
         output_ref = ref(1001, "signed/v1")
         self.stream.register_object(output_ref)
         self.stream.append(
-            "anna-output", "p0", "anna-runtime", 1,
-            "preexisting-output", output_ref, "petya:1",
+            "anna-output",
+            "p0",
+            "anna-runtime",
+            1,
+            "preexisting-output",
+            output_ref,
+            "petya:1",
         )
         token, _ = self.stream.deliver_next("anna", "anna-worker", 1)
         with self.assertRaisesRegex(
@@ -226,7 +248,10 @@ class DurableStreamV2Tests(unittest.TestCase):
                 token,
                 CompletionKind.YIELD,
                 output=PendingOutput(
-                    "anna-output", "p0", "preexisting-output", output_ref,
+                    "anna-output",
+                    "p0",
+                    "preexisting-output",
+                    output_ref,
                     "petya:1",
                 ),
             )
@@ -236,21 +261,25 @@ class DurableStreamV2Tests(unittest.TestCase):
         token, _ = self.stream.deliver_next("anna", "anna-worker", 1)
         output_ref = ref(1001, "signed/v1")
         self.stream.register_object(output_ref)
-        output = PendingOutput(
-            "anna-output", "p0", "signed-1", output_ref, "petya:1"
-        )
+        output = PendingOutput("anna-output", "p0", "signed-1", output_ref, "petya:1")
         self.stream.complete(
-            token, CompletionKind.YIELD, output=output,
+            token,
+            CompletionKind.YIELD,
+            output=output,
             managed_state={"signed": 1},
         )
         drifted = PendingOutput(
-            "totally-other", "wrong", "signed-1",
+            "totally-other",
+            "wrong",
+            "signed-1",
             ObjectRef(output_ref.key, output_ref.digest, 999, "evil-schema"),
             "petya:1",
         )
         with self.assertRaisesRegex(StreamProtocolError, "output drift"):
             self.stream.complete(
-                token, CompletionKind.YIELD, output=drifted,
+                token,
+                CompletionKind.YIELD,
+                output=drifted,
                 managed_state={"signed": 1},
             )
 

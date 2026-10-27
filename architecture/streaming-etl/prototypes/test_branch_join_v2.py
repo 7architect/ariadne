@@ -15,7 +15,6 @@ from branch_join_v2 import (
     Delivery,
 )
 
-
 HERE = Path(__file__).resolve().parent
 ORACLE = HERE / "branch_join_oracle.py"
 
@@ -39,7 +38,9 @@ class BranchJoinV2Tests(unittest.TestCase):
             self.assertEqual(before["anna"]["completed_through"], 200)
             self.assertEqual(before["boris"]["completed_through"], 300)
             self.assertEqual(
-                store.connection.execute("SELECT COUNT(*) FROM upstream_entries").fetchone()[0],
+                store.connection.execute(
+                    "SELECT COUNT(*) FROM upstream_entries"
+                ).fetchone()[0],
                 301,
             )
             store.close()
@@ -88,7 +89,9 @@ class BranchJoinV2Tests(unittest.TestCase):
             store.start_fanout_checkpoint(1)
             store.append_upstream("document-3", "ref:3")
 
-            self.assertEqual(store.observe_branch_barrier("boris", "boris-worker", 1), 1)
+            self.assertEqual(
+                store.observe_branch_barrier("boris", "boris-worker", 1), 1
+            )
             self.assertEqual(
                 store.connection.execute(
                     "SELECT status FROM fanout_checkpoints WHERE checkpoint = 1"
@@ -125,16 +128,43 @@ class BranchJoinV2Tests(unittest.TestCase):
             self.assertEqual(
                 [tuple(row) for row in joined_sources],
                 [
-                    ("fast", 1, self.branch_output_id(store, "boris", 1), "boris", "p0"),
-                    ("fast", 2, self.branch_output_id(store, "boris", 2), "boris", "p0"),
-                    ("fast", 3, self.branch_output_id(store, "boris", 3), "boris", "p0"),
-                    ("fast", 4, self.branch_output_id(store, "boris", 4), "boris", "p0"),
+                    (
+                        "fast",
+                        1,
+                        self.branch_output_id(store, "boris", 1),
+                        "boris",
+                        "p0",
+                    ),
+                    (
+                        "fast",
+                        2,
+                        self.branch_output_id(store, "boris", 2),
+                        "boris",
+                        "p0",
+                    ),
+                    (
+                        "fast",
+                        3,
+                        self.branch_output_id(store, "boris", 3),
+                        "boris",
+                        "p0",
+                    ),
+                    (
+                        "fast",
+                        4,
+                        self.branch_output_id(store, "boris", 4),
+                        "boris",
+                        "p0",
+                    ),
                     ("slow", 1, self.branch_output_id(store, "anna", 1), "anna", "p0"),
                     ("slow", 2, self.branch_output_id(store, "anna", 2), "anna", "p0"),
                 ],
             )
             self.assertEqual(
-                [(row["input_id"], row["data_sequence"], row["drained"]) for row in before["buffer"]],
+                [
+                    (row["input_id"], row["data_sequence"], row["drained"])
+                    for row in before["buffer"]
+                ],
                 [("fast", 3, 0), ("fast", 4, 0)],
             )
             self.assertEqual(before["progress"]["fast"]["blocked"], 1)
@@ -158,11 +188,17 @@ class BranchJoinV2Tests(unittest.TestCase):
             )
             view = store.join_view()
             self.assertEqual(
-                [(row["input_id"], row["data_sequence"], row["drain_apply_ordinal"]) for row in view["buffer"]],
+                [
+                    (row["input_id"], row["data_sequence"], row["drain_apply_ordinal"])
+                    for row in view["buffer"]
+                ],
                 [("fast", 3, 5), ("fast", 4, 6)],
             )
             self.assertEqual(
-                [(row["kind"], row["input_id"], row["data_sequence"]) for row in view["outputs"]],
+                [
+                    (row["kind"], row["input_id"], row["data_sequence"])
+                    for row in view["outputs"]
+                ],
                 [
                     ("DATA", "fast", 1),
                     ("DATA", "fast", 2),
@@ -183,15 +219,15 @@ class BranchJoinV2Tests(unittest.TestCase):
             store = BranchJoinStore(path)
             store.create_fanout("deploy-1", ("anna", "boris"))
             store.append_upstream("document-1", "ref:1")
-            store.create_join(
-                {"fast": ("boris", "p0"), "slow": ("anna", "p0")}
-            )
+            store.create_join({"fast": ("boris", "p0"), "slow": ("anna", "p0")})
             with self.assertRaisesRegex(
                 BranchJoinProtocolError, "source output missing"
             ):
                 store.append_join_data("fast", "ghost")
             self.assertEqual(
-                store.connection.execute("SELECT COUNT(*) FROM join_entries").fetchone()[0],
+                store.connection.execute(
+                    "SELECT COUNT(*) FROM join_entries"
+                ).fetchone()[0],
                 0,
             )
             store.close()
@@ -311,8 +347,8 @@ class BranchJoinV2Tests(unittest.TestCase):
                     "mixed-cut.sqlite",
                     "join_snapshot_immutable",
                     "UPDATE join_snapshots SET cuts_json = "
-                    "'{\"fast\":{\"barrier_log\":3,\"data\":3},"
-                    "\"slow\":{\"barrier_log\":3,\"data\":2}}' "
+                    '\'{"fast":{"barrier_log":3,"data":3},'
+                    '"slow":{"barrier_log":3,"data":2}}\' '
                     "WHERE checkpoint = 1",
                     "join_snapshot_cut:1:fast",
                 ),
@@ -379,9 +415,7 @@ class BranchJoinV2Tests(unittest.TestCase):
         for sequence in range(3, 5):
             store.append_upstream(f"document-{sequence}", f"ref:{sequence}")
         self.complete_branch_range(store, "boris", 4)
-        store.create_join(
-            {"fast": ("boris", "p0"), "slow": ("anna", "p0")}
-        )
+        store.create_join({"fast": ("boris", "p0"), "slow": ("anna", "p0")})
         self.populate_join_before_final(store)
         return store
 
@@ -427,9 +461,7 @@ class BranchJoinV2Tests(unittest.TestCase):
             store.complete_branch(delivery)
 
     @staticmethod
-    def branch_output_id(
-        store: BranchJoinStore, branch_id: str, sequence: int
-    ) -> str:
+    def branch_output_id(store: BranchJoinStore, branch_id: str, sequence: int) -> str:
         row = store.connection.execute(
             "SELECT output_id FROM branch_outputs WHERE branch_id = ? "
             "AND upstream_data_sequence = ?",

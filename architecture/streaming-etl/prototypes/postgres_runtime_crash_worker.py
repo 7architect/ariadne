@@ -72,7 +72,9 @@ async def execute(args: argparse.Namespace) -> int:
         if args.mode == "sync":
             await runtime.run_sync("reviewer", owner, epoch, sync_callable, fault=fault)
         else:
-            await runtime.run_async("reviewer", owner, epoch, async_callable, fault=fault)
+            await runtime.run_async(
+                "reviewer", owner, epoch, async_callable, fault=fault
+            )
     await store.close()
     return 0
 

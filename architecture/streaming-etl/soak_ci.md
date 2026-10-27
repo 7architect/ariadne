@@ -100,8 +100,8 @@ credentials file; it does not prune Docker globally or touch unrelated tests.
 
 ## Confirmed routing follow-up
 
-The ARC scale set belongs to `Anacreonsystems`, while the repository currently
-belongs to the personal account `7architect`. The requested runner name alone
+The ARC scale set belongs to `Anacreonsystems`, while the repository initially
+belonged to the personal account `7architect`. The requested runner name alone
 cannot grant cross-owner access. A user-proposed transfer to
 `Anacreonsystems/ariadne` was attempted through the GitHub API and rejected with
 HTTP 403 `Resource not accessible by integration`; ownership was not changed.
@@ -120,3 +120,19 @@ cancelled. Repository eligibility/runner availability remains an external
 CI follow-up; the local short release gate is independently complete. The
 72-hour profile still targets the static runner, verifies `k8s-runner`, and
 has not been dispatched.
+
+## Transfer and static-analysis repair follow-up
+
+The user completed the transfer on 2026-10-26. The verified repository is now
+[`Anacreonsystems/ariadne`](https://github.com/Anacreonsystems/ariadne), with the
+same repository ID and preserved branch tips. The local remote follows the new
+owner. [Smoke attempt 2](https://github.com/Anacreonsystems/ariadne/actions/runs/40343803001)
+was queued without an assigned ARC host at the 2026-10-27 investigation.
+
+The failed pull-request check was
+[Static analysis](https://github.com/Anacreonsystems/ariadne/actions/runs/40349113436),
+specifically repository hooks; its type-check job passed. The
+[repair report](evidence/ci-static-analysis-repair-2026-10-27.json) distinguishes
+local hook/regression results, publication and hosted check outcomes.
+[ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) documents the exact
+immutable-file exceptions and the required successor source-hash gate.

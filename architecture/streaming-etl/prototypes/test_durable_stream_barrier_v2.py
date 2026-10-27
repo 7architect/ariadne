@@ -15,7 +15,6 @@ from durable_stream_barrier_v2 import (
     EntryKind,
 )
 
-
 HERE = Path(__file__).resolve().parent
 ORACLE = HERE / "durable_stream_barrier_oracle.py"
 
@@ -74,7 +73,9 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
             self.assertEqual(report["plan"]["replay"], [[3, "left", 3]])
             self.assertEqual(report["plan"]["next"], {"left": 4})
 
-    def test_early_input_buffers_only_post_barrier_tail_and_replays_exact_order(self) -> None:
+    def test_early_input_buffers_only_post_barrier_tail_and_replays_exact_order(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "join.sqlite"
             store = self.seed_aligned_join(path, complete=True)
@@ -223,7 +224,9 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
                     with self.assertRaises(sqlite3.IntegrityError):
                         self.sql(path, statement)
 
-    def test_independent_oracle_rejects_cursor_cut_mailbox_and_output_controls(self) -> None:
+    def test_independent_oracle_rejects_cursor_cut_mailbox_and_output_controls(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             base = root / "base.sqlite"
@@ -261,7 +264,11 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
 
             mailbox = root / "mailbox.sqlite"
             shutil.copy2(base, mailbox)
-            self.corrupt(mailbox, "immutable_turn", "UPDATE turns SET apply_ordinal = -1 WHERE apply_ordinal = 5")
+            self.corrupt(
+                mailbox,
+                "immutable_turn",
+                "UPDATE turns SET apply_ordinal = -1 WHERE apply_ordinal = 5",
+            )
             report = self.oracle(mailbox, False)
             self.assertIn("mailbox_apply_order_gap", report["violations"])
 
@@ -337,7 +344,7 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
                     "INSERT INTO recovery_runs VALUES "
                     "(1, 1, 'RESTORING', "
                     "(SELECT state_value FROM snapshots WHERE checkpoint = 1), "
-                    "NULL, '{\"left\":2,\"right\":2}', NULL, "
+                    'NULL, \'{"left":2,"right":2}\', NULL, '
                     "(SELECT authority_ordinal FROM recovery_fence))",
                 )
 
@@ -348,7 +355,7 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
                 "INSERT INTO recovery_runs VALUES "
                 "(1, 1, 'RESTORING', "
                 "(SELECT state_value FROM snapshots WHERE checkpoint = 1), "
-                "NULL, '{\"left\":3,\"right\":3}', NULL, "
+                'NULL, \'{"left":3,"right":3}\', NULL, '
                 "(SELECT authority_ordinal FROM recovery_fence))",
             )
             with self.assertRaises(sqlite3.IntegrityError):
@@ -369,7 +376,7 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
                     "INSERT INTO recovery_runs VALUES "
                     "(1, 1, 'RESTORING', "
                     "(SELECT state_value FROM snapshots WHERE checkpoint = 1), "
-                    "NULL, '{\"left\":2,\"right\":2}', NULL, "
+                    'NULL, \'{"left":2,"right":2}\', NULL, '
                     "(SELECT authority_ordinal FROM recovery_fence))"
                 )
                 connection.execute(
@@ -398,7 +405,7 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
                     "INSERT OR REPLACE INTO recovery_runs VALUES "
                     "(2, 1, 'RESTORING', "
                     "(SELECT state_value FROM snapshots WHERE checkpoint = 1), "
-                    "NULL, '{\"left\":4,\"right\":3}', NULL, "
+                    'NULL, \'{"left":4,"right":3}\', NULL, '
                     "(SELECT authority_ordinal FROM recovery_fence))",
                 )
             self.oracle(replace_bypass, True)
@@ -414,7 +421,7 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
                     "INSERT OR REPLACE INTO recovery_runs VALUES "
                     "(2, 1, 'RESTORING', "
                     "(SELECT state_value FROM snapshots WHERE checkpoint = 1), "
-                    "NULL, '{\"left\":4,\"right\":3}', NULL, "
+                    'NULL, \'{"left":4,"right":3}\', NULL, '
                     "(SELECT authority_ordinal FROM recovery_fence))"
                 )
                 connection.execute(
@@ -427,9 +434,7 @@ class DurableStreamBarrierV2Tests(unittest.TestCase):
             report = self.oracle(generation_corruption, False)
             self.assertIn("recovery_generation_authority", report["violations"])
 
-    def seed_aligned_join(
-        self, path: Path, *, complete: bool
-    ) -> ComposedDurableStream:
+    def seed_aligned_join(self, path: Path, *, complete: bool) -> ComposedDurableStream:
         store = self.store(path, ("left", "right"))
         self.append(store, "left", 1)
         self.append(store, "right", 1)

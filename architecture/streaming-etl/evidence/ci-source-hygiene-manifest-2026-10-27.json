@@ -1,0 +1,510 @@
+{
+  "allowed_ast_differences": [
+    "Single backticks in Python docstrings",
+    "Import sorting",
+    "Removal of unused PostgresProtocolError import in postgres_generator_runtime.py",
+    "Explicit expansion of source_v1 wildcard import in test_source_v1.py",
+    "Test-local l to ledger in test_source_v1.py"
+  ],
+  "base_commit": "8139a17d822e091503a7b9546e55c9b98bad41b2",
+  "changed_python_files": 48,
+  "exact_ast_equal": 35,
+  "historical_evidence_sha256": {
+    "architecture/streaming-etl/evidence/adr-graph-2026-10-25.json": "3a991f267b9599ed73476fbca8b572a2b29a428b4151f3ee102c780048990e0a",
+    "architecture/streaming-etl/evidence/adr-graph-final-2026-10-26.json": "fc9a778be11b824b14502a99cb64f73ad610343ab9812440daa05286a0a7ea98",
+    "architecture/streaming-etl/evidence/barrier-tla-r3b-2026-10-25.json": "c8697958d29a289d7a05e90210a3a59d6d39ce5cb3ef591e8e61e3af0c39f8d5",
+    "architecture/streaming-etl/evidence/postgres-barrier-r3a-2026-10-25.json": "78f3604242a6a781dd8e1e2c9e7e7b227dbe34846c64ad9b40cab5c083e28117",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-2026-10-26.log": "28295bb58b92022ab54e81e3a03bc95510d569aa8ce1dbbaba4f4723c5ad989b",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-2026-10-26.prehash.json": "c28fd770ba93fd0a8140f64dcc8e4eeacb5b55c8d9c75099697706c5bfd75b35",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-failed-2026-10-26.json": "d79616e2a6a553efaa0eb561a6dd42afc55ca3afd31bda1c7c1fc8f163a59fbc",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-final-2026-10-26.log": "cb89ebbc18a7ba6862e8c9969590429bce1b96e3aa7029daf42774f90348991f",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-final-2026-10-26.prehash.json": "583863bb727b1f490dd1671899a59bad0440ea0b4a8a926aa214d94b16b10ad0",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-final-failed-2026-10-26.json": "520ab88f069465f73be54cf0e8daefbf30edf7062e46c89521cd25971e738e6b",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-pass-2026-10-26.log": "e6a3f4917f5e251bed8a4af45e246c59a6f2b9c3f9bacb5a3130f2f54eb3bb04",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-pass-2026-10-26.prehash.json": "b3508afb1f42fc44153336f978d2f50d5615c95636b3d3f9318d5aa9660c22b8",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-retry-2026-10-26.log": "614c3ffdd9bf707de48fb08aa364b0bcde7f902ab0c21269bc3cae326c8b8a3d",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-retry-2026-10-26.prehash.json": "693f4ab02b19e1e601ec3cb4d6bbae16191c2400e9ad21c1056ebd3920b44fcf",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-focused-retry-failed-2026-10-26.json": "637ad0af07311cecab8def7bfa3cb4ca40b695ec225c575df4d8284ace02cdeb",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-2026-10-26.log": "c6de1ba952ce7c47272893ec84cd83d4e9aa0e8c3fc37afc437a88c651614298",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-2026-10-26.prehash.json": "698142f0e956ab289a65c2e6105e8c0fcc326a12283d723b2567aad7b4d16b3e",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-candidate-2026-10-26.log": "c7aec0a44f6787e0f149733ef8beddcb9b4e35e019d98ceb0f557c7882fb3906",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-candidate-2026-10-26.prehash.json": "185360c189201fc441f7e06dcf5a7f4f33a063c2a163bceb08391bfb79632d9f",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-candidate-failed-2026-10-26.json": "b148870f21bab4c15c137f75bcf8a592e36aa769b21fd8c7c48ea6f19feed899",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-failed-2026-10-26.json": "86f9530bdc1f40b1815c58a4ff9acd042ea9fdac340a9587240e714bb726f6e2",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final-2026-10-26.log": "beb19fa087e98382e0858e1e08d7c0db8f22fdea65c5ad571b85843ee76e9157",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final-2026-10-26.prehash.json": "faafa7db31f5e2db28a201e177a8739fda6e4c4ef81e6eb252aee9ce8275d770",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final-failed-2026-10-26.json": "89d29b63357112dfc0cc4ff74e018dc5f2864ad52f97bbe6396c8c4705654004",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final2-2026-10-26.log": "d17686a41e186a6986a358f0e983ffd946071c806f8212dcb2df98dd0b37a50d",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final2-2026-10-26.prehash.json": "19643412350fb2727548dfe0356243c8edc300a8218e49e4554217073d68dead",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final2-failed-2026-10-26.json": "e75e393ad58f32ca12fc2b9ce4c2a54c64a5bd357d653beac35980e09bdab8db",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final3-2026-10-26.log": "42c9491135a995207d2a89b0835570fcc4149528a5da8d6952b476e30ee457b2",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final3-2026-10-26.prehash.json": "31d7ad06b4a51c13b48a454140e7d3e12424fa314b5804758b1106764c32c45d",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final3-failed-2026-10-26.json": "d39bed986edb6542eee3e2046e7ece18c7e65bca255b92c562f4504123f0650f",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final4-2026-10-26.json": "cc273ab0673f3da5d3fc4a59162faa8718e4c21decb214e7dbe7e23f5ed9ecb3",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final4-2026-10-26.log": "38377ca469cb2810d8d9beef22e99596ba18a6bfde2dea72a9983ea3c191d6f6",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final4-2026-10-26.prehash.json": "af3c2f0b9d4ff2490abd99c1ef10284b95dee7ba884a9a5c19b08d7779fe0b9a",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final5-2026-10-26.json": "35da80bc27b8c21b5db50b073fdc89ebf5ec4abb3a7a5a67edae0c2fcf71467c",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final5-2026-10-26.log": "59c7cde81d9b2e1202458509c4235efd5bb2189fe9c0d2f5583cb199362c887c",
+    "architecture/streaming-etl/evidence/postgres-capacity-acceptance-short-final5-2026-10-26.prehash.json": "0344a2872541f41b10c0cb51254f917c6e862a0bc9ea0f5ce2195a662176effd",
+    "architecture/streaming-etl/evidence/postgres-capacity-diagnostic-2026-10-26.log": "edc46ebb2b5fb64f93985bad22077b5288aff26ec9f51ed9f7bd216c3e399d7e",
+    "architecture/streaming-etl/evidence/postgres-ha-2026-10-23.json": "024590ea415e6d13feef3a6d8a1b83b8bb077b6c83a8ade44c177d60d7541397",
+    "architecture/streaming-etl/evidence/postgres-ha-dataplane-2026-10-24.json": "5d61995a3c1ebcdcbff900a5d835e22effc6eec691f4135d7175c6611943c35d",
+    "architecture/streaming-etl/evidence/postgres-ha-dataplane-load-2026-10-24.json": "af5de988fa2b2defeee7e9d5d15838197a0c1b7eff22114a3f77ac0d0ac24db5",
+    "architecture/streaming-etl/evidence/postgres-ha-r5a-2026-10-25.json": "f4c4d606ceb94ebee64e54691dd9d4ca2e473ce6e7ac04df641a83a4c5c08a90",
+    "architecture/streaming-etl/evidence/postgres-ha-r5a-pre-grant-archive-2026-10-25.json": "4bc43e87bd3dcefe4d88afa3332abf4f99d1a75737894cd0b9d7a3b7f5237774",
+    "architecture/streaming-etl/evidence/postgres-ha-release-2026-10-24.json": "1899d69a8f69b5e2e35a05e3e8c1123de5a40212171a230bcf6a9cd11f911667",
+    "architecture/streaming-etl/evidence/postgres-ha-release2-2026-10-24.json": "815a7d4879bc7f30e8b3ab8b847b6ca245321900feccdf42a2ab0de5340d5593",
+    "architecture/streaming-etl/evidence/postgres-ha-release3-2026-10-24.json": "07a05952672713d9823871e61baa1124963534ba301933857c8442ea7438d76e",
+    "architecture/streaming-etl/evidence/postgres-load-2026-10-23.json": "973ac96263446d6d8030fab3077ddb27a742c6acef6f72017404eebec2d7711c",
+    "architecture/streaming-etl/evidence/postgres-load-2026-10-24.json": "23ae58e1f6c03c0c30c414d22ee2558df5b1016f084de6ef12b0a0577004ec5c",
+    "architecture/streaming-etl/evidence/postgres-load-admission-probe-2026-10-24.json": "8f399da741c2382879ebaa80c0459f589d6a2e20dcbea885689cde3c27bfbb20",
+    "architecture/streaming-etl/evidence/postgres-load-batch-probe-2026-10-24.json": "ee8f1c88d23357f3793a12da9c9c650221a398f919374ebd52a82ab7e4276ba0",
+    "architecture/streaming-etl/evidence/postgres-load-batch-probe2-2026-10-24.json": "fc68442287fc16862f2275629712e00c953f8135ae61a066c9f7f1b91f78f88e",
+    "architecture/streaming-etl/evidence/postgres-load-batch-probe3-2026-10-24.json": "fabf184adb6d32193ac97c0b627995a98487f7a0540473ff1d7a1f5bbbf9b518",
+    "architecture/streaming-etl/evidence/postgres-load-batch-probe4-2026-10-24.json": "17fde3f5a6ed824a57835470b6152d87b7845b243df82d8e023fd9f6f7431199",
+    "architecture/streaming-etl/evidence/postgres-load-batch2-probe-2026-10-24.json": "f745d06ccc35cf1de8b9abb8af9ef0e4c185ea3c41a9b783faef168ff5fcc03c",
+    "architecture/streaming-etl/evidence/postgres-load-batch32-probe-2026-10-24.json": "1d51368528e37a6f17e6ba9d8f01e6374bb1ea435acc1b891a69ddd38fac3019",
+    "architecture/streaming-etl/evidence/postgres-load-batch4-probe-2026-10-24.json": "5079fe4f038f369a5f7a8e4c4716332fec5638371544a977bb08537b4f17f4b1",
+    "architecture/streaming-etl/evidence/postgres-load-bulk-identity-probe-2026-10-24.json": "b2fc2343f636c577cfd84c3ae7ec9801c78ab99f2e49bfb6b50b224837774814",
+    "architecture/streaming-etl/evidence/postgres-load-byte-batch-probe-2026-10-24.json": "d5837fbaac6c6aa8c4bb326b9aeaf9eb6cecc7e49582b06a6115533810b5db10",
+    "architecture/streaming-etl/evidence/postgres-load-clean-probe-2026-10-24.json": "a14f6ca48c50bbbf2e03ab957684913d4cfd403d952ac86b6a10101f010beced",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-probe-2026-10-24.json": "9962e5b03e1578c973a3b5b5987a1f891c0f00d82ff7d4614a39b9cc386b718f",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-probe3-2026-10-24.json": "86d077cddf2ed68c9a53f31ed1fb8a2173778f12db32312c4cac74439a32a445",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-trial1-2026-10-24.json": "54dfd7c965b3328f8129426c7f6491f5cb41b8d0cc0e822ff8aa5c182d8e5406",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-trial2-2026-10-24.json": "8d7a81794102f0d5688ff92a679d047b223aaefbc97db16c6f5afe530a528ee0",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-trial3-2026-10-24.json": "8da7469b1befe02903f413358961b0957a73bab3bef634abb1d009a680d7791b",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-trial4-2026-10-24.json": "86a35eeb169bb23d532103d82dd94aae4b0ddde5c0eef5741aedc0abfb89692e",
+    "architecture/streaming-etl/evidence/postgres-load-concurrent-trial5-2026-10-24.json": "b67627136cb4a579e35a71e703976507ca651cb374d6eb00fcb10e2b37115568",
+    "architecture/streaming-etl/evidence/postgres-load-final-probe-2026-10-24.json": "a70cb5bb2d54e6fa424e12c246577271e7864ef700155c881415060cfd2ef790",
+    "architecture/streaming-etl/evidence/postgres-load-group-commit-probe-2026-10-24.json": "dbfcc6ccbeddb3a161595bda00c880e8536a78a0cba46418e44b450401338b67",
+    "architecture/streaming-etl/evidence/postgres-load-index-probe-2026-10-24.json": "4b665330488a7b20609ad073d8faa739f2c2f586682c2d893ab812ece7dd3054",
+    "architecture/streaming-etl/evidence/postgres-load-isolated-probe2-2026-10-24.json": "799f0ec7286e4fa9f06c1ea22d033ad12d57375a9e7996c4395fbb57759ffcdd",
+    "architecture/streaming-etl/evidence/postgres-load-latency-diagnostic-2026-10-24.json": "2836e67c5891b215cb53348aff626319d43258ff8885e0c5f0842c30dd80ad2e",
+    "architecture/streaming-etl/evidence/postgres-load-metadata-probe-2026-10-24.json": "f4cb9fc09add2f08e3396f9067e7dcac438f08f872ebb93f439a25f7e6bd2e51",
+    "architecture/streaming-etl/evidence/postgres-load-metadata-probe2-2026-10-24.json": "01e3ac5daa2428680dc534e38142801a7fd1b3d33666432acab58ef855061598",
+    "architecture/streaming-etl/evidence/postgres-load-multiprocess-probe-2026-10-24.json": "53fdc2d6a7240ec24e558372592ac5b11b6757355bccea2c358a91ba3bd72dde",
+    "architecture/streaming-etl/evidence/postgres-load-payload-diagnostic-2026-10-24.json": "5b6e0a0153c66a6851f4bdc244512a8f911752a162fe72da55b7143d691831df",
+    "architecture/streaming-etl/evidence/postgres-load-phase-probe-2026-10-24.json": "2e9435ebc6811835ca12ac45d014a8a69bf4a1d6179c5dce996be063bdc87561",
+    "architecture/streaming-etl/evidence/postgres-load-poll-probe-2026-10-24.json": "28e58f7b6c8e6ca3f64585f27680ad57cd98add932165a761e3a945a05a9094f",
+    "architecture/streaming-etl/evidence/postgres-load-pristine-probe-2026-10-24.json": "2b2124116116fda5476db3d17de80d2a9b8ea7913e4f3e8a1b81fa3918165b85",
+    "architecture/streaming-etl/evidence/postgres-load-probe-2026-10-23.json": "7ab5081366b3c9899656fddedfbd8f843191bd0af0b4e24765ca4f32020fd417",
+    "architecture/streaming-etl/evidence/postgres-load-probe-batch-2026-10-23.json": "9aef62400ad9808b02013d5dc04391197068771dd7c262ab785bd05be1d4e5ed",
+    "architecture/streaming-etl/evidence/postgres-load-probe-batch8-2026-10-24.json": "8a39d4c61836f72bcd2088382c5c596347df50b367a58090542687434a5101d7",
+    "architecture/streaming-etl/evidence/postgres-load-probe-bulk-2026-10-23.json": "033d3d76f6bd17696c282af6c4e46eabc6694a9348d0f4d9bdf8c86e13b29cbc",
+    "architecture/streaming-etl/evidence/postgres-load-probe-bulk2-2026-10-23.json": "d29ea3c29efb31dd7e87addf41d2d073ab28f46eba609605a53aa2b7b4266362",
+    "architecture/streaming-etl/evidence/postgres-load-process-probe-2026-10-24.json": "220a575d775300c3b9e71fd98e1e730de22de8eca9cb8f780e24e5290d9c5ef8",
+    "architecture/streaming-etl/evidence/postgres-load-ready-uniform-probe-2026-10-24.json": "bedd7b065072afece1f022807bd544f923440c09ed0599588386b9831afc6c71",
+    "architecture/streaming-etl/evidence/postgres-load-release-probe-2026-10-24.json": "06b9bf7a9f97513f258b80ce4651c2079a64e68014b7c9e20959cf34d629db2a",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial1-2026-10-24.json": "f6071d5843c8ffe18a8a75b96d968a6e74d41a7c0adb617741ebbf6bc86f9334",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial10-2026-10-24.json": "370e2f9518931de8e6be58afa549e90b4f13eca76264eb2903a721a8115caf65",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial12-2026-10-24.json": "829353f204a8427e37a3dd1625f7ca47025b308f0ac4b836ad8fc97b686100bf",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial13-2026-10-24.json": "09c7c0da762bba7f155e1c3ed9d09c7c0fe68ff57fe999213638c24656ab5d5d",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial14-2026-10-24.json": "22de6bcb957be384ce4b5d8899d1bea632f359fa3f023423a7a35ee5ac1c93ce",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial15-2026-10-24.json": "3b9aa889308604d65b12b1cbb7575329aada612ed828b2ef24d7ae3a00873867",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial16-2026-10-24.json": "485b18872326e45ed06da6c8dd2c7cf97705b436133b4ee0ff83aa73b65237e0",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial17-2026-10-24.json": "65be28ff476b49c6b873403d94b78d555384f57e774b8870f6c5545ab2016abb",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial18-2026-10-24.json": "1476bdd5d63d42a7e8a18529f698a13bdae4ad2595ab26f8722414a650c7cd60",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial19-2026-10-24.json": "54e993e11e88cebf804877017942264993f91409a43b5be5ec178615f756fe33",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial2-2026-10-24.json": "c84b1b9e87f0dc625935e661f30f2328374c562a35943655f50cf698a32e4aaa",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial20-2026-10-24.json": "6c17202da5828e025043037918b6ca060da81a8ae7c2ad23d04ede3393a7e451",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial21-2026-10-24.json": "8fd613157fe0516bfa76abad5c5d66dd6a16722a9eea7f9fdb70c750e42b0bb5",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial22-2026-10-24.json": "aa20c7e584058199ff626802e652241001e1f04a170860a9e01e4e1af5fbd5c9",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial23-2026-10-24.json": "810e534eb048cda86a8793d7c3825e769cc63f101c8af80fa528792acbaa26e3",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial24-2026-10-24.json": "89437a090f4d7439358849f3c9efb56f5c4a11a525b035ad8559fce65152dbaf",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial25-2026-10-24.json": "97dbc02ab6448f3c5f447d2c6d900227460963069c6fcbf56adc64ea72b97971",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial26-2026-10-24.json": "594593eb973a8f95bccb80dc41552a6f18417643ff2283970c9f527228b72781",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial27-2026-10-24.json": "5cd3a5d3ab91c604a10b7f72c0e4efef12256125d38f382b35a6664b0e578522",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial28-2026-10-24.json": "07deaaae77ac4282a753e198b8c95265e302a4a24531dfd101548f2bb64ed8e1",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial29-2026-10-24.json": "e13192dccd97e6915cc395832d0508f6c817a579338b29238c6522fd447bcfe8",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial3-2026-10-24.json": "f462ce3a369c744fe470cf8519fc65a2ce78fdeeb44a71cf26825736a1974183",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial30-2026-10-24.json": "2460fe8bbc5d7b9541f737d32c6bd8f3fb651d0ef981f95b967ede2de29a04d7",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial4-2026-10-24.json": "cb9e0d29888ecb3b0edab3494dc6821fe43e70c30b6a6ce99cffb1b7affe512e",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial5-2026-10-24.json": "658a9f2249e9e174d781bbde23580220fc6c9a85381782d4665ec2b8ddc2af70",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial6-2026-10-24.json": "b05806314a3b2cf95de5668cc01b313ebfd908e3fc4a39aa599238367c5532fd",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial7-2026-10-24.json": "e0bf8b84fe5a640733b1db01c4f30cf64de77b5c5ff36702dc3e649c0753234f",
+    "architecture/streaming-etl/evidence/postgres-load-release-trial9-2026-10-24.json": "8ae3b74d9df0700000ccef6fb74907c3a2c8f31696a97186bfe9f2ebb0d04569",
+    "architecture/streaming-etl/evidence/postgres-load-single-batch32-probe-2026-10-24.json": "33fa1510547d7412b1df7d8d2c956a8645957d943c5916873d0a7604e0128b9f",
+    "architecture/streaming-etl/evidence/postgres-load-unique-probe-2026-10-24.json": "e81029432b7fdf5bfe2f41efd46e9acada9af9381c90ed477192d6d974524737",
+    "architecture/streaming-etl/evidence/postgres-load-wal16-probe-2026-10-24.json": "1831b1b2e1d695d68d16bd920b39fd6bc3f65fe98de88eb62a4ea4cd165aec42",
+    "architecture/streaming-etl/evidence/postgres-long-soak-runner-smoke-2026-10-26.json": "a0fc4f4492dadb78af2e291018be7dd0286ab1a4506b73281ff8f1392d552c3c",
+    "architecture/streaming-etl/evidence/postgres-long-soak-smoke-2026-10-25.json": "96497866b44fb0a7cc88b004fa91740f3b8c3149c41efbcb98954aa6e5a33a08",
+    "architecture/streaming-etl/evidence/postgres-r3b-candidate-2026-10-25.json": "2ed2982a97657ef8b5bcd53ebb31f6bb0369b523b6a144609ee9ca77a155a4fd",
+    "architecture/streaming-etl/evidence/postgres-r3b-candidate2-2026-10-25.json": "174932099b82fe1d62dd48562aad5daba04107dc09623112905913222a660bf6",
+    "architecture/streaming-etl/evidence/postgres-r3b-final-2026-10-25.json": "8c8078efd60298f55f20081e15bb7b7c7dcef48eef387e0a8afbd97fb3e035ca",
+    "architecture/streaming-etl/evidence/postgres-r3b-final2-2026-10-25.json": "fb1783814c7a730d6f0eac32d9707ee439019b17b392ca3f6f2b5dfcfb94cb5e",
+    "architecture/streaming-etl/evidence/postgres-r3b-principal-2026-10-25.json": "d1695a038e6de5bdd5b263fc60f58b4a94eb8e79637ac1a69df5a3b9bdd58970",
+    "architecture/streaming-etl/evidence/postgres-r4a-candidate-2026-10-25.json": "d740568dd2c0271b31867281fa741435eb115f4f96e29fbfd011871141e8d360",
+    "architecture/streaming-etl/evidence/postgres-r4a-candidate-2026-10-25.log": "abb052f792869cecb7d03aa50809d345fa2ad8cbdff2b1f182843f560305a63c",
+    "architecture/streaming-etl/evidence/postgres-r4a-candidate2-2026-10-25.json": "cc297b1c9748c4d503a4226aeb7a3a3274badad976d813741edd137cc46c7f67",
+    "architecture/streaming-etl/evidence/postgres-r4a-candidate2-2026-10-25.log": "3828a0d9c8e149ea6ddb414d2b2063c461a8fb91dfd1e8557a450828aa769d29",
+    "architecture/streaming-etl/evidence/postgres-r4a-principal-2026-10-25.json": "388e8bb3f66cefbc0bf0321b2cff4dba1ea1c8b1ec3101db57d9f0673412f152",
+    "architecture/streaming-etl/evidence/postgres-r4b-candidate-2026-10-25.json": "beac501873904ee533b6c9e5e1d7c6c4791dfcd82505288e30098e3bfbb2381e",
+    "architecture/streaming-etl/evidence/postgres-r4b-candidate-2026-10-25.log": "7d0cc06c3cf6f4c3c99b4e70b6f00693d807dc4148d85983f144421ec90df026",
+    "architecture/streaming-etl/evidence/postgres-r4b-candidate2-2026-10-25.json": "354a3b9596508cda7cd09a0c2b0b3ef2ed5261c570e8e1fcb37c3dde1779b8ac",
+    "architecture/streaming-etl/evidence/postgres-r4b-candidate2-2026-10-25.log": "17a5e5f2ea9fb42e5cc405bce9909d5f17f5ae8db82757d3e2eceb6d87920556",
+    "architecture/streaming-etl/evidence/postgres-r4b-candidate3-2026-10-25.json": "f8215e8e456288ef4ad3cd95a8b1da2b4e0945d661ba107045bba8a987a38c96",
+    "architecture/streaming-etl/evidence/postgres-r4b-candidate3-2026-10-25.log": "6e301fa98a146e1ed6909224f8bb13f817d11a96c4c0ad010f291eac9b90fee4",
+    "architecture/streaming-etl/evidence/postgres-r4b-principal-2026-10-25.json": "49d082e5bf7da83d239498b6dc9987f6cee8a9b7b724b0257710157130a7cbc2",
+    "architecture/streaming-etl/evidence/postgres-r5a-architecture-review-2026-10-26.json": "83f25f14b4c3829d7ad14eda8195a2c0b06bd5b135a52fba1ea17f76951c329f",
+    "architecture/streaming-etl/evidence/postgres-r5a-candidate-2026-10-26.json": "78af43d370ebe889fe68832ade34e1edb5e8bbe7948ac4c93eaa5922a273a338",
+    "architecture/streaming-etl/evidence/postgres-r5a-candidate-2026-10-26.log": "2a4e6f7265fd2aacc918a595e3665beb141f470e34269f1b94d98647f8dc8fa2",
+    "architecture/streaming-etl/evidence/postgres-r5b-architecture-review-2026-10-26.json": "64fdc6a7fb96d9ec00f72fff8f89adc7b54db8b6d83447704d03c85502af95c5",
+    "architecture/streaming-etl/evidence/postgres-r5b-final-2026-10-26.json": "846e7110f1193c087117cdbacafd7cc7342d0cb8db7d9b21ae000087848640e3",
+    "architecture/streaming-etl/evidence/postgres-r5b-final-2026-10-26.log": "e9ece1a52e83d53e262587e4ddefbe005f3eefa947b38860e3c53f983954d59f",
+    "architecture/streaming-etl/evidence/postgres-r5b-final2-2026-10-26.json": "4f07425d777fba0223fbd4e4a869e5b0ad57dc48a2110713d0b29a64b404c548",
+    "architecture/streaming-etl/evidence/postgres-r5b-final2-2026-10-26.log": "fb7858bf985b0ed67ec950eba043008e4ec5351e6f3bf0001f31dbb4475e62eb",
+    "architecture/streaming-etl/evidence/postgres-r5b-independent-controls-2026-10-26.log": "5e7d71cdcbb0009a84817cde370e7e7f64aaef7fc4735cf235a7273b0f184fb5",
+    "architecture/streaming-etl/evidence/postgres-r5b-independent-controls-2026-10-26.prehash.json": "530099562efe4d3b002eb5c1e2c7aa142a4d3e774b97fe66558fd80cfb4cddbf",
+    "architecture/streaming-etl/evidence/postgres-r5b-independent-controls-review-2026-10-26.json": "071b554307103527c19a5c108853b3d6b895109f748f02c46555b2db29bc7c8d",
+    "architecture/streaming-etl/evidence/postgres-release-isolation-r5a-2026-10-25.json": "78ce81157a9bdbc67a9c354f02ca7c1f309c37b7e6792a558ec351252c4768f2",
+    "architecture/streaming-etl/evidence/postgres-short-acceptance-environment-2026-10-26.json": "b7dbd3c03a74fd7451eba2c98a5b1cdfc95d9905cee18290478dcbc96bf2ded8",
+    "architecture/streaming-etl/evidence/postgres-short-acceptance-publication-2026-10-26.json": "736b2d7b016cda0e70313479186096be63c913fcb00f86e1cfdc38f1bca695f8",
+    "architecture/streaming-etl/evidence/postgres-soak-ci-setup-2026-10-26.json": "5a63a1aad7af11fb82bed786a208257c57882bc60b10325f97aebd203f388f33",
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-baseline-2026-10-26.log": "7edf70329f34419131a5035bc68c73d36b7f7a02cd5ff5b110ff7a5a9768a903",
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-baseline-2026-10-26.py": "ddffc9605c8a6fb42c1646fbe3019c87a44121e61486865204b7b71083f21216",
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-configured-2026-10-26.log": "59b1a2b1931625731152702b2fc0ac5edc7afd90ad4e81f5b54e71589bd5e42e",
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-configured-2026-10-26.py": "d2c52bb4b2d6efbea8111ed396ed6b46da1bf17dc96266e953bd344af07c76ad",
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-probe-2026-10-26.json": "7529ddc6a53be0951878dbd8e4e18f6971815297ef0d08a617f78e188e6d2878"
+  },
+  "historical_evidence_unchanged": true,
+  "protocol": "ci-source-hygiene/v1",
+  "reviewed_ast_equal": true,
+  "sources": [
+    {
+      "after_sha256": "aa240b9533b177ef84bc00134792b19ba81901825e0c427eddf487ce62550928",
+      "before_sha256": "4ed8111a74a511033a9e321a3b3a46cf62b430a04365325b3ac5d907f303391c",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/branch_join_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "35d6246d28cf817dddb0c1483eefec59cb6a5238ab53432002e5370c89ea5b4f",
+      "before_sha256": "224d3fdec06ccae9e86421d30bc1b3d635a40edf036da50e46cf5d8120be101d",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/branch_join_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "715c7a7603eba60de386161bdd386213dbbe3e025e6088da92aecfbf5fade461",
+      "before_sha256": "8fc584b5236316148c7476a6e60f0b33206466f4cbeabe1d4f09b2856ba89ae8",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/ci_soak/cli.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "d63b4773111b3f0d17fee1366a4c24c55012cff0c8fadcf746b1aa84ff0a8bba",
+      "before_sha256": "685bbbbe67938fd993ea09a75167d0ca3ac62dc9c6678853c7bff5d098d0b66d",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/ci_soak/test_review.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "b0260389268432f57536cfc556c6ac041c9b29fc15dd97956ccce64727b78865",
+      "before_sha256": "5485383bec2d3e0f8663856c44c45e6355e369d75216a4e23bf5feaf9bb4e37f",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_barrier_crash_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "37653faad7b6e50d53b14f09838d2c662076496d385ce38d28fa29849f624838",
+      "before_sha256": "931d72037003971bc45fa2dfe7115f4b5388b4afa115cd87802bfbcd928c6f3f",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_barrier_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "547d9386c0bedaf88bcf3baed3f0643e7a068db4bd13c7bdf24edd21fa48ee31",
+      "before_sha256": "b3c97904cc85d71604a2e22b5a728b237bafe8925c2af3d04b942a13e8261f85",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_barrier_recovery_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "ed421cd129f31d2d000ea01e621f156f1ca6b2b9e2af6a479a3365a448f704b0",
+      "before_sha256": "d5886219c50aa198a9801d955c1795d59097dc227ea99556cc535de3af737bac",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_barrier_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "5e2c0162449dd47bf678eb780913a2c556cc20536f7abe1719184aca26e35ffa",
+      "before_sha256": "1c2390ba56312cce5a1c9e937915fc8b2f0764cd941dac6af1b10f7b56077f94",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "02345a0d047d50341525ca16acc551853ec8d5a519b83b8de2e77a7d51ced3f7",
+      "before_sha256": "acffc23cd24fa292918c46152adf45a3d668465d211d3fef4fce1b7eb2d3b32d",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_v2_crash_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "84e36e66c5f132206c73dd192bfd46477c2e581fd6e7b8bed23ef78b4891ec8e",
+      "before_sha256": "acc9c06462672f7ed1b6f30b21a0c987f662ef80890c36c32528895d39581258",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_v2_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "5392168e8506d4a98e7e14c0479f53d45ab94a1999886a5ca264dc55aa84aa69",
+      "before_sha256": "9a6b2cadeda87f3f63062cd581b0ee643c9654a376f4c90c0bf60b136725d715",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/durable_stream_v2_recovery_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "60dd35e7080e453df492901dc98af8db737a8051aff899c773d4b047d5caf6f6",
+      "before_sha256": "83f7cbfda8f8dfe22ebf2db4e74a3d3fa89bfe27c8858107a41156156057061d",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/generator_runtime_crash_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "9cd053291fc557fd6f06dec452f2ff359cd53b746f5b8218dd2092f140dab088",
+      "before_sha256": "ac11922858a3fb2a505a09c9a7e5b3bf7111741671f3ab2046ceeae8aac91563",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/generator_runtime_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "1976d5ddb588d63048f61272012f6cc0e76ff85526f610b8524f2c32460035f6",
+      "before_sha256": "4a48e188e20340dfe15463e1dca110f775004550d1862572785dd239e36f617f",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/generator_runtime_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "44a1966292baa9982a1a1873eb137ca4833e6392eb08260a6fffd6773e182106",
+      "before_sha256": "5d357281a15a1acb6cbbafa0eef8fa922dca69a88db3db743edd91bbe554748b",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/integrated_protocol.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "bf67977e479828baa14c2a0834826e7b74610eda159eba3fd4a7aab9e736d4c0",
+      "before_sha256": "09528c038d0e21afc196d7003a8e25b6a06dddd1e16e05a1cb846d866408817b",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/postgres_barrier_crash_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "6d89555b9c3b0c51b905be6fc1055d83736930ec525d1bb12e5b29b7391f459b",
+      "before_sha256": "a98e491f520874745ca51229cdb60e143eca7cc7cd21cb018823f1b616b91c90",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/postgres_barrier_gate_harness.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "28688f291f7363a451f53dee74a4e6dfd83482718cba393d0edfda752896d183",
+      "before_sha256": "b8ed0a44ddbd25addc1a096b714172301fd967202666c34f6ad3e5361beb200b",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/postgres_checkpoint_runtime.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "184b0481f230fd387c8041dca37b03c90ef3ca38c9e38a7355e13d3bdd13cd24",
+      "before_sha256": "6b4af0b3c07a7667643f63135827e2697b049da3e084079ec2cd5e3473235198",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/postgres_generator_runtime.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "d723cd247f4f0d1116375d73b58ae5c37a688ab11d71a7eaecd822da8dc022bd",
+      "before_sha256": "7c6ef7c83149ade3e9a0da68ae3dd8022ae0dcfa9cda7e0dff95b7da1fa09dce",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/postgres_load_benchmark.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "6659f31b4f3f8b36381407cdc0461aa704d177e705f852ec2c8acd7e18f14fff",
+      "before_sha256": "e9b5b3ea01a194cefef22d7c734497cb8a3c3e287d83733b1dcef03a4665b2b1",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/postgres_regional_recovery.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "3a38197b65eed4b5a82b5dc4025537476ffe86bb7dbf92324ad9d8c53d84079c",
+      "before_sha256": "6aa39563fa5d9f78f348dee7bb9cc4aebb213d0e98f6a75af93e2bdff33cd7f6",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/postgres_runtime_crash_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "96c34a995b290ac260ad84dc3725dcc6997ad04742f5439db5e7ad0db5ccdb35",
+      "before_sha256": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/postgres_stream_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "d8fb2d2f26a14d0ef9e16c9caafb969ea1290bb839ebc8a8bd0d5f6728b93514",
+      "before_sha256": "181c7aba940afcec58662035d089f1a0cae2aa5aa1ca09fa5989cdf6a8470d4a",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/retention_pressure_crash_worker.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "54d85e8da20b0541cf99a51b15db70d6e6e9c16bc663c7220eeace02268dcf19",
+      "before_sha256": "f540acad64a005159273113d277bff4b66659958a055912f93f222d101f6e391",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/retention_pressure_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "64727ce104bc84a3b9a35538308a1984df35825eaadd427f501050024bf6c7e6",
+      "before_sha256": "4d688966b652c2add1b8ac210f322089d9ba6350b22f2c30a20db83a0f16dc52",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/retention_pressure_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "b1f91fade2ee7dd6809ddbd4ae2d6eaf5030c38f25d33ada1fa150263ad924b4",
+      "before_sha256": "1e7b2e4754167f776e0a7b9c8c34bed5e99f8f64fda0881270621d3471256e44",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/source_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "046a99663a29c617dd9511b348d9d4478d786f5d30f8f3e820ae96a24468bac4",
+      "before_sha256": "b35a7e2eef136965dc5b85dc42d124a7cd16bb30bb94dfc2628f10821a4936c9",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/source_v1.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "0e3ddadbecc3c49be0ff5e2923d61e01b68380aa8c212ca39b4afc0b81dbb5d5",
+      "before_sha256": "e04a4021504228d29b98bd7cd3ba89e9b103e04b8efabcaacffdabfea1c5268d",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/state_recovery_oracle.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "3dee6defc1b5e30e6ea13104c126e50b76e58377717d175f3b5e48256a5ddeef",
+      "before_sha256": "5f5278c31283ddd04a091c7df8469e7560a538ec9a1c99b73b4145e2622db124",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/state_recovery_spike.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "25d19744975abe10eec1aac44bcdc923cbc92ad6dfa1fc46bf73a0c55c39b338",
+      "before_sha256": "0e350d27919465f0b813d5f28c7541bfa04e7fbd8acfe308c7bd767c7896b3d1",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_branch_join_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "236119dd4c3cc4a2168b4850c72635b8d631f59fbed043102e3908231d1c5166",
+      "before_sha256": "76d866a0d13027e1c85510a36640371ef93b53d94199796b55104a9505166bf6",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_durable_stream_barrier_subprocess.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "51257cc6d707a0ac89732fba87000c28b6de550ffa55f33e6db4213ec0b1e7d5",
+      "before_sha256": "25148309f7a27f13cd7e97b8fc95bbcd5c9c0c8dd5b8b385e54c05b238bc1d23",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_durable_stream_barrier_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "b9114f48528e13077a1874fd0e6f178c0acf75d98c78faf8bb3a721deda7c9a1",
+      "before_sha256": "d2ee2ce4aa8e5aa4cc42955e9de6a2f1dff0b383730402b99b64a69b887b64de",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_durable_stream_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "a7c087dab9fb464fccf0e4f04d4b8b09754c2c113cb50d69a786e5f64d0ea17f",
+      "before_sha256": "a313ee1abcf7e70d65221929b7de9e026d0e57a6409b99f5871146b9f38c0399",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_durable_stream_v2_r0_gate.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "3ab2866452d23d413ffc373f0ee1e127f33c4465b75f3f9bcb86ac350c9ad2b3",
+      "before_sha256": "de8fa8a6dd88ae0cc32a5e0f026ff494b546c062db7c99a06ceba4ab9d974602",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_durable_stream_v2_subprocess.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "873eed684c9d8819c1cc999496ce94d509e362f303502f463d65657a8281d2c9",
+      "before_sha256": "511e56616792bb51a505081c572d6df1b73d22a92ef2840aed31828321c471f8",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_generator_runtime_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "3f88e59da5e4a9b1dd52e5b814d16988f87b0ebb1e13ce5db3c838205ba9ca69",
+      "before_sha256": "9f6ac369486295a43305cc956d792eb99d953bc717d73aabdca58be439303083",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_postgres_barrier_coordinator.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "66c109986f99d37d7d610c0935884370355ecb97d266d6b3c80bf3316afbc06d",
+      "before_sha256": "94d130c4d8d0e4b84c214370418350679230c771c1a502ab81e6a83c7f3e8f60",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_postgres_generator_runtime.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "38f0639ccab3d09501f18f7709876a77f4d8adc1e5d9c389a9f1b66b15d62957",
+      "before_sha256": "f8902b61e1d30e3817c35438aad39f2f73328179c0619159aad75f930d7e0769",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_postgres_stream_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "7b3f9df7437426c9624bedd3b5000f0c9d7503835b1767a68946633b56c9f747",
+      "before_sha256": "9e78e27e5b984ed7be9b230890e35a2905824b2ab6d8c74e8a5467b00aae7c6f",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_retention_pressure_v2.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "085c70cb3e6c1ebf7d005ed96c3d930cca85d05044c50d7d0213c783e145a10a",
+      "before_sha256": "c6d76378b36d4dc5e9a969b50305cc923c395db147e6eed295dc9adf180b0f68",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_source_decision_integration.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "d082225eda7e8694808d25569a0ba1deb568c75e55aff36e4562d5f2d38b8943",
+      "before_sha256": "2ddd2ddbd9295229d081ce988ba36e72fca59f4fcb9e36b30f86d944d8aa43a0",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_source_subprocess_recovery.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "32d460d02f99be72b5b5ce8af1d3ac405d749932100c5831ffd8ab7c0c7eb4a3",
+      "before_sha256": "b1016ab59264d7ab179b2f0a6ccb6960169860b2604039e842a5ea75db2e6085",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_source_v1.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "c9c08386cfb25057afec8b5f1f1634ee42f59666873a9742d9443d97f5e851b5",
+      "before_sha256": "a8043f3bda2c786720ca9e587d22f5185ece826cc1107a73708a6ac8d1b283f4",
+      "exact_ast_equal": true,
+      "path": "architecture/streaming-etl/prototypes/test_state_recovery_spike.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "b4f37276238947980d09380cd7840221c4735c89eb0df4edd1bceeaa036f1a02",
+      "before_sha256": "363708bb540666e9fcda66311a8a25cc2152160456ca575906bae6b039679ada",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/test_tier_semantics.py",
+      "reviewed_ast_equal": true
+    },
+    {
+      "after_sha256": "6a69c3cfd272229954397ccceda342e925919e587dc9ceaaa9cefbf15063d74d",
+      "before_sha256": "d4ab2662d3f4686ee3a0ea92fa3d62f09bb5afa3c61172bb10b4fc5c675f9f51",
+      "exact_ast_equal": false,
+      "path": "architecture/streaming-etl/prototypes/tier_semantics.py",
+      "reviewed_ast_equal": true
+    }
+  ]
+}

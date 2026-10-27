@@ -124,7 +124,7 @@ the verified v7.0.1 and v7.0.2 commit SHAs respectively.
 ## Repository ownership and runner access
 
 The user clarified that the ARC scale set belongs to the `Anacreonsystems`
-organization. The current `7architect/ariadne` repository belongs to a personal
+organization. At the initial observation, `7architect/ariadne` belonged to a personal
 account; matching a runner label does not grant access to another owner's
 organization runners. This explains why the requested selector alone does not
 establish runner eligibility.
@@ -133,7 +133,7 @@ The user proposed transferring the repository to the organization. Preflight
 confirmed the organization login, the published delivery branch, and no public
 target repository named `Anacreonsystems/ariadne`. The attempted repository
 transfer API returned HTTP 403 `Resource not accessible by integration`.
-No transfer occurred and the local remote is unchanged. Repository administration
+That API attempt did not transfer the repository or change the local remote. Repository administration
 permission for the integration is distinct from the connected user's reported
 repository admin permission.
 
@@ -143,6 +143,54 @@ successful transfer, verify the new owner and branch, update the Git remote,
 and check that the organization's runner group permits this repository. Transfer
 alone does not override a selected-repository runner-group policy. Existing
 accepted short-profile evidence remains valid; hosted CI and DS-052a remain open.
+
+On 2026-10-26 the user completed the transfer. The destination API and the old
+URL both resolve to `Anacreonsystems/ariadne`, repository ID `1425414142`.
+The `main` and `streaming-etl-adrs` tips were preserved, and the local Git remote
+now points to the organization. Rerunning
+[smoke 40343803001](https://github.com/Anacreonsystems/ariadne/actions/runs/40343803001)
+created attempt 2. It still had no assigned `anacreon-runners` host when the
+separate static-analysis failure was investigated on 2026-10-27. Transfer is
+verified; runner execution remains unverified.
+
+## CI source hygiene and immutable evidence
+
+The pull request's
+[static-analysis run](https://github.com/Anacreonsystems/ariadne/actions/runs/40349113436)
+failed in `pre-commit`, while its type-check job passed. The pinned Ruff 0.15.19
+found 142 issues and would reformat 44 files. Other failed hooks found double
+backticks in active Python documentation and two truncated words in captured
+crash logs. These findings are independent of the queued streaming smoke.
+
+Active prototype code must pass the same pinned hooks as the repository.
+Formatting, import cleanup, explicit test imports and readable test variable
+names repair those failures. The protocol's literal sink tier `I` and the two
+imports after a standalone test-path bootstrap retain narrowly explained local
+lint annotations. No active prototype directory is excluded.
+
+Two historical probe scripts are exceptions to Ruff check/format:
+`prefect-storage-discovery-baseline-2026-10-26.py` and
+`prefect-storage-discovery-configured-2026-10-26.py` inside `evidence/`.
+Their executed bytes are bound to the
+[probe report](../evidence/prefect-storage-discovery-probe-2026-10-26.json).
+The exclusion names those exact files and date; future evidence scripts remain
+checked. Codespell excludes only raw `evidence/*.log` process output, where a
+crash can truncate a word. Evidence JSON, Markdown and active sources remain
+checked. Historical reports, scripts and logs must retain their original bytes.
+
+As a developer, I want the published branch to pass repository hooks without
+rewriting previously executed evidence. As a system, I want changed source bytes
+to receive a successor frozen-source acceptance report rather than inheriting
+the old report's hashes.
+
+Acceptance for this repair: as a developer, I can run `pre-commit --all-files`
+twice without a further edit; as a system, I got passing SQLite/source/soak
+regressions, a new complete PostgreSQL gate with no source drift, and preserved
+hashes for every pre-existing evidence file. The original short acceptance
+remains historical evidence; the new gate must bind the current source tree.
+The [repair report](../evidence/ci-static-analysis-repair-2026-10-27.json)
+records observed checks and publication status. Hosted CI and actual 72-hour
+acceptance remain separate observations.
 
 ## Consequences
 

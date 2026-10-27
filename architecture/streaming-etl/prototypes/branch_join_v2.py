@@ -526,8 +526,7 @@ class BranchJoinStore:
             }
             intent_digest = digest(intent)
             self.connection.execute(
-                "INSERT INTO fanout_checkpoints VALUES "
-                "(?, 'STARTED', ?, ?, ?, ?)",
+                "INSERT INTO fanout_checkpoints VALUES (?, 'STARTED', ?, ?, ?, ?)",
                 (
                     checkpoint,
                     intent_digest,
@@ -836,7 +835,10 @@ class BranchJoinStore:
             raise BranchJoinProtocolError("join bindings must be unique")
         inputs = sorted(bindings)
         bindings_value = {
-            input_id: {"branch": bindings[input_id][0], "partition": bindings[input_id][1]}
+            input_id: {
+                "branch": bindings[input_id][0],
+                "partition": bindings[input_id][1],
+            }
             for input_id in inputs
         }
         expected = (
@@ -852,7 +854,9 @@ class BranchJoinStore:
                 self.connection.execute(
                     "INSERT INTO join_manifest VALUES (1, ?, ?, ?, ?, ?)", expected
                 )
-                self.connection.execute("INSERT INTO join_state VALUES (1, ?)", (initial_state,))
+                self.connection.execute(
+                    "INSERT INTO join_state VALUES (1, ?)", (initial_state,)
+                )
                 for input_id in inputs:
                     branch_id, partition_id = bindings[input_id]
                     self.connection.execute(
@@ -865,9 +869,7 @@ class BranchJoinStore:
             elif tuple(row)[1:] != expected:
                 raise BranchJoinProtocolError("join manifest drift")
 
-    def start_join_checkpoint(
-        self, checkpoint: int, coordinator_epoch: int = 1
-    ) -> str:
+    def start_join_checkpoint(self, checkpoint: int, coordinator_epoch: int = 1) -> str:
         with self._write():
             manifest = self.connection.execute("SELECT * FROM join_manifest").fetchone()
             if manifest is None:
@@ -945,8 +947,12 @@ class BranchJoinStore:
                 ):
                     raise BranchJoinProtocolError("join record identity drift")
                 return existing["data_sequence"]
-            log_sequence = self._next_for_input("join_entries", input_id, "log_sequence")
-            data_sequence = self._next_for_input("join_entries", input_id, "data_sequence")
+            log_sequence = self._next_for_input(
+                "join_entries", input_id, "log_sequence"
+            )
+            data_sequence = self._next_for_input(
+                "join_entries", input_id, "data_sequence"
+            )
             if source["upstream_data_sequence"] != data_sequence:
                 raise BranchJoinProtocolError("join source sequence is not contiguous")
             arrival_ordinal = self._next("join_entries", "arrival_ordinal")
@@ -1019,7 +1025,9 @@ class BranchJoinStore:
                 binding["branch_id"],
                 binding["partition_id"],
             ):
-                raise BranchJoinProtocolError("join source barrier violates input binding")
+                raise BranchJoinProtocolError(
+                    "join source barrier violates input binding"
+                )
             if (
                 source["checkpoint"] != checkpoint
                 or source["intent_digest"] != intent["fanout_intent_digest"]
@@ -1038,7 +1046,9 @@ class BranchJoinStore:
                 ):
                     raise BranchJoinProtocolError("join barrier identity drift")
                 return existing["log_sequence"]
-            log_sequence = self._next_for_input("join_entries", input_id, "log_sequence")
+            log_sequence = self._next_for_input(
+                "join_entries", input_id, "log_sequence"
+            )
             cut = self.connection.execute(
                 "SELECT COALESCE(MAX(data_sequence), 0) FROM join_entries "
                 "WHERE input_id = ? AND kind = 'DATA'",
@@ -1177,7 +1187,9 @@ class BranchJoinStore:
                 "data": observation["cut_data_sequence"],
                 "barrier_log": observation["log_sequence"],
             }
-        state = self.connection.execute("SELECT state_value FROM join_state").fetchone()[0]
+        state = self.connection.execute(
+            "SELECT state_value FROM join_state"
+        ).fetchone()[0]
         highwater = self.connection.execute(
             "SELECT COALESCE(MAX(apply_ordinal), 0) FROM join_turns"
         ).fetchone()[0]
@@ -1223,7 +1235,9 @@ class BranchJoinStore:
             )
 
     def _apply_join_data(self, entry: sqlite3.Row, *, source: str) -> int:
-        state = self.connection.execute("SELECT state_value FROM join_state").fetchone()[0]
+        state = self.connection.execute(
+            "SELECT state_value FROM join_state"
+        ).fetchone()[0]
         new_state = apply_state(
             state, entry["input_id"], entry["data_sequence"], entry["payload_ref"]
         )
@@ -1271,7 +1285,9 @@ class BranchJoinStore:
 
     def join_view(self) -> dict[str, Any]:
         return {
-            "state": self.connection.execute("SELECT state_value FROM join_state").fetchone()[0],
+            "state": self.connection.execute(
+                "SELECT state_value FROM join_state"
+            ).fetchone()[0],
             "progress": {
                 row["input_id"]: {
                     "scanned": row["scanned_log_through"],

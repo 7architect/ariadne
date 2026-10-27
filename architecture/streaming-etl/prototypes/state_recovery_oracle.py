@@ -142,20 +142,14 @@ class StateRecoveryOracle:
             violations.append("local_state_compatibility")
         for completion in completions:
             output = next(
-                (
-                    row
-                    for row in outputs
-                    if row["sequence"] == completion["sequence"]
-                ),
+                (row for row in outputs if row["sequence"] == completion["sequence"]),
                 None,
             )
             if (
                 completion["state_schema"] != expected_schema
                 or completion["code_version"] != expected_code
             ):
-                violations.append(
-                    f"local_state_compatibility:{completion['sequence']}"
-                )
+                violations.append(f"local_state_compatibility:{completion['sequence']}")
             if output is None or (
                 output["record_id"] != completion["output_record_id"]
             ):
@@ -252,15 +246,13 @@ class StateRecoveryOracle:
             if (
                 seal is None
                 or seal["intent_digest"] != intent["intent_digest"]
-                or seal["authorization_ordinal"]
-                != intent["authorization_ordinal"]
+                or seal["authorization_ordinal"] != intent["authorization_ordinal"]
             ):
                 violations.append(f"checkpoint_seal_invalid:{checkpoint}")
                 valid = False
-            if (
-                intent["state_schema"] != contract.get("state_schema")
-                or intent["code_version"] != contract.get("code_version")
-            ):
+            if intent["state_schema"] != contract.get("state_schema") or intent[
+                "code_version"
+            ] != contract.get("code_version"):
                 violations.append(f"checkpoint_incompatible:{checkpoint}")
                 valid = False
             cuts = {
@@ -305,8 +297,7 @@ class StateRecoveryOracle:
                     continue
                 if (
                     witness["cut_sequence"] != cuts.get(input_id)
-                    or witness["ordered_log_sequence"]
-                    != cuts.get(input_id, -2) + 1
+                    or witness["ordered_log_sequence"] != cuts.get(input_id, -2) + 1
                     or witness["intent_digest"] != intent["intent_digest"]
                 ):
                     violations.append(
@@ -329,22 +320,13 @@ class StateRecoveryOracle:
                 or completion_event["event_type"] != "CHECKPOINT_COMPLETION"
                 or completion_event["checkpoint"] != checkpoint
             ):
-                violations.append(
-                    f"checkpoint_completion_witness_invalid:{checkpoint}"
-                )
+                violations.append(f"checkpoint_completion_witness_invalid:{checkpoint}")
                 valid = False
-            if (
-                completion["completion_ordinal"]
-                <= intent["authorization_ordinal"]
-            ):
-                violations.append(
-                    f"checkpoint_completion_order_invalid:{checkpoint}"
-                )
+            if completion["completion_ordinal"] <= intent["authorization_ordinal"]:
+                violations.append(f"checkpoint_completion_order_invalid:{checkpoint}")
                 valid = False
             if completion["completion_ordinal"] >= fence_ordinal:
-                violations.append(
-                    f"retroactive_checkpoint_completion:{checkpoint}"
-                )
+                violations.append(f"retroactive_checkpoint_completion:{checkpoint}")
                 valid = False
             if valid:
                 compatible.append((intent, cuts))

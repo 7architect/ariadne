@@ -13,8 +13,8 @@ from unittest.mock import patch
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-import cli as soak_cli
-import review as soak_review
+import cli as soak_cli  # noqa: E402 -- also support direct unittest discovery here.
+import review as soak_review  # noqa: E402
 
 
 class LongSoakReviewerTests(unittest.TestCase):

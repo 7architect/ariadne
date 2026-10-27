@@ -57,9 +57,7 @@ def inspect_source(
         """SELECT partition_id,ordinal,record_id,position,payload_digest,payload_json
            FROM accepted_records ORDER BY partition_id,ordinal"""
     ):
-        records.setdefault(partition, []).append(
-            (ordinal, position, record_id, digest)
-        )
+        records.setdefault(partition, []).append((ordinal, position, record_id, digest))
         if record_id != _record_id(partition, position):
             violations.append(f"{partition}#{ordinal}: noncanonical record ID")
         try:
@@ -83,12 +81,16 @@ def inspect_source(
     authority = None
     if coordinator_path is not None:
         try:
-            authority = sqlite3.connect(
-                f"file:{coordinator_path}?mode=ro", uri=True
-            )
+            authority = sqlite3.connect(f"file:{coordinator_path}?mode=ro", uri=True)
         except sqlite3.OperationalError:
             authority = None
-    for checkpoint, decision_digest, decision_json, expected, phase in connection.execute(
+    for (
+        checkpoint,
+        decision_digest,
+        decision_json,
+        expected,
+        phase,
+    ) in connection.execute(
         "SELECT checkpoint_id,decision_digest,decision_json,expected,phase FROM checkpoints"
     ):
         cuts = list(
@@ -110,9 +112,17 @@ def inspect_source(
             if decision_digest != _digest(decision):
                 violations.append(f"{checkpoint}: canonical decision digest mismatch")
             required = {
-                "job_id", "graph_version_id", "transaction_id", "sequence",
-                "intent_digest", "capability_digest", "coordinator_owner_id",
-                "coordinator_epoch", "source_positions", "source_epochs", "decision",
+                "job_id",
+                "graph_version_id",
+                "transaction_id",
+                "sequence",
+                "intent_digest",
+                "capability_digest",
+                "coordinator_owner_id",
+                "coordinator_epoch",
+                "source_positions",
+                "source_epochs",
+                "decision",
             }
             if not required.issubset(decision):
                 raise ValueError("missing required decision fields")
@@ -126,11 +136,14 @@ def inspect_source(
                     """SELECT sequence,manifest_digest,phase,decision,active_owner_id,
                               fence_epoch,intent_json FROM checkpoints
                        WHERE job_id=? AND graph_version_id=? AND checkpoint_id=?""",
-                    (decision["job_id"],decision["graph_version_id"],checkpoint),
+                    (decision["job_id"], decision["graph_version_id"], checkpoint),
                 ).fetchone()
             expected_transaction = "ariadne:transaction:" + _digest(
-                {"job": decision["job_id"], "graph": decision["graph_version_id"],
-                 "checkpoint": checkpoint}
+                {
+                    "job": decision["job_id"],
+                    "graph": decision["graph_version_id"],
+                    "checkpoint": checkpoint,
+                }
             )
             if authority_row is None:
                 violations.append(f"{checkpoint}: missing global COMMIT authority")
@@ -141,20 +154,24 @@ def inspect_source(
                 )
                 authority_epochs = tuple(
                     sorted(
-                        (participant,epoch)
-                        for participant,epoch in authority_intent["generation_manifest"]
+                        (participant, epoch)
+                        for participant, epoch in authority_intent[
+                            "generation_manifest"
+                        ]
                         if participant in dict(expected_positions)
                     )
                 )
                 global_valid = (
                     authority_row[0] == decision["sequence"]
                     and authority_row[1] == decision["intent_digest"]
-                    and authority_row[2] in {"COMMIT_DECIDED","COMMITTING","COMPLETED"}
+                    and authority_row[2]
+                    in {"COMMIT_DECIDED", "COMMITTING", "COMPLETED"}
                     and authority_row[3] == decision["decision"] == "COMMIT"
                     and authority_row[4] == decision["coordinator_owner_id"]
                     and authority_row[5] == decision["coordinator_epoch"]
                     and decision["transaction_id"] == expected_transaction
-                    and authority_intent["capability_digest"] == decision["capability_digest"]
+                    and authority_intent["capability_digest"]
+                    == decision["capability_digest"]
                     and authority_positions == tuple(expected_positions)
                     and authority_epochs == tuple(sorted(source_epochs.items()))
                 )
@@ -168,12 +185,12 @@ def inspect_source(
         if expected_positions is None or actual_positions != expected_positions:
             violations.append(f"{checkpoint}: vector differs from decision")
         for partition, ordinal, position in cuts:
-            committed_exact.add((partition,ordinal,position))
-            checkpoint_cuts[(checkpoint,partition)] = (ordinal,position)
+            committed_exact.add((partition, ordinal, position))
+            checkpoint_cuts[(checkpoint, partition)] = (ordinal, position)
             if global_valid and partition in source_epochs:
-                cut_key=(partition,ordinal,position)
-                authorized_cuts[cut_key]=min(
-                    authorized_cuts.get(cut_key,source_epochs[partition]),
+                cut_key = (partition, ordinal, position)
+                authorized_cuts[cut_key] = min(
+                    authorized_cuts.get(cut_key, source_epochs[partition]),
                     source_epochs[partition],
                 )
             if ordinal > 0 and not any(
@@ -195,9 +212,9 @@ def inspect_source(
             for row in records.get(partition, [])
         ):
             violations.append(f"{partition}: external ACK is not accepted")
-        if (partition,ordinal,position) not in committed_exact:
+        if (partition, ordinal, position) not in committed_exact:
             violations.append(f"{partition}: external ACK lacks committed cut")
-        required_epoch = authorized_cuts.get((partition,ordinal,position))
+        required_epoch = authorized_cuts.get((partition, ordinal, position))
         if required_epoch is None:
             violations.append(f"{partition}: external ACK lacks global authority")
         elif epoch < required_epoch:
@@ -225,27 +242,29 @@ def inspect_source(
         )
     )
     blockers = tuple(
-        (checkpoint,partition,ordinal,outcome)
-        for checkpoint,_manifest,partition,ordinal,_position,outcome,_error in attempts
-        if outcome in {"IN_PROGRESS","BLOCKED"}
+        (checkpoint, partition, ordinal, outcome)
+        for checkpoint, _manifest, partition, ordinal, _position, outcome, _error in attempts
+        if outcome in {"IN_PROGRESS", "BLOCKED"}
     )
-    for checkpoint,manifest,partition,ordinal,position,outcome,_error in attempts:
+    for checkpoint, manifest, partition, ordinal, position, outcome, _error in attempts:
         if manifest != checkpoint_digests.get(checkpoint):
             violations.append(f"{checkpoint}/{partition}: ACK decision digest mismatch")
-        if checkpoint_cuts.get((checkpoint,partition)) != (ordinal,position):
+        if checkpoint_cuts.get((checkpoint, partition)) != (ordinal, position):
             violations.append(f"{checkpoint}/{partition}: ACK attempt differs from cut")
-        local_ack=partitions.get(partition,-1)
-        external=external_acknowledged.get(partition)
-        if outcome=="SUCCEEDED" and not (
-            local_ack>=ordinal and external is not None
-            and external[0]==ordinal and external[1]==position
+        local_ack = partitions.get(partition, -1)
+        external = external_acknowledged.get(partition)
+        if outcome == "SUCCEEDED" and not (
+            local_ack >= ordinal
+            and external is not None
+            and external[0] == ordinal
+            and external[1] == position
         ):
             violations.append(f"{checkpoint}/{partition}: false SUCCEEDED ACK")
-        if outcome=="SUBSUMED" and not (
-            local_ack>ordinal and external is not None and external[0]>=local_ack
+        if outcome == "SUBSUMED" and not (
+            local_ack > ordinal and external is not None and external[0] >= local_ack
         ):
             violations.append(f"{checkpoint}/{partition}: false SUBSUMED ACK")
-        if outcome in {"IN_PROGRESS","BLOCKED"} and ordinal <= local_ack:
+        if outcome in {"IN_PROGRESS", "BLOCKED"} and ordinal <= local_ack:
             violations.append(
                 f"{checkpoint}/{partition}: stale {outcome} blocker below local ACK"
             )

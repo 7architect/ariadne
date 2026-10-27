@@ -70,7 +70,10 @@ class BranchJoinOracle:
                 if digest(expected) != deployment["manifest_digest"]:
                     violations.append("branch_manifest_digest")
                 stored_branches = {
-                    row[0] for row in connection.execute("SELECT branch_id FROM branch_manifest")
+                    row[0]
+                    for row in connection.execute(
+                        "SELECT branch_id FROM branch_manifest"
+                    )
                 }
                 if set(branches) != stored_branches:
                     violations.append("branch_manifest_membership")
@@ -108,7 +111,8 @@ class BranchJoinOracle:
                 branch_view = {}
                 for branch_id in branches:
                     progress = connection.execute(
-                        "SELECT * FROM branch_progress WHERE branch_id = ?", (branch_id,)
+                        "SELECT * FROM branch_progress WHERE branch_id = ?",
+                        (branch_id,),
                     ).fetchone()
                     if progress is None:
                         violations.append(f"branch_progress_missing:{branch_id}")
@@ -133,7 +137,8 @@ class BranchJoinOracle:
                             entry is None
                             or entry["record_id"] != completion["record_id"]
                             or completion["lineage_digest"] != digest(lineage)
-                            or completion["output_id"] != "branch-out:" + digest(lineage)
+                            or completion["output_id"]
+                            != "branch-out:" + digest(lineage)
                             or output is None
                             or output["branch_id"] != branch_id
                             or output["partition_id"] != "p0"
@@ -149,12 +154,18 @@ class BranchJoinOracle:
                                 f"{completion['data_sequence']}"
                             )
                     scanned = [
-                        row for row in entries
+                        row
+                        for row in entries
                         if row["log_sequence"] <= progress["scanned_log_through"]
                     ]
                     for entry in scanned:
-                        if entry["kind"] == "DATA" and entry["data_sequence"] not in sequences:
-                            violations.append(f"branch_scanned_without_completion:{branch_id}")
+                        if (
+                            entry["kind"] == "DATA"
+                            and entry["data_sequence"] not in sequences
+                        ):
+                            violations.append(
+                                f"branch_scanned_without_completion:{branch_id}"
+                            )
                         if entry["kind"] == "BARRIER":
                             observation = connection.execute(
                                 "SELECT * FROM branch_barrier_observations "
@@ -166,7 +177,8 @@ class BranchJoinOracle:
                                 or observation["log_sequence"] != entry["log_sequence"]
                                 or observation["cut_data_sequence"]
                                 != entry["cut_data_sequence"]
-                                or observation["intent_digest"] != entry["intent_digest"]
+                                or observation["intent_digest"]
+                                != entry["intent_digest"]
                                 or observation["barrier_output_id"]
                                 not in branch_barrier_by_id
                             ):
@@ -175,14 +187,16 @@ class BranchJoinOracle:
                                     f"{entry['checkpoint']}"
                                 )
                     in_flight = connection.execute(
-                        "SELECT * FROM branch_in_flight WHERE branch_id = ?", (branch_id,)
+                        "SELECT * FROM branch_in_flight WHERE branch_id = ?",
+                        (branch_id,),
                     ).fetchone()
                     if in_flight is not None:
                         entry = entry_by_log.get(in_flight["log_sequence"])
                         if (
                             entry is None
                             or entry["kind"] != "DATA"
-                            or entry["data_sequence"] != progress["completed_through"] + 1
+                            or entry["data_sequence"]
+                            != progress["completed_through"] + 1
                             or entry["record_id"] != in_flight["record_id"]
                             or (in_flight["owner_id"], in_flight["owner_epoch"])
                             != (progress["owner_id"], progress["owner_epoch"])
@@ -220,9 +234,7 @@ class BranchJoinOracle:
                     observation = observations_by_barrier.get(
                         barrier_output["barrier_output_id"]
                     )
-                    upstream = entry_by_log.get(
-                        barrier_output["upstream_log_sequence"]
-                    )
+                    upstream = entry_by_log.get(barrier_output["upstream_log_sequence"])
                     lineage = {
                         "deployment": deployment["deployment_id"],
                         "branch": barrier_output["branch_id"],
@@ -258,7 +270,9 @@ class BranchJoinOracle:
                             f"{barrier_output['checkpoint']}"
                         )
 
-                checkpoints = connection.execute("SELECT * FROM fanout_checkpoints").fetchall()
+                checkpoints = connection.execute(
+                    "SELECT * FROM fanout_checkpoints"
+                ).fetchall()
                 for checkpoint in checkpoints:
                     expected_intent = {
                         "checkpoint": checkpoint["checkpoint"],
@@ -267,10 +281,13 @@ class BranchJoinOracle:
                         "branches": json.loads(checkpoint["branches_json"]),
                     }
                     if digest(expected_intent) != checkpoint["intent_digest"]:
-                        violations.append(f"fanout_checkpoint_intent:{checkpoint['checkpoint']}")
+                        violations.append(
+                            f"fanout_checkpoint_intent:{checkpoint['checkpoint']}"
+                        )
                     barrier = next(
                         (
-                            row for row in entries
+                            row
+                            for row in entries
                             if row["kind"] == "BARRIER"
                             and row["checkpoint"] == checkpoint["checkpoint"]
                         ),
@@ -286,7 +303,9 @@ class BranchJoinOracle:
                     ).fetchone()[0]
                     aligned = observed == len(branches)
                     if (checkpoint["status"] == "ALIGNED") != aligned:
-                        violations.append(f"fanout_checkpoint_status:{checkpoint['checkpoint']}")
+                        violations.append(
+                            f"fanout_checkpoint_status:{checkpoint['checkpoint']}"
+                        )
                 observations["branches"] = branch_view
 
             manifest = connection.execute("SELECT * FROM join_manifest").fetchone()
@@ -321,7 +340,9 @@ class BranchJoinOracle:
                         == digest({"payload_ref": source["payload_ref"]})
                     )
 
-                def valid_join_barrier(input_id: str, entry: sqlite3.Row | None) -> bool:
+                def valid_join_barrier(
+                    input_id: str, entry: sqlite3.Row | None
+                ) -> bool:
                     if entry is None or entry["kind"] != "BARRIER":
                         return False
                     source = branch_barrier_by_id.get(entry["source_barrier_id"])
@@ -337,12 +358,9 @@ class BranchJoinOracle:
                         and source["partition_id"] == binding["partition"]
                         and source["barrier_output_id"] == entry["record_id"]
                         and source["checkpoint"] == entry["checkpoint"]
-                        and source["cut_data_sequence"]
-                        == entry["cut_data_sequence"]
-                        and source["intent_digest"]
-                        == intent["fanout_intent_digest"]
-                        and source["writer_epoch"]
-                        == intent["fanout_writer_epoch"]
+                        and source["cut_data_sequence"] == entry["cut_data_sequence"]
+                        and source["intent_digest"] == intent["fanout_intent_digest"]
+                        and source["writer_epoch"] == intent["fanout_writer_epoch"]
                         and source["cut_data_sequence"]
                         == intent["fanout_cut_data_sequence"]
                     )
@@ -359,9 +377,7 @@ class BranchJoinOracle:
                         "code_version": intent["code_version"],
                         "fanout_intent_digest": intent["fanout_intent_digest"],
                         "fanout_writer_epoch": intent["fanout_writer_epoch"],
-                        "fanout_cut_data_sequence": intent[
-                            "fanout_cut_data_sequence"
-                        ],
+                        "fanout_cut_data_sequence": intent["fanout_cut_data_sequence"],
                     }
                     if digest(expected_intent) != intent["intent_digest"]:
                         violations.append(
@@ -392,7 +408,8 @@ class BranchJoinOracle:
                     for barrier in (row for row in rows if row["kind"] == "BARRIER"):
                         cut = max(
                             (
-                                row["data_sequence"] for row in data
+                                row["data_sequence"]
+                                for row in data
                                 if row["log_sequence"] < barrier["log_sequence"]
                             ),
                             default=0,
@@ -436,7 +453,8 @@ class BranchJoinOracle:
                 for turn in turns:
                     entry = next(
                         (
-                            row for row in entries_by_input.get(turn["input_id"], [])
+                            row
+                            for row in entries_by_input.get(turn["input_id"], [])
                             if row["log_sequence"] == turn["log_sequence"]
                         ),
                         None,
@@ -466,8 +484,12 @@ class BranchJoinOracle:
                         or output["input_id"] != turn["input_id"]
                         or output["data_sequence"] != turn["data_sequence"]
                     ):
-                        violations.append(f"join_output_identity:{turn['apply_ordinal']}")
-                live_state = connection.execute("SELECT state_value FROM join_state").fetchone()[0]
+                        violations.append(
+                            f"join_output_identity:{turn['apply_ordinal']}"
+                        )
+                live_state = connection.execute(
+                    "SELECT state_value FROM join_state"
+                ).fetchone()[0]
                 if live_state != state:
                     violations.append("join_live_state")
 
@@ -476,7 +498,9 @@ class BranchJoinOracle:
                     for row in connection.execute("SELECT * FROM join_progress")
                 }
                 for input_id, row in progress.items():
-                    sequences = [turn["data_sequence"] for turn in turns_by_input[input_id]]
+                    sequences = [
+                        turn["data_sequence"] for turn in turns_by_input[input_id]
+                    ]
                     if sequences != list(range(1, row["completed_data_through"] + 1)):
                         violations.append(f"join_cursor_coverage:{input_id}")
 
@@ -494,14 +518,16 @@ class BranchJoinOracle:
                 for row in buffers:
                     entry = next(
                         (
-                            entry for entry in entries_by_input.get(row["input_id"], [])
+                            entry
+                            for entry in entries_by_input.get(row["input_id"], [])
                             if entry["log_sequence"] == row["log_sequence"]
                         ),
                         None,
                     )
                     barrier = next(
                         (
-                            entry for entry in entries_by_input.get(row["input_id"], [])
+                            entry
+                            for entry in entries_by_input.get(row["input_id"], [])
                             if entry["kind"] == "BARRIER"
                             and entry["checkpoint"] == row["checkpoint"]
                         ),
@@ -524,7 +550,8 @@ class BranchJoinOracle:
                     if row["drained"]:
                         turn = next(
                             (
-                                turn for turn in turns
+                                turn
+                                for turn in turns
                                 if turn["apply_ordinal"] == row["drain_apply_ordinal"]
                             ),
                             None,
@@ -543,7 +570,8 @@ class BranchJoinOracle:
                         continue
                     buffered = next(
                         (
-                            row for row in buffers
+                            row
+                            for row in buffers
                             if row["drain_apply_ordinal"] == turn["apply_ordinal"]
                         ),
                         None,
@@ -553,10 +581,10 @@ class BranchJoinOracle:
                             f"join_buffer_turn_missing:{turn['apply_ordinal']}"
                         )
 
-                snapshots = connection.execute("SELECT * FROM join_snapshots").fetchall()
-                snapshot_by_checkpoint = {
-                    row["checkpoint"]: row for row in snapshots
-                }
+                snapshots = connection.execute(
+                    "SELECT * FROM join_snapshots"
+                ).fetchall()
+                snapshot_by_checkpoint = {row["checkpoint"]: row for row in snapshots}
                 for intent in intents:
                     has_snapshot = intent["checkpoint"] in snapshot_by_checkpoint
                     if (intent["status"] in ("ALIGNED", "COMPLETED")) != has_snapshot:
@@ -577,7 +605,9 @@ class BranchJoinOracle:
                     ):
                         violations.append(f"join_snapshot_authority:{checkpoint}")
                         continue
-                    if snapshot["state_value"] != states.get(snapshot["mailbox_highwater"]):
+                    if snapshot["state_value"] != states.get(
+                        snapshot["mailbox_highwater"]
+                    ):
                         violations.append(f"join_snapshot_state:{checkpoint}")
                     for input_id, cut in cuts.items():
                         observation = connection.execute(
@@ -608,9 +638,13 @@ class BranchJoinOracle:
                             if turn["source"] == "BUFFER"
                         ]
                         if pre and max(pre) >= barrier_output["output_ordinal"]:
-                            violations.append(f"join_barrier_overtook_data:{checkpoint}")
+                            violations.append(
+                                f"join_barrier_overtook_data:{checkpoint}"
+                            )
                         if drained and min(drained) <= barrier_output["output_ordinal"]:
-                            violations.append(f"join_buffer_before_barrier:{checkpoint}")
+                            violations.append(
+                                f"join_buffer_before_barrier:{checkpoint}"
+                            )
                 observations["join"] = {
                     "state": state,
                     "progress": {

@@ -1,0 +1,48 @@
+{
+  "artifact_sha256": {
+    "ci-precommit-local-2026-10-27.log": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
+    "ci-precommit-repeat-2026-10-27.log": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
+    "ci-prototype-regression-2026-10-27.log": "46238f1b7a6acb19dee1d3391080bcbcbce8ebc1afe8c109a477709027559d0d",
+    "ci-source-hygiene-manifest-2026-10-27.json": "c44dde2a93ea72a156b8843ff4c1f6ed0dc36d34f90a895649cfde61968f77f9"
+  },
+  "base_commit": "8139a17d822e091503a7b9546e55c9b98bad41b2",
+  "codespell_exclusion": "^architecture/streaming-etl/evidence/.*\\.log$",
+  "date": "2026-10-27",
+  "exact_ruff_exclusions": [
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-baseline-2026-10-26.py",
+    "architecture/streaming-etl/evidence/prefect-storage-discovery-configured-2026-10-26.py"
+  ],
+  "failed_ci_run": "https://github.com/Anacreonsystems/ariadne/actions/runs/40349113436",
+  "failure": {
+    "codespell_raw_log_truncations": 2,
+    "downloaded_job_log_sha256": "ca5eeb5769c2a98cd45f0305248e09eed78b15b715f60a7b579ff7ea6744bbd9",
+    "job": "Pre-commit checks",
+    "job_id": 121663988457,
+    "ruff_findings": 142,
+    "ruff_format_files": 44,
+    "ruff_version": "0.15.19",
+    "type_check_job_passed": true
+  },
+  "generated_at": "2026-10-27T09:54:27.982925+00:00",
+  "hosted_static_analysis": "not_yet_rerun",
+  "hosted_streaming_smoke": "queued_without_runner",
+  "local_checks": {
+    "diff_check_passed": true,
+    "historical_evidence_files_unchanged": 155,
+    "precommit_all_files_passes": 2,
+    "precommit_idempotent": true,
+    "prototype_test_duration_seconds": 25.181,
+    "prototype_tests_passed": 197,
+    "source_hygiene_manifest": "ci-source-hygiene-manifest-2026-10-27.json"
+  },
+  "long_soak_passed": false,
+  "postgres_gate": "postgres-ci-style-regression-2026-10-27.json",
+  "postgres_gate_status": "in_progress",
+  "repair_acceptance_complete": false,
+  "repository": {
+    "full_name": "Anacreonsystems/ariadne",
+    "id": 1425414142,
+    "transfer_verified": true
+  },
+  "status": "progress"
+}

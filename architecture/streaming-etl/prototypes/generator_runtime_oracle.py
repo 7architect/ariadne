@@ -25,17 +25,25 @@ def evaluate(path: Path) -> dict[str, object]:
             (row["channel_id"], row["partition_id"], row["sequence"]): row
             for row in records
         }
-        objects = {row["object_key"]: row for row in db.execute("SELECT * FROM objects")}
+        objects = {
+            row["object_key"]: row for row in db.execute("SELECT * FROM objects")
+        }
         completions = db.execute("SELECT * FROM turn_completions").fetchall()
         for row in records:
             obj = objects.get(row["payload_key"])
             if obj is None or (
-                obj["digest"], obj["size"], obj["schema_id"], obj["durable"]
+                obj["digest"],
+                obj["size"],
+                obj["schema_id"],
+                obj["durable"],
             ) != (row["payload_digest"], row["payload_size"], row["schema_id"], 1):
-                violations.append(f"record_object:{row['channel_id']}:{row['sequence']}")
+                violations.append(
+                    f"record_object:{row['channel_id']}:{row['sequence']}"
+                )
         for consumer in db.execute("SELECT * FROM consumers"):
             owned = sorted(
-                row["input_sequence"] for row in completions
+                row["input_sequence"]
+                for row in completions
                 if row["consumer_id"] == consumer["consumer_id"]
             )
             if owned != list(range(1, consumer["completed_through"] + 1)):
@@ -48,7 +56,8 @@ def evaluate(path: Path) -> dict[str, object]:
             if consumer["completed_through"] > 0:
                 latest = next(
                     (
-                        row for row in completions
+                        row
+                        for row in completions
                         if row["consumer_id"] == consumer["consumer_id"]
                         and row["input_sequence"] == consumer["completed_through"]
                     ),
@@ -56,7 +65,9 @@ def evaluate(path: Path) -> dict[str, object]:
                 )
                 expected_state = None if latest is None else latest["state_json"]
             if expected_state is None or consumer["state_json"] != expected_state:
-                violations.append(f"consumer_state_projection:{consumer['consumer_id']}")
+                violations.append(
+                    f"consumer_state_projection:{consumer['consumer_id']}"
+                )
         referenced_outputs: set[tuple[str, str, int]] = set()
         for completion in completions:
             try:
@@ -82,7 +93,10 @@ def evaluate(path: Path) -> dict[str, object]:
                     completion["input_sequence"],
                 )
             )
-            if input_row is None or input_row["record_id"] != completion["input_record_id"]:
+            if (
+                input_row is None
+                or input_row["record_id"] != completion["input_record_id"]
+            ):
                 violations.append(
                     f"completion_input:{completion['consumer_id']}:{completion['input_sequence']}"
                 )
@@ -93,20 +107,24 @@ def evaluate(path: Path) -> dict[str, object]:
                     completion["output_sequence"],
                 )
                 output = record_by_location.get(location)
-                expected_manifest = None if output is None else {
-                    "channel": output["channel_id"],
-                    "partition": output["partition_id"],
-                    "sequence": output["sequence"],
-                    "record_id": output["record_id"],
-                    "payload": {
-                        "key": output["payload_key"],
-                        "digest": output["payload_digest"],
-                        "size": output["payload_size"],
-                        "schema_id": output["schema_id"],
-                    },
-                    "lineage": output["lineage_digest"],
-                    "producer_epoch": output["producer_epoch"],
-                }
+                expected_manifest = (
+                    None
+                    if output is None
+                    else {
+                        "channel": output["channel_id"],
+                        "partition": output["partition_id"],
+                        "sequence": output["sequence"],
+                        "record_id": output["record_id"],
+                        "payload": {
+                            "key": output["payload_key"],
+                            "digest": output["payload_digest"],
+                            "size": output["payload_size"],
+                            "schema_id": output["schema_id"],
+                        },
+                        "lineage": output["lineage_digest"],
+                        "producer_epoch": output["producer_epoch"],
+                    }
+                )
                 if (
                     output is None
                     or output["record_id"] != completion["output_record_id"]
@@ -120,7 +138,9 @@ def evaluate(path: Path) -> dict[str, object]:
                 if manifest is not None or any(
                     completion[name] is not None
                     for name in (
-                        "output_channel_id", "output_partition_id", "output_sequence",
+                        "output_channel_id",
+                        "output_partition_id",
+                        "output_sequence",
                         "output_record_id",
                     )
                 ):
@@ -140,15 +160,22 @@ def evaluate(path: Path) -> dict[str, object]:
         }
         for invocation in db.execute("SELECT * FROM runtime_invocations"):
             consumer = consumers.get(invocation["consumer_id"])
-            if consumer is None or invocation["input_sequence"] <= consumer["completed_through"]:
+            if (
+                consumer is None
+                or invocation["input_sequence"] <= consumer["completed_through"]
+            ):
                 violations.append(f"terminal_invocation:{invocation['consumer_id']}")
                 continue
             if (
-                invocation["input_sequence"], invocation["attempt"],
-                invocation["owner_id"], invocation["owner_epoch"],
+                invocation["input_sequence"],
+                invocation["attempt"],
+                invocation["owner_id"],
+                invocation["owner_epoch"],
             ) != (
-                consumer["in_flight_sequence"], consumer["in_flight_attempt"],
-                consumer["owner_id"], consumer["owner_epoch"],
+                consumer["in_flight_sequence"],
+                consumer["in_flight_attempt"],
+                consumer["owner_id"],
+                consumer["owner_epoch"],
             ):
                 violations.append(f"invocation_token:{invocation['consumer_id']}")
         return {

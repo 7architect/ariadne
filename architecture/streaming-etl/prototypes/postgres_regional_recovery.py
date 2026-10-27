@@ -1,10 +1,10 @@
 """Focused DS-031b regional recovery composition for PostgreSQL prototypes.
 
-The module derives one immutable recovery graph from ``revision_edges``, seals
-a selective plan with ``PostgresRecoveryRegionPlanner``, fences every worker in
+The module derives one immutable recovery graph from `revision_edges`, seals
+a selective plan with `PostgresRecoveryRegionPlanner`, fences every worker in
 the selected region in the same transaction, and replays each worker's exact
 applied mailbox from its checkpoint snapshot.  Region-wide activation is
-atomic: no restored worker returns to ``LIVE`` before all region workers are
+atomic: no restored worker returns to `LIVE` before all region workers are
 ready.
 
 This remains a focused prototype.  It does not implement missing-boundary
@@ -460,7 +460,7 @@ class PostgresRegionalRecovery:
         source_replayable: bool = False,
         nonreplayable_edges: set[str] | None = None,
     ) -> str:
-        """Derive and seal the planner graph from real ``revision_edges``."""
+        """Derive and seal the planner graph from real `revision_edges`."""
         nonreplayable_edges = (
             set() if nonreplayable_edges is None else set(nonreplayable_edges)
         )
@@ -1507,7 +1507,7 @@ class PostgresRegionalRecovery:
             raise PostgresProtocolError("regional output payload identity drift")
 
     async def activate_region(self, plan_id: str) -> None:
-        """Atomically publish every READY worker generation as ``LIVE``."""
+        """Atomically publish every READY worker generation as `LIVE`."""
         async with self.pool.acquire() as conn, conn.transaction():
             generations = list(
                 await conn.fetch(

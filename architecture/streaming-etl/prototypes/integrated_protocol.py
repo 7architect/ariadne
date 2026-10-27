@@ -78,7 +78,7 @@ class Role(str, Enum):
 
 class SinkTier(str, Enum):
     B = "B"
-    I = "I"
+    I = "I"  # noqa: E741 -- the protocol names its sink tiers B, I and T.
     T = "T"
 
 
@@ -1693,11 +1693,15 @@ class Coordinator:
     def source_decision_reference(self, intent: CheckpointIntent) -> dict[str, Any]:
         """Return fields which a source ledger must bind to this COMMIT."""
         row = self._row(intent)
-        if row[3] not in {
-            Phase.COMMIT_DECIDED.value,
-            Phase.COMMITTING.value,
-            Phase.COMPLETED.value,
-        } or row[4] != "COMMIT":
+        if (
+            row[3]
+            not in {
+                Phase.COMMIT_DECIDED.value,
+                Phase.COMMITTING.value,
+                Phase.COMPLETED.value,
+            }
+            or row[4] != "COMMIT"
+        ):
             raise ProtocolError("source decision reference requires durable COMMIT")
         return {
             "job_id": intent.job_id,
@@ -1710,8 +1714,7 @@ class Coordinator:
             "coordinator_owner_id": row[5],
             "coordinator_epoch": row[6],
             "source_positions": tuple(
-                (partition, position)
-                for partition, position in intent.source_positions
+                (partition, position) for partition, position in intent.source_positions
             ),
             "source_epochs": tuple(
                 (partition, dict(intent.generation_manifest)[partition])

@@ -46,14 +46,22 @@ def main() -> int:
     if should_run:
         if args.mode == "sync":
             runtime.run_sync(
-                "consumer", owner_id, owner_epoch, sync_task,
-                completion_fault=fault, adapter_fault=fault,
+                "consumer",
+                owner_id,
+                owner_epoch,
+                sync_task,
+                completion_fault=fault,
+                adapter_fault=fault,
             )
         else:
             asyncio.run(
                 runtime.run_async(
-                    "consumer", owner_id, owner_epoch, async_task,
-                    completion_fault=fault, adapter_fault=fault,
+                    "consumer",
+                    owner_id,
+                    owner_epoch,
+                    async_task,
+                    completion_fault=fault,
+                    adapter_fault=fault,
                 )
             )
     store.close()

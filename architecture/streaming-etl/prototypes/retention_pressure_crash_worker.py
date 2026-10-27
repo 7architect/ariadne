@@ -20,9 +20,13 @@ def main() -> int:
             os._exit(86)
 
     if args.operation == "append":
-        store.append("attempt-3", "record-3", "object-3", b"3xxxxxxxxx", "lineage-3", fault=fault)
+        store.append(
+            "attempt-3", "record-3", "object-3", b"3xxxxxxxxx", "lineage-3", fault=fault
+        )
     elif args.operation == "blocked":
-        store.append("attempt-5", "record-5", "object-5", b"5xxxxxxxxx", "lineage-5", fault=fault)
+        store.append(
+            "attempt-5", "record-5", "object-5", b"5xxxxxxxxx", "lineage-5", fault=fault
+        )
     else:
         store.compact(2, fault=fault)
     store.close()

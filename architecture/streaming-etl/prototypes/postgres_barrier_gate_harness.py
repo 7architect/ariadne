@@ -15,7 +15,6 @@ from pathlib import Path
 
 import asyncpg
 
-
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 DEFAULT_DSN = os.environ.get(

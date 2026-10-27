@@ -52,9 +52,7 @@ class DurableStreamOracle:
     ) -> OracleReport:
         violations: list[str] = []
         manifest = cls._load_manifest(manifest_path, violations)
-        connection = sqlite3.connect(
-            f"file:{database.resolve()}?mode=ro", uri=True
-        )
+        connection = sqlite3.connect(f"file:{database.resolve()}?mode=ro", uri=True)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA query_only = ON")
         connection.execute("BEGIN")
@@ -94,17 +92,13 @@ class DurableStreamOracle:
         )
 
     @staticmethod
-    def _load_manifest(
-        path: Path, violations: list[str]
-    ) -> dict[str, Any]:
+    def _load_manifest(path: Path, violations: list[str]) -> dict[str, Any]:
         try:
             value = json.loads(path.read_text())
         except (OSError, json.JSONDecodeError):
             violations.append("fixture_manifest_invalid")
             return {"consumers": []}
-        if not isinstance(value, dict) or not isinstance(
-            value.get("consumers"), list
-        ):
+        if not isinstance(value, dict) or not isinstance(value.get("consumers"), list):
             violations.append("fixture_manifest_invalid")
             return {"consumers": []}
         return value
@@ -204,8 +198,7 @@ class DurableStreamOracle:
         declared_ids = [
             value.get("consumer_id")
             for value in declarations
-            if isinstance(value, dict)
-            and isinstance(value.get("consumer_id"), str)
+            if isinstance(value, dict) and isinstance(value.get("consumer_id"), str)
         ]
         stored_ids = {
             row["consumer_id"]
@@ -214,13 +207,9 @@ class DurableStreamOracle:
         if len(declared_ids) != len(set(declared_ids)):
             violations.append("fixture_consumer_set_is_exact:duplicate")
         for consumer_id in sorted(stored_ids - set(declared_ids)):
-            violations.append(
-                f"fixture_consumer_set_is_exact:missing:{consumer_id}"
-            )
+            violations.append(f"fixture_consumer_set_is_exact:missing:{consumer_id}")
         for consumer_id in sorted(set(declared_ids) - stored_ids):
-            violations.append(
-                f"fixture_consumer_set_is_exact:unknown:{consumer_id}"
-            )
+            violations.append(f"fixture_consumer_set_is_exact:unknown:{consumer_id}")
         for declaration in declarations:
             if not isinstance(declaration, dict):
                 violations.append("fixture_manifest_invalid_consumer")
@@ -258,9 +247,7 @@ class DurableStreamOracle:
             )
             input_rows = records.get(input_key, [])
             output_rows = records.get(output_key, [])
-            cls._check_consumer_position(
-                consumer, input_spec, input_rows, violations
-            )
+            cls._check_consumer_position(consumer, input_spec, input_rows, violations)
             completions = connection.execute(
                 """SELECT * FROM turn_completions
                    WHERE consumer_id = ? ORDER BY input_sequence""",
@@ -342,15 +329,13 @@ class DurableStreamOracle:
             violations.append(f"state_is_atomic:consumer_canonical:{consumer_id}")
         completed = consumer["completed_through"]
         latest = next(
-            (
-                row
-                for row in completions
-                if row["input_sequence"] == completed
-            ),
+            (row for row in completions if row["input_sequence"] == completed),
             None,
         )
-        expected = "{}" if completed == 0 else (
-            latest["state_json"] if latest is not None else None
+        expected = (
+            "{}"
+            if completed == 0
+            else (latest["state_json"] if latest is not None else None)
         )
         if state_json != expected:
             violations.append(f"state_is_atomic:cursor_state:{consumer_id}")
@@ -399,9 +384,7 @@ class DurableStreamOracle:
                         f"state_is_atomic:completion_canonical:{identity}"
                     )
                 if _digest(state) != completion["state_digest"]:
-                    violations.append(
-                        f"state_is_atomic:completion_digest:{identity}"
-                    )
+                    violations.append(f"state_is_atomic:completion_digest:{identity}")
             manifest_valid, manifest = cls._load_json(
                 completion["output_manifest_json"],
                 f"yield_manifest_is_exact:json:{identity}",
@@ -413,13 +396,17 @@ class DurableStreamOracle:
             ):
                 violations.append(f"yield_manifest_is_exact:digest:{identity}")
             if completion["kind"] == "RETURN":
-                if not manifest_valid or manifest is not None or any(
-                    completion[name] is not None
-                    for name in (
-                        "output_channel_id",
-                        "output_partition_id",
-                        "output_sequence",
-                        "output_record_id",
+                if (
+                    not manifest_valid
+                    or manifest is not None
+                    or any(
+                        completion[name] is not None
+                        for name in (
+                            "output_channel_id",
+                            "output_partition_id",
+                            "output_sequence",
+                            "output_record_id",
+                        )
                     )
                 ):
                     violations.append(f"return_has_no_output:{identity}")
@@ -470,9 +457,7 @@ class DurableStreamOracle:
             violations.append(f"exclusive_output_is_ordered:{consumer_id}")
 
     @staticmethod
-    def _load_json(
-        value: str, name: str, violations: list[str]
-    ) -> tuple[bool, Any]:
+    def _load_json(value: str, name: str, violations: list[str]) -> tuple[bool, Any]:
         try:
             return True, json.loads(value)
         except (TypeError, json.JSONDecodeError):

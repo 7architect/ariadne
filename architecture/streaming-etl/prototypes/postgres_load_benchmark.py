@@ -22,7 +22,6 @@ from postgres_stream_v2 import (
     metadata_operation_id,
 )
 
-
 DSN = os.environ.get(
     "ARIADNE_STREAM_DSN",
     "postgresql://ariadne:ariadne@127.0.0.1:55432/streaming",
@@ -94,10 +93,7 @@ def run_consumer_process(
             partition_completed = 0
             per_partition_rate = CATCHUP_RATE_LIMIT / PARTITION_COUNT
             while not drained.is_set():
-                due = (
-                    catchup_started
-                    + partition_completed / per_partition_rate
-                )
+                due = catchup_started + partition_completed / per_partition_rate
                 delay = due - time.monotonic()
                 if delay > 0:
                     await asyncio.sleep(delay)
@@ -115,7 +111,8 @@ def run_consumer_process(
                     managed_states=[
                         {"last": token.sequence} for token, _ in deliveries
                     ],
-                    state_schema="benchmark/v1", state_version=1,
+                    state_schema="benchmark/v1",
+                    state_version=1,
                 )
                 caught_up += len(deliveries)
                 partition_completed += len(deliveries)
@@ -134,9 +131,9 @@ def run_consumer_process(
                     drained.set()
 
         try:
-            await asyncio.gather(*(
-                catch_up(number) for number in range(PARTITION_COUNT)
-            ))
+            await asyncio.gather(
+                *(catch_up(number) for number in range(PARTITION_COUNT))
+            )
         finally:
             await consumer_store.close()
         if not backlog_recovered:
@@ -165,8 +162,10 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     capacity_age_seconds = 65
     for partition_number in range(PARTITION_COUNT):
         await store.create_partition(
-            "load", f"p{partition_number}",
-            max_records=capacity_records, max_bytes=capacity_bytes,
+            "load",
+            f"p{partition_number}",
+            max_records=capacity_records,
+            max_bytes=capacity_bytes,
             max_age_seconds=capacity_age_seconds,
             max_metadata_records=capacity_records * 2,
         )
@@ -189,13 +188,13 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     # connections and prepare the stalled consumer before the clock starts.
     async def warm_connection() -> int:
         async with store.pool.acquire() as conn:
-            return int(await conn.fetchval(
-                "SELECT pg_backend_pid() FROM pg_sleep(0.02)"
-            ))
+            return int(
+                await conn.fetchval("SELECT pg_backend_pid() FROM pg_sleep(0.02)")
+            )
 
-    producer_backend_pids = await asyncio.gather(*(
-        warm_connection() for _ in range(PARTITION_COUNT)
-    ))
+    producer_backend_pids = await asyncio.gather(
+        *(warm_connection() for _ in range(PARTITION_COUNT))
+    )
     process_context = multiprocessing.get_context("spawn")
     appended = process_context.Array("q", [0] * PARTITION_COUNT, lock=False)
     producers_done = process_context.Event()
@@ -207,9 +206,15 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     consumer_process = process_context.Process(
         target=run_consumer_process,
         args=(
-            schema, consumer_epochs, catchup_started_value,
-            backlog_records_value, appended, producers_done,
-            consumer_ready, consumer_go, result_queue,
+            schema,
+            consumer_epochs,
+            catchup_started_value,
+            backlog_records_value,
+            appended,
+            producers_done,
+            consumer_ready,
+            consumer_go,
+            result_queue,
         ),
     )
     consumer_process.start()
@@ -221,16 +226,20 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     async def postgres_stats() -> dict[str, object]:
         async with store.pool.acquire() as conn:
             return {
-                "checkpointer": json.loads(await conn.fetchval(
-                    "SELECT to_jsonb(s)::text FROM pg_stat_checkpointer s"
-                )),
-                "wal": json.loads(await conn.fetchval(
-                    "SELECT to_jsonb(s)::text FROM pg_stat_wal s"
-                )),
-                "database": json.loads(await conn.fetchval(
-                    "SELECT to_jsonb(s)::text FROM pg_stat_database s "
-                    "WHERE datname=current_database()"
-                )),
+                "checkpointer": json.loads(
+                    await conn.fetchval(
+                        "SELECT to_jsonb(s)::text FROM pg_stat_checkpointer s"
+                    )
+                ),
+                "wal": json.loads(
+                    await conn.fetchval("SELECT to_jsonb(s)::text FROM pg_stat_wal s")
+                ),
+                "database": json.loads(
+                    await conn.fetchval(
+                        "SELECT to_jsonb(s)::text FROM pg_stat_database s "
+                        "WHERE datname=current_database()"
+                    )
+                ),
             }
 
     postgres_stats_before = await postgres_stats()
@@ -238,7 +247,9 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     deadline = started + duration
     latencies_ms: list[float] = []
     latencies_by_payload: dict[int, list[float]] = {
-        1024: [], 16 * 1024: [], 256 * 1024: [],
+        1024: [],
+        16 * 1024: [],
+        256 * 1024: [],
     }
     scheduler_delay_ms: list[float] = []
     queue_wait_ms: list[float] = []
@@ -246,14 +257,13 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     append_round_trip_ms: list[float] = []
     batch_timings: list[dict[str, object]] = []
     errors: list[str] = []
+
     async def producer(partition_number: int) -> None:
         partition = f"p{partition_number}"
         local_sequence = 0
         local_batch = 0
         while True:
-            numbers = list(range(
-                local_sequence + 1, local_sequence + BATCH_SIZE + 1
-            ))
+            numbers = list(range(local_sequence + 1, local_sequence + BATCH_SIZE + 1))
             global_batch = local_batch * PARTITION_COUNT + partition_number
             due_times = [
                 started + (global_batch * BATCH_SIZE + offset + 1) / OFFERED_RATE
@@ -271,13 +281,20 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
             for offset, number in enumerate(numbers):
                 global_number = global_batch * BATCH_SIZE + offset + 1
                 payload = payload_for(global_number)
-                items.append((
-                    f"load-attempt-{partition}-{number}", "load", partition,
-                    f"load-record-{partition}-{number}",
-                    content_object_key(payload, "bytes/v1"), payload, "bytes/v1",
-                    f"load-lineage-{partition}-{number}",
-                    f"load-producer-{partition}", number,
-                ))
+                items.append(
+                    (
+                        f"load-attempt-{partition}-{number}",
+                        "load",
+                        partition,
+                        f"load-record-{partition}-{number}",
+                        content_object_key(payload, "bytes/v1"),
+                        payload,
+                        "bytes/v1",
+                        f"load-lineage-{partition}-{number}",
+                        f"load-producer-{partition}",
+                        number,
+                    )
+                )
             payload_ready = time.monotonic()
             encoding_ms.append((payload_ready - woke) * 1000)
             append_call_started = time.monotonic()
@@ -287,31 +304,29 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
                 errors.append(f"{type(exc).__name__}:{exc}")
                 return
             acknowledged = time.monotonic()
-            append_round_trip_ms.append(
-                (acknowledged - append_call_started) * 1000
-            )
+            append_round_trip_ms.append((acknowledged - append_call_started) * 1000)
             for due, item in zip(due_times, items):
                 latency = (acknowledged - due) * 1000
                 latencies_ms.append(latency)
                 latencies_by_payload[len(item[5])].append(latency)
-            batch_timings.append({
-                "partition": partition,
-                "local_first_sequence": numbers[0],
-                "local_last_sequence": numbers[-1],
-                "scheduled_first_second": due_times[0] - started,
-                "scheduled_last_second": due_times[-1] - started,
-                "wake_second": woke - started,
-                "payload_ready_second": payload_ready - started,
-                "append_call_start_second": append_call_started - started,
-                "ack_second": acknowledged - started,
-                "queue_wait_ms": (woke - due_times[0]) * 1000,
-                "wake_delay_ms": (woke - due_times[-1]) * 1000,
-                "encoding_ms": (payload_ready - woke) * 1000,
-                "db_call_ms": (acknowledged - append_call_started) * 1000,
-                "worst_offer_to_ack_ms": (
-                    acknowledged - due_times[0]
-                ) * 1000,
-            })
+            batch_timings.append(
+                {
+                    "partition": partition,
+                    "local_first_sequence": numbers[0],
+                    "local_last_sequence": numbers[-1],
+                    "scheduled_first_second": due_times[0] - started,
+                    "scheduled_last_second": due_times[-1] - started,
+                    "wake_second": woke - started,
+                    "payload_ready_second": payload_ready - started,
+                    "append_call_start_second": append_call_started - started,
+                    "ack_second": acknowledged - started,
+                    "queue_wait_ms": (woke - due_times[0]) * 1000,
+                    "wake_delay_ms": (woke - due_times[-1]) * 1000,
+                    "encoding_ms": (payload_ready - woke) * 1000,
+                    "db_call_ms": (acknowledged - append_call_started) * 1000,
+                    "worst_offer_to_ack_ms": (acknowledged - due_times[0]) * 1000,
+                }
+            )
             local_sequence += BATCH_SIZE
             local_batch += 1
             appended[partition_number] = local_sequence
@@ -328,9 +343,7 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     await asyncio.gather(*producer_tasks)
     postgres_stats_after = await postgres_stats()
     producers_done.set()
-    await asyncio.wait_for(
-        asyncio.to_thread(consumer_process.join, 120), timeout=125
-    )
+    await asyncio.wait_for(asyncio.to_thread(consumer_process.join, 120), timeout=125)
     if consumer_process.is_alive():
         consumer_process.terminate()
         consumer_process.join()
@@ -343,9 +356,7 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     recovered_at = consumer_result["recovered_at"]
     recovered_completions = consumer_result["recovered_completions"]
     recovered_lag = consumer_result["recovered_lag"]
-    recovered_while_ingress_active = consumer_result[
-        "recovered_while_ingress_active"
-    ]
+    recovered_while_ingress_active = consumer_result["recovered_while_ingress_active"]
     catchup_elapsed = recovered_at - catchup_started
     catchup_rate = (
         recovered_completions / catchup_elapsed if catchup_elapsed else float("inf")
@@ -357,9 +368,7 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
         reverse=True,
     )[:20]
     for item in top_outliers:
-        item["catchup_active"] = (
-            float(item["ack_second"]) >= catchup_started_second
-        )
+        item["catchup_active"] = float(item["ack_second"]) >= catchup_started_second
     elapsed = time.monotonic() - started
     ingested = sum(appended)
     ingress_rate = ingested / duration
@@ -373,7 +382,8 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     compaction_rate = (
         sum(result["reclaimed_records"] for result in compaction_results)
         / compaction_seconds
-        if compaction_seconds else float("inf")
+        if compaction_seconds
+        else float("inf")
     )
     compaction = {
         "scope": "live ingress partitions with completed consumer history",
@@ -391,15 +401,16 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     }
     metadata_started = time.monotonic()
     metadata_cuts = [
-        ("load", f"p{number}", appended[number])
-        for number in range(PARTITION_COUNT)
+        ("load", f"p{number}", appended[number]) for number in range(PARTITION_COUNT)
     ]
     metadata_id = metadata_operation_id(metadata_cuts)
     metadata_compaction = await store.compact_metadata(
-        metadata_cuts, operation_id=metadata_id,
+        metadata_cuts,
+        operation_id=metadata_id,
     )
     metadata_retry = await store.compact_metadata(
-        metadata_cuts, operation_id=metadata_id,
+        metadata_cuts,
+        operation_id=metadata_id,
     )
     metadata_compaction["idempotent_retry"] = metadata_retry["idempotent_retry"]
     metadata_seconds = time.monotonic() - metadata_started
@@ -407,23 +418,31 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
     first_payload = payload_for(1)
     try:
         await store.append(
-            "load-attempt-p0-1", "load", "p0", "load-record-p0-1",
-            content_object_key(first_payload, "bytes/v1"), first_payload,
-            "bytes/v1", "load-lineage-p0-1",
-            producer_id="load-producer-p0", producer_sequence=1,
+            "load-attempt-p0-1",
+            "load",
+            "p0",
+            "load-record-p0-1",
+            content_object_key(first_payload, "bytes/v1"),
+            first_payload,
+            "bytes/v1",
+            "load-lineage-p0-1",
+            producer_id="load-producer-p0",
+            producer_sequence=1,
         )
     except IdempotencyHorizonExpired:
         expired_retry_rejected = True
     invariants = await store.invariant_report()
     async with store.pool.acquire() as conn:
         parts = [
-            dict(row) for row in await conn.fetch(
+            dict(row)
+            for row in await conn.fetch(
                 "SELECT * FROM partitions WHERE channel='load' ORDER BY partition_id"
             )
         ]
         compaction["credits_after"] = {
             row["partition_id"]: {
-                "used_records": row["used_records"], "used_bytes": row["used_bytes"]
+                "used_records": row["used_records"],
+                "used_bytes": row["used_bytes"],
             }
             for row in parts
         }
@@ -454,13 +473,19 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
         }
     await store.close()
     oracle_process = await asyncio.create_subprocess_exec(
-        sys.executable, str(Path(__file__).with_name("postgres_stream_oracle.py")),
-        DSN, schema, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        sys.executable,
+        str(Path(__file__).with_name("postgres_stream_oracle.py")),
+        DSN,
+        schema,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
     )
     oracle_stdout, oracle_stderr = await oracle_process.communicate()
-    oracle = json.loads(oracle_stdout) if oracle_stdout else {
-        "passed": False, "violations": [oracle_stderr.decode()]
-    }
+    oracle = (
+        json.loads(oracle_stdout)
+        if oracle_stdout
+        else {"passed": False, "violations": [oracle_stderr.decode()]}
+    )
     latency = {
         "p50_ms": percentile(latencies_ms, 0.50),
         "p95_ms": percentile(latencies_ms, 0.95),
@@ -484,17 +509,16 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
         "catchup": catchup_rate >= thresholds["catchup_records_per_second"],
         "backlog_recovered_during_ingress": recovered_while_ingress_active,
         "record_horizon": sum(part["max_records"] for part in parts)
-            >= ingress_rate * BACKLOG_SECONDS,
+        >= ingress_rate * BACKLOG_SECONDS,
         "byte_horizon": sum(part["max_bytes"] for part in parts)
-            >= ingress_rate * BACKLOG_SECONDS * MEAN_PAYLOAD_BYTES,
+        >= ingress_rate * BACKLOG_SECONDS * MEAN_PAYLOAD_BYTES,
         "time_horizon": min(part["max_age_seconds"] for part in parts)
-            >= BACKLOG_SECONDS,
+        >= BACKLOG_SECONDS,
         "compaction": (
             compaction["reclaimed_records"] == ingested
             and compaction_rate >= thresholds["compaction_records_per_second"]
             and all(
-                part["used_records"] == 0 and part["used_bytes"] == 0
-                for part in parts
+                part["used_records"] == 0 and part["used_bytes"] == 0 for part in parts
             )
         ),
         "metadata_compaction": (
@@ -592,11 +616,11 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
             "partitions": PARTITION_COUNT,
             "max_records": sum(part["max_records"] for part in parts),
             "max_bytes": sum(part["max_bytes"] for part in parts),
-            "min_max_age_seconds": min(
-                part["max_age_seconds"] for part in parts
-            ),
+            "min_max_age_seconds": min(part["max_age_seconds"] for part in parts),
             "required_records_for_60s": ingress_rate * BACKLOG_SECONDS,
-            "required_bytes_for_60s": ingress_rate * BACKLOG_SECONDS * MEAN_PAYLOAD_BYTES,
+            "required_bytes_for_60s": ingress_rate
+            * BACKLOG_SECONDS
+            * MEAN_PAYLOAD_BYTES,
             "required_age_seconds": BACKLOG_SECONDS,
             "used_records": sum(part["used_records"] for part in parts),
             "used_bytes": sum(part["used_bytes"] for part in parts),
@@ -630,8 +654,17 @@ async def benchmark(duration: float, schema: str) -> dict[str, object]:
                 Path(__file__).with_name("postgres_stream_oracle.py").read_bytes()
             ).hexdigest(),
             "postgres_image_digest": subprocess.run(
-                ["docker", "image", "inspect", "postgres:17-alpine", "--format", "{{.Id}}"],
-                text=True, capture_output=True, check=True,
+                [
+                    "docker",
+                    "image",
+                    "inspect",
+                    "postgres:17-alpine",
+                    "--format",
+                    "{{.Id}}",
+                ],
+                text=True,
+                capture_output=True,
+                check=True,
             ).stdout.strip(),
             "process_topology": {
                 "producer_processes": 1,

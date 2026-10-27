@@ -17,7 +17,6 @@ from durable_stream_v2 import (
 )
 from durable_stream_v2_crash_worker import EXIT_CODE
 
-
 CRASH_MATRIX = {
     "upload": (
         "upload:before_publish",
@@ -65,9 +64,7 @@ class DurableStreamV2SubprocessCrashTests(unittest.TestCase):
                         objects = root / "objects"
                         effect = root / "client-effect"
                         self.seed(db, objects, scenario)
-                        self.run_crashing_child(
-                            db, objects, effect, scenario, point
-                        )
+                        self.run_crashing_child(db, objects, effect, scenario, point)
                         stream = DurableStream(db)
                         try:
                             self.assert_storage_integrity(stream)
@@ -263,9 +260,7 @@ class DurableStreamV2SubprocessCrashTests(unittest.TestCase):
             drifted = ObjectRef.for_payload(ref.key, b"different", "raw/v1")
             DurableObjectStore(object_root).upload(stream, drifted, b"different")
 
-    def assert_append_phase_and_retry(
-        self, stream: DurableStream, point: str
-    ) -> None:
+    def assert_append_phase_and_retry(self, stream: DurableStream, point: str) -> None:
         committed = point == "append:after_commit_before_ack"
         self.assertEqual(len(stream.records("petya", "p0")), int(committed))
         envelope = stream.append(
@@ -352,9 +347,7 @@ class DurableStreamV2SubprocessCrashTests(unittest.TestCase):
                 )
         else:
             self.assert_completed(stream, yielded=yielded)
-            token = DeliveryToken(
-                "anna", "petya", "p0", 1, 1, "anna-worker", 1
-            )
+            token = DeliveryToken("anna", "petya", "p0", 1, 1, "anna-worker", 1)
             if yielded:
                 stream.complete(
                     token,
@@ -402,9 +395,7 @@ class DurableStreamV2SubprocessCrashTests(unittest.TestCase):
         self.assertEqual(position["completed_through"], 1)
         self.assertIsNone(position["in_flight"])
         self.assertEqual(position["managed_state"], {"handled": 1})
-        self.assertEqual(
-            len(stream.records("anna-output", "p0")), int(yielded)
-        )
+        self.assertEqual(len(stream.records("anna-output", "p0")), int(yielded))
         completion = stream.connection.execute(
             "SELECT kind, input_sequence FROM turn_completions"
         ).fetchone()
@@ -425,9 +416,7 @@ class DurableStreamV2SubprocessCrashTests(unittest.TestCase):
 
     @staticmethod
     def pending_output() -> PendingOutput:
-        return PendingOutput(
-            "anna-output", "p0", "signed-1", output_ref(), "petya:1"
-        )
+        return PendingOutput("anna-output", "p0", "signed-1", output_ref(), "petya:1")
 
 
 def input_ref(sequence: int) -> ObjectRef:

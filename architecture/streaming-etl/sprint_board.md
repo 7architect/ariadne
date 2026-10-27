@@ -123,6 +123,13 @@ expiry. The selected short-delivery percentage remains 100%; hosted runner and
 [Principal acceptance](evidence/ci-source-hygiene-principal-review-2026-10-27.json)
 confirms the repair with no blockers and retains the current scoped percentage.
 
+Later ARC acceptance on 2026-10-27: the
+[hosted smoke](evidence/ci-arc-smoke-observed-40578404646.json) and
+[Principal review](evidence/ci-arc-smoke-principal-review-2026-10-27.json)
+pass after the shared-directory and short-resource-policy repairs. Existing
+runner access and the one-job smoke are verified. DS-052a remains `progress`
+for the unstarted static-runner 72-hour campaign; no percentage is added.
+
 R1/R2 gate evidence is recorded in
 [ADR-0018](adr/ADR-0018-postgresql-authoritative-data-plane.md),
 [ADR-0019](adr/ADR-0019-production-generator-state-and-replacement.md), and

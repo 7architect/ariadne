@@ -151,7 +151,7 @@ now points to the organization. Rerunning
 [smoke 40343803001](https://github.com/Anacreonsystems/ariadne/actions/runs/40343803001)
 created attempt 2. It still had no assigned `anacreon-runners` host when the
 separate static-analysis failure was investigated on 2026-10-27. Transfer is
-verified; runner execution remains unverified.
+verified; runner execution was not yet verified at that stage.
 
 ## CI source hygiene and immutable evidence
 
@@ -322,6 +322,38 @@ reproduces the defect and the
 [after log](../evidence/ci-smoke-resource-policy-after-2026-10-27.log)
 passes. A fresh ARC campaign must still pass the changed reviewer on its own
 source identity; historical campaigns are not re-reviewed as new acceptance.
+
+## Hosted ARC smoke acceptance
+
+[Run 40578404646](https://github.com/Anacreonsystems/ariadne/actions/runs/40578404646)
+at commit `270f5de15617016c6d093049f2d3c7ca97d315e6` passes on
+`anacreon-runners-runner-xjl9q`. The
+[observation decoded from exact job logs](../evidence/ci-arc-smoke-observed-40578404646.json)
+binds the run, source identity, probe, segment, deterministic review, export and
+job-step outcomes. The selected root passes in both directions; the former
+root fails with Docker exit 125 and `source_path_missing=true`.
+
+The run observed 65.122762 seconds, 22 source documents, seven scheduled owner
+faults, two process boots after the injected process loss, no unexpected
+container restarts and four passing independent oracles. The reviewer reports
+`smoke_passed=true`, `long_soak_passed=false`, no violations and the explicit
+`smoke_absolute_caps` policy. Export reports `complete=true` and
+`credentials_exported=false`; artifact upload and owned cleanup succeed.
+
+The [raw successful log](../evidence/github-arc-smoke-passed-40578404646.log)
+and [Principal acceptance](../evidence/ci-arc-smoke-principal-review-2026-10-27.json)
+close the ARC smoke repair without reclassifying earlier failed runs. The
+artifact's server metadata/digest is preserved, but its ZIP download through
+the current connection returns HTTP 403. This acceptance uses retrieved job
+logs, the public exporter result and successful upload metadata; it does not
+claim independent inspection of ZIP bytes.
+
+The [final evidence graph](../evidence/adr-graph-arc-smoke-2026-10-27.json)
+checks the new links and retained statuses. All 126 Python/HTML sources from
+the accepted PostgreSQL gate still match; the isolated reviewer policy has its
+own regression controls and fresh hosted execution. ARC access and the one-job
+smoke are verified. The static runner's real 18-job/72-hour campaign remains
+unstarted, so this ADR and DS-052a remain `progress` with no percentage added.
 
 ## Consequences
 

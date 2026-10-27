@@ -1,4 +1,93 @@
 {
+  "accepted_run": {
+    "artifact_archive_download_verified": false,
+    "artifact_download_http_status": 403,
+    "artifact_metadata": [
+      {
+        "digest": "sha256:7a680b33ba6114b55eb9e70f6608ac2fe547185a85e4ae49ae7be7c6e026fffa",
+        "expired": false,
+        "id": 12768936446,
+        "name": "streaming-soak-smoke-40578404646-1",
+        "size_in_bytes": 9136
+      }
+    ],
+    "export": {
+      "complete": true,
+      "credentials_exported": false,
+      "expected_segments": 1,
+      "files": [
+        "manifest.json",
+        "review.json",
+        "review.md",
+        "segments/segment-00.json"
+      ],
+      "observed_segments": 1,
+      "output": "/home/runner/_work/_temp/soak-public",
+      "run_id": "gh-40578404646-1"
+    },
+    "observation_report": "ci-arc-smoke-observed-40578404646.json",
+    "observation_report_sha256": "2f996ba4a424a9164e041963a36310a01f8f352636a370100e3d83608cd65fb9",
+    "raw_log": "github-arc-smoke-passed-40578404646.log",
+    "raw_log_sha256": "1c1aafec451e5a24dba0da2ac0bf86529a20f0eeada82922ecca0d6ded44f243",
+    "review": {
+      "actual_prefect_in_72h": false,
+      "elapsed_seconds": 65.122762,
+      "generated_at": "2026-10-27T20:31:18.821083+00:00",
+      "long_soak_passed": false,
+      "manifest_digest": "1831a11c000178bd3127bdd010c1d83e7d04276525771bae85c0257cd86826d0",
+      "owner_faults": 7,
+      "process_boots": 2,
+      "protocol": "ariadne-long-soak-review/v1",
+      "resource_measurements": {
+        "latter_half_primary_bytes_per_hour": -20009279.931298006,
+        "latter_half_schema_bytes_per_hour": 8649693.73880337,
+        "latter_half_service_rss_bytes_per_hour": 26295010.89306727,
+        "max_primary_data_bytes": 70919155,
+        "max_schema_relation_bytes": 6537216,
+        "max_service_rss_bytes": 38010880
+      },
+      "resource_policy": {
+        "absolute_caps_bytes": {
+          "primary_data": 8589934592,
+          "schema_relation": 536870912,
+          "service_rss": 805306368
+        },
+        "absolute_caps_enforced": true,
+        "growth_rate_caps_bytes_per_hour": {
+          "primary_data": 33554432,
+          "schema_relation": 8388608,
+          "service_rss": 16777216
+        },
+        "growth_rate_caps_enforced": false,
+        "growth_rates_descriptive": true,
+        "profile": "smoke_absolute_caps"
+      },
+      "run_id": "gh-40578404646-1",
+      "scope": [
+        "real PostgreSQL 17 synchronous remote_apply pair",
+        "ordinary Python yield DAG source->A->{B,C}->J->D",
+        "periodic barriers and bounded retirement/GC",
+        "release-session storage guard",
+        "owner loss and externally scheduled service-process loss",
+        "actual Prefect integration remains separate short R4-B evidence"
+      ],
+      "segment_count": 1,
+      "smoke_passed": true,
+      "source_completed": 22,
+      "violations": []
+    },
+    "run_attempt": 1,
+    "run_id": 40578404646,
+    "runner_name": "anacreon-runners-runner-xjl9q",
+    "source_commit": "270f5de15617016c6d093049f2d3c7ca97d315e6",
+    "url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40578404646"
+  },
+  "arc_smoke_passed": true,
+  "architecture_review": {
+    "report": "ci-arc-smoke-principal-review-2026-10-27.json",
+    "sha256": "7bbda22a4a9353940c0363a8022f3d307b4fd3fe19d44dace0943c602c87c8e1",
+    "verdict": "PASS_ARC_SMOKE_REPAIR"
+  },
   "attempt1": {
     "cause": "Runner was assigned during cancellation of the previously queued attempt; no accepted test outcome.",
     "conclusion": "cancelled",
@@ -230,8 +319,23 @@
     "readiness_published_to_host": false,
     "runner_name": "anacreon-runners-runner-km72x"
   },
+  "ci_source_sha256": {
+    "Dockerfile": "9a7814eaef1a9573cd79c9b7cdb95eb8a154183a495248d774e0a5790e081177",
+    "README.md": "e1f89143672d0abfe964eb11fea747233e43f883bb29a105d6f06f13a475ace3",
+    "cli.py": "715c7a7603eba60de386161bdd386213dbbe3e025e6088da92aecfbf5fade461",
+    "pyproject.toml": "d69bb3924e6e40bb6fce5247c1ab6a49b1656c802903c07a895a870bf11e02b2",
+    "review.py": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+    "service.py": "c41e959c00234b32c70188da1aa63adb4313c210504d62481d0eb9c06b73aa6e",
+    "supervisor.py": "6b347d55d25a52f902f2aabda82d266dde07243fa76836a71b2ef94ad5a4334c",
+    "test_review.py": "0cdd5a52a623c50a9d5a4c57c9081d1e233412444ff6890de10f894d6debfd29",
+    "uv.lock": "678faf1e7e7b4a9ff17631d99615c687c125d6d7afe12666788d8fb02c9b1252"
+  },
   "core_or_cli_changed": false,
+  "current_ci_sources_match_observed_digest": true,
   "date": "2026-10-27",
+  "documentation_graph": "adr-graph-arc-smoke-2026-10-27.json",
+  "existing_core_gate_sources_still_match": 126,
+  "generated_at": "2026-10-27T20:34:30.537456+00:00",
   "hypothesis": {
     "confirmed": true,
     "description": "ARC runner and Docker daemon do not share the /var/tmp campaign directory; the workflow must use their shared work volume for the one-job smoke.",
@@ -295,5 +399,5 @@
   "run_id": 40484370723,
   "runner_access_confirmed": true,
   "source_commit": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",
-  "status": "progress"
+  "status": "accepted_arc_smoke_repair"
 }

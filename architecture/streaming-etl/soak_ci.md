@@ -11,8 +11,9 @@ Use the existing runner inventory supplied by the user: `anacreon-runners` is
 an ARC ephemeral scale set; `k8s-runner` is the static self-hosted runner. The
 selected profile requires
 Linux x64, Python 3.11 or newer, a working local Docker socket accessible to the
-runner account, outbound image/dependency access, and writable
-`/var/tmp/ariadne-soak`. A long campaign must run on the persistent static host;
+runner account, outbound image/dependency access, and a writable state root
+shared bidirectionally with Docker. Smoke uses `$RUNNER_TEMP/ariadne-soak`;
+the long profile uses `/var/tmp/ariadne-soak`. A long campaign must run on the persistent static host;
 the short smoke can complete within one ephemeral ARC job. The configured
 containers can consume up to 5 GiB RAM and five CPU equivalents in total; allow
 at least 20 GiB free disk for images, two PostgreSQL volumes and evidence. These
@@ -73,7 +74,7 @@ with the explicit campaign ID; it verifies the static runner name. Check the
 job result. It removes only named resources from that campaign manifest and its
 credentials file; it does not prune Docker globally or touch unrelated tests.
 
-## Current execution status
+## Initial execution status (2026-10-26)
 
 - Workflow source, the explicit 18-job chain and the prototype dependencies are
   committed and published on `streaming-etl-adrs` at commit
@@ -174,3 +175,21 @@ smoke enforces all existing absolute caps and reports rates descriptively;
 non-smoke also enforces the unchanged hourly rate caps. All other checks remain
 mandatory. See [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) for
 measurements, controls and fresh-run acceptance requirements.
+
+## Verified ARC smoke (2026-10-27)
+
+[Run 40578404646](https://github.com/Anacreonsystems/ariadne/actions/runs/40578404646)
+passes on `anacreon-runners-runner-xjl9q`: shared-root probe, readiness,
+scheduled process loss, watch segment, four independent oracles, reviewer,
+complete credential-free export and owned cleanup all pass. The
+[retrieved observation](evidence/ci-arc-smoke-observed-40578404646.json) and
+[Principal review](evidence/ci-arc-smoke-principal-review-2026-10-27.json)
+record the source identity and measured limits. The selected shared root is
+visible; the old `/var/tmp` root is not visible to the ARC Docker daemon.
+
+The reviewer explicitly reports `smoke_passed=true` and
+`long_soak_passed=false`. Earlier readiness/growth failures remain preserved.
+The ZIP archive could not be downloaded through the current connection
+(HTTP 403); the retrieved job logs, exporter result and uploaded-artifact
+metadata provide the acceptance evidence. Actual 72-hour execution on the
+static runner remains a separate open step.

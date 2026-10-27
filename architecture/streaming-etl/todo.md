@@ -253,6 +253,13 @@ percentage or closing long-duration work.
 The [Principal review](evidence/ci-source-hygiene-principal-review-2026-10-27.json)
 accepts this source-hygiene successor with no blockers.
 
+Later ARC acceptance on 2026-10-27: the
+[actual one-job smoke](evidence/ci-arc-smoke-observed-40578404646.json) passes
+with recovery, four oracles, public export and owned cleanup, and its
+[Principal acceptance](evidence/ci-arc-smoke-principal-review-2026-10-27.json)
+closes the smoke repair. The 72-hour run and DS-052a remain open/unstarted;
+this follow-up contributes no additional short-delivery percentage.
+
 Exit: workload, configuration, raw results, and invariant report are archived;
 only this complete gate earns 100% and permits eligible ADRs to become
 `accepted`.

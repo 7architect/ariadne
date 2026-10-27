@@ -1,0 +1,92 @@
+{
+  "artifact_archive_download_verified": false,
+  "closed_scope": "ARC one-job smoke filesystem repair and duration-appropriate resource review policy",
+  "controls": {
+    "absolute_budget_overruns_rejected": [
+      "primary_data",
+      "schema_relation",
+      "service_rss"
+    ],
+    "cold_allocation_smoke_control": "passes with descriptive hourly rates and enforced absolute caps",
+    "long_profile_control": "the same high rates produce all three unexplained-growth violations",
+    "reviewer_regression_count": 8,
+    "reviewer_regressions_passed": 8
+  },
+  "date": "2026-10-27",
+  "evidence_sha256": {
+    "architecture/streaming-etl/evidence/ci-arc-bind-mount-local-2026-10-27.json": "36557d7cc652005ae4788aef573b59a9ffbc8cd8a0cdeecdbf1cc2c91e92e2d7",
+    "architecture/streaming-etl/evidence/ci-arc-smoke-observed-40577088311.json": "5302898e7554981f3127258ac3a56c2927dbbcb6ea36771f7ee74736cf398361",
+    "architecture/streaming-etl/evidence/ci-arc-smoke-observed-40578404646.json": "2f996ba4a424a9164e041963a36310a01f8f352636a370100e3d83608cd65fb9",
+    "architecture/streaming-etl/evidence/ci-smoke-resource-policy-after-2026-10-27.log": "f231dab9590fb64c1ae6e56ad76e5e37baf396694d4446a62bcf70b627e9bef1",
+    "architecture/streaming-etl/evidence/ci-smoke-resource-policy-before-2026-10-27.log": "7af125126fdd5d32066cebd3d3431a9cd050c9605a1952f8a03d6cc3539b1023",
+    "architecture/streaming-etl/evidence/github-arc-smoke-passed-40578404646.log": "1c1aafec451e5a24dba0da2ac0bf86529a20f0eeada82922ecca0d6ded44f243",
+    "architecture/streaming-etl/evidence/github-arc-smoke-resource-failed-40577088311.log": "53d07ab8ca146492630b67dff350996b4e461b00098be5d11eb70de625a568be"
+  },
+  "execution": {
+    "artifact": {
+      "digest_reported_by_upload_action": "sha256:7a680b33ba6114b55eb9e70f6608ac2fe547185a85e4ae49ae7be7c6e026fffa",
+      "id": 12768936446,
+      "name": "streaming-soak-smoke-40578404646-1",
+      "published_size_bytes": 9136
+    },
+    "bind_mount_probe": {
+      "legacy_persistent_root_bidirectional": false,
+      "legacy_source_path_missing": true,
+      "selected_runner_temp_bidirectional": true
+    },
+    "cleanup_succeeded": true,
+    "elapsed_seconds": 65.122762,
+    "export_complete": true,
+    "exported_credentials": false,
+    "job_conclusion": "success",
+    "long_soak_passed": false,
+    "oracles": {
+      "barrier": "PASS",
+      "join": "PASS",
+      "release": "PASS",
+      "stream": "PASS"
+    },
+    "owner_faults": 7,
+    "process_boots": 2,
+    "process_loss_injected": true,
+    "resource_policy": {
+      "absolute_caps_enforced": true,
+      "growth_rate_caps_enforced": false,
+      "growth_rates_descriptive": true,
+      "profile": "smoke_absolute_caps"
+    },
+    "run_id": 40578404646,
+    "runner_name": "anacreon-runners-runner-xjl9q",
+    "smoke_passed": true,
+    "source_completed": 22,
+    "unexpected_container_restarts": 0,
+    "violations": []
+  },
+  "limitations": [
+    "The artifact upload action reported a finalized artifact and digest, but the artifact ZIP could not be downloaded through the available connection; archive bytes were not independently audited.",
+    "The public report and segment were reconstructed from exact GitHub step logs, and their raw log digest is bound here.",
+    "This approximately 65-second smoke validates startup, process-loss recovery, invariants, absolute resource caps, export, and cleanup; it does not establish sustained resource-growth behavior.",
+    "The 72-hour campaign has not started and DS052 remains open.",
+    "Actual Prefect integration and production readiness are outside this smoke's scope.",
+    "No full PostgreSQL regression was repeated because this repair changed only the workflow filesystem root and deterministic reviewer policy; core protocol and CLI bytes were unchanged."
+  ],
+  "protocol": "ariadne-ci-arc-smoke-principal-review/v1",
+  "reviewed_source": {
+    "commit": "270f5de15617016c6d093049f2d3c7ca97d315e6",
+    "sha256": {
+      ".github/workflows/streaming-etl-soak.yml": "1282edabec5e58de5c8ca2f189b375f7e21b24470b86baf0de7db8f959e045d5",
+      "architecture/streaming-etl/prototypes/ci_soak/review.py": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+      "architecture/streaming-etl/prototypes/ci_soak/test_review.py": "0cdd5a52a623c50a9d5a4c57c9081d1e233412444ff6890de10f894d6debfd29"
+    }
+  },
+  "verification": {
+    "artifact_claim_limited_to_upload_metadata": true,
+    "current_checkout_matches_reviewed_commit": true,
+    "historical_growth_failure_preserved": true,
+    "historical_run_reclassified": false,
+    "raw_log_sha256_matches_observation": true,
+    "resource_policy_boundary_verified": true,
+    "selected_mount_hypothesis_confirmed_on_arc": true
+  },
+  "verdict": "PASS_ARC_SMOKE_REPAIR"
+}

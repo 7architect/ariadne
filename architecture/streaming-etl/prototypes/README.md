@@ -1,5 +1,14 @@
 # Prototype protocol epochs
 
+Current source-hygiene regression: the
+[2026-10-27 serial gate](../evidence/postgres-ci-style-regression-serial-2026-10-27.json)
+passes 164/164 tests against the published source after repository-hook cleanup.
+The [repair report](../evidence/ci-static-analysis-repair-2026-10-27.json) links
+the preserved failed first trial, isolated timing retry, 197 fast regressions,
+source-byte comparisons and hosted CI results. Historical reports below retain
+their original executed hashes. Scope and remaining runner acceptance are in
+[ADR-0028](../adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md).
+
 ## Active protocol epoch 2
 
 - `durable_stream_v2.py` and `test_durable_stream_v2.py`: durable yielded DATA,

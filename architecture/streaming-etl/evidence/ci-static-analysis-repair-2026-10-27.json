@@ -1,18 +1,47 @@
 {
+  "architecture_review": {
+    "report": "ci-source-hygiene-principal-review-2026-10-27.json",
+    "sha256": "6a4d347b43df3732039aea8bac7d5ae14f14e323f13e317697d9c3edc1f85ad1",
+    "verdict": "PASS_STYLE_REPAIR_CURRENT_SOURCE_SHORT_REGRESSION"
+  },
   "artifact_sha256": {
+    "adr-graph-ci-repair-2026-10-27.json": "6b7a38315d115cceda7761559e940546ea3da71f8b7b88c24f732056c1ee99c3",
     "ci-precommit-local-2026-10-27.log": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
+    "ci-precommit-release-2026-10-27.log": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
     "ci-precommit-repeat-2026-10-27.log": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
     "ci-prototype-regression-2026-10-27.log": "46238f1b7a6acb19dee1d3391080bcbcbce8ebc1afe8c109a477709027559d0d",
-    "ci-source-hygiene-manifest-2026-10-27.json": "c44dde2a93ea72a156b8843ff4c1f6ed0dc36d34f90a895649cfde61968f77f9"
+    "ci-source-hygiene-manifest-2026-10-27.json": "c44dde2a93ea72a156b8843ff4c1f6ed0dc36d34f90a895649cfde61968f77f9",
+    "postgres-ci-style-regression-2026-10-27.json": "cdf3836a852f8e606a0bbd97ec07a3101adde4e9b70c4a3568bfc502bd1627d3",
+    "postgres-ci-style-regression-serial-2026-10-27.json": "08d0fe79f061b1d3624194c57607116d9285983f158fd949358c072851f636b1"
   },
   "base_commit": "8139a17d822e091503a7b9546e55c9b98bad41b2",
   "codespell_exclusion": "^architecture/streaming-etl/evidence/.*\\.log$",
   "date": "2026-10-27",
+  "documentation_graph": "adr-graph-ci-repair-2026-10-27.json",
   "exact_ruff_exclusions": [
     "architecture/streaming-etl/evidence/prefect-storage-discovery-baseline-2026-10-26.py",
     "architecture/streaming-etl/evidence/prefect-storage-discovery-configured-2026-10-26.py"
   ],
   "failed_ci_run": "https://github.com/Anacreonsystems/ariadne/actions/runs/40349113436",
+  "failed_postgres_gate": {
+    "concurrent_local_hook_ui_work_observed": true,
+    "duration_seconds": 759.19,
+    "failure": "postgres_stream_v2.StaleOwner: owner lease expired",
+    "failure_boundary": "second async invocation deliver_next after first sync invocation completed",
+    "failure_test": "test_postgres_generator_runtime.PostgresGeneratorRuntimeTests.test_heartbeat_and_same_owner_recovery",
+    "heartbeat_interval_seconds": 0.02,
+    "initial_consumer_lease_seconds": 0.05,
+    "invocation_lease_seconds": 0.12,
+    "passed": false,
+    "raw_log": "postgres-ci-style-regression-2026-10-27.log",
+    "raw_log_sha256": "eba84112605eb876107f888785b34c1c50a3c6348dea10126c20ad8c19e725c7",
+    "report": "postgres-ci-style-regression-2026-10-27.json",
+    "sole_cause_proven": false,
+    "source_drift": [],
+    "test_count": 164,
+    "test_errors": 1,
+    "timing_thresholds_changed": false
+  },
   "failure": {
     "codespell_raw_log_truncations": 2,
     "downloaded_job_log_sha256": "ca5eeb5769c2a98cd45f0305248e09eed78b15b715f60a7b579ff7ea6744bbd9",
@@ -23,12 +52,185 @@
     "ruff_version": "0.15.19",
     "type_check_job_passed": true
   },
-  "generated_at": "2026-10-27T09:54:27.982925+00:00",
-  "hosted_static_analysis": "not_yet_rerun",
-  "hosted_streaming_smoke": "queued_without_runner",
+  "generated_at": "2026-10-27T10:21:02.925480+00:00",
+  "hosted_static_analysis": {
+    "conclusion": "success",
+    "created_at": "2026-10-27T09:54:35Z",
+    "downloaded_logs_zip_sha256": "f73e59c7a30a78f766f0cc25ed7564568093f47b7ad0e6f099e223878834903e",
+    "head_sha": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",
+    "html_url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40484377266",
+    "id": 40484377266,
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "Pre-commit checks",
+        "runner_name": "GitHub Actions 1000000893",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install uv and set the python version",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install the project",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Setup NodeJS",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pre-commit",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Setup NodeJS",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Install uv and set the python version",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "name": "Type Checks",
+        "runner_name": "GitHub Actions 1000000894",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set up uv",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install the project",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run type completeness check",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pyright check",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Set up uv",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "run_attempt": 1,
+    "status": "completed",
+    "updated_at": "2026-10-27T09:56:37Z"
+  },
+  "hosted_streaming_smoke": {
+    "id": 40484370723,
+    "requested_labels": [
+      "anacreon-runners"
+    ],
+    "runner_group_access_under_user_review": true,
+    "runner_name": null,
+    "status": "queued",
+    "url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40484370723"
+  },
+  "isolated_heartbeat_probe": {
+    "disposition": "preserved failed first full trial; exact test and identical-source serial full gate passed",
+    "duration_seconds": 1.108,
+    "full_gate_error_under_investigation": false,
+    "passed": true,
+    "raw_log": "ci-heartbeat-isolated-2026-10-27.log",
+    "raw_log_sha256": "cdaad6dee8896f53136bae2c265e58cef4c4e6121a5ddcdd9a3fd0a997858596",
+    "test": "test_postgres_generator_runtime.PostgresGeneratorRuntimeTests.test_heartbeat_and_same_owner_recovery"
+  },
   "local_checks": {
+    "compileall_passed": true,
     "diff_check_passed": true,
+    "final_all_files_precommit_passed": true,
+    "final_staged_files_precommit": "required_before_publication",
     "historical_evidence_files_unchanged": 155,
+    "hook_selection": {
+      "excluded_by_hook": {
+        "codespell": {
+          "active_runtime": false,
+          "evidence_json": false,
+          "future_evidence_script": false,
+          "historical_baseline": false,
+          "historical_configured": false,
+          "raw_log": true
+        },
+        "ruff-check": {
+          "active_runtime": false,
+          "evidence_json": false,
+          "future_evidence_script": false,
+          "historical_baseline": true,
+          "historical_configured": true,
+          "raw_log": false
+        },
+        "ruff-format": {
+          "active_runtime": false,
+          "evidence_json": false,
+          "future_evidence_script": false,
+          "historical_baseline": true,
+          "historical_configured": true,
+          "raw_log": false
+        }
+      },
+      "passed": true
+    },
     "precommit_all_files_passes": 2,
     "precommit_idempotent": true,
     "prototype_test_duration_seconds": 25.181,
@@ -36,13 +238,72 @@
     "source_hygiene_manifest": "ci-source-hygiene-manifest-2026-10-27.json"
   },
   "long_soak_passed": false,
-  "postgres_gate": "postgres-ci-style-regression-2026-10-27.json",
-  "postgres_gate_status": "in_progress",
-  "repair_acceptance_complete": false,
+  "postgres_gate": "postgres-ci-style-regression-serial-2026-10-27.json",
+  "postgres_gate_status": "passed",
+  "postgres_successor": {
+    "documentation": {
+      "adr_statuses": {
+        "ADR-0000-decision-lifecycle.md": "progress",
+        "ADR-0001-runtime-boundary.md": "progress",
+        "ADR-0002-checkpoints-and-recovery-domains.md": "progress",
+        "ADR-0003-branch-and-join-recovery.md": "progress",
+        "ADR-0004-multi-sink-commit.md": "rejected",
+        "ADR-0005-operator-contract.md": "rejected",
+        "ADR-0006-durable-channels-and-state.md": "planning",
+        "ADR-0007-backpressure-and-high-load.md": "pending",
+        "ADR-0008-architecture-role-charter.md": "planning",
+        "ADR-0009-failure-injection-evidence.md": "progress",
+        "ADR-0010-platform-durable-yield-channel.md": "progress",
+        "ADR-0011-yield-completion-and-client-effects.md": "progress",
+        "ADR-0012-protocol-epoch-2-delivery-gates.md": "planning",
+        "ADR-0013-managed-state-recovery-classes.md": "progress",
+        "ADR-0014-ordered-data-barrier-composition.md": "progress",
+        "ADR-0015-independent-branches-and-durable-join-buffer.md": "progress",
+        "ADR-0016-reference-safe-retention-and-bounded-pressure.md": "progress",
+        "ADR-0017-sync-async-generator-adapter.md": "progress",
+        "ADR-0018-postgresql-authoritative-data-plane.md": "progress",
+        "ADR-0019-production-generator-state-and-replacement.md": "progress",
+        "ADR-0020-bounded-metadata-and-idempotency-horizon.md": "progress",
+        "ADR-0021-postgresql-coordinator-checkpoints.md": "progress",
+        "ADR-0022-postgresql-routed-join-and-regional-recovery.md": "progress",
+        "ADR-0023-bounded-retention-and-replay-horizons.md": "progress",
+        "ADR-0024-control-plane-authority-and-lifecycle.md": "progress",
+        "ADR-0025-prefect-adapter-and-operational-projections.md": "progress",
+        "ADR-0026-release-compatibility-and-disaster-recovery.md": "accepted",
+        "ADR-0027-short-acceptance-and-separate-long-soak.md": "accepted",
+        "ADR-0028-self-hosted-soak-ci-and-reviewer.md": "progress",
+        "ADR-0029-short-capacity-calibration-and-release-scope.md": "accepted",
+        "ADR-0090-prefect-transactions-as-coordinator.md": "rejected",
+        "ADR-0091-idempotency-alone-is-atomic.md": "rejected",
+        "ADR-0092-split-safety-state-machines.md": "rejected",
+        "ADR-0093-implicit-regeneration-of-missing-durable-output.md": "rejected"
+      },
+      "local_links": 671,
+      "markdown_documents": 42,
+      "passed": true,
+      "violations": []
+    },
+    "durability_profile_passed": true,
+    "duration_seconds": 748.077,
+    "expected_tests": 164,
+    "passed": true,
+    "raw_log": "postgres-ci-style-regression-serial-2026-10-27.log",
+    "raw_log_sha256": "4fcadd0136f0744f1ed15bcc9b315769324db69e55e9e324cb85b12f97f26c6a",
+    "source_drift": [],
+    "test_count": 164
+  },
+  "published_source_commit": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",
+  "published_source_hash_count": 126,
+  "published_source_hashes_all_match": true,
+  "repair_acceptance_complete": true,
   "repository": {
     "full_name": "Anacreonsystems/ariadne",
     "id": 1425414142,
     "transfer_verified": true
   },
-  "status": "progress"
+  "resource_warnings": 0,
+  "serial_and_first_gate_source_hashes_equal": true,
+  "status": "completed_style_repair",
+  "timing_thresholds_changed": false,
+  "unclosed_socket_warnings": 0
 }

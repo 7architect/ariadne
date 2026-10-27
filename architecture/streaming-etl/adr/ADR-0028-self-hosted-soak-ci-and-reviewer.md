@@ -183,7 +183,7 @@ rewriting previously executed evidence. As a system, I want changed source bytes
 to receive a successor frozen-source acceptance report rather than inheriting
 the old report's hashes.
 
-Acceptance for this repair: as a developer, I can run `pre-commit --all-files`
+Acceptance for this repair: as a developer, I can run `pre-commit run --all-files`
 twice without a further edit; as a system, I got passing SQLite/source/soak
 regressions, a new complete PostgreSQL gate with no source drift, and preserved
 hashes for every pre-existing evidence file. The original short acceptance
@@ -191,6 +191,49 @@ remains historical evidence; the new gate must bind the current source tree.
 The [repair report](../evidence/ci-static-analysis-repair-2026-10-27.json)
 records observed checks and publication status. Hosted CI and actual 72-hour
 acceptance remain separate observations.
+
+The published repair at `6d03a45e28c009f384c09cdbcfb3057432ea2e99`
+passed both `Pre-commit checks` and `Type Checks` in
+[run 40484377266](https://github.com/Anacreonsystems/ariadne/actions/runs/40484377266).
+The obsolete pre-repair queued smoke was cancelled before publication. The
+[replacement smoke](https://github.com/Anacreonsystems/ariadne/actions/runs/40484370723)
+requests `anacreon-runners` and is still queued without an assigned host.
+Static-analysis success does not establish streaming-runner access.
+
+The [first successor gate](../evidence/postgres-ci-style-regression-2026-10-27.json)
+completed all 164 PostgreSQL tests in 759.190 seconds with one error and no
+source drift. `test_heartbeat_and_same_owner_recovery` completed its first
+sync turn, then the second async turn's `deliver_next` raised
+`StaleOwner: owner lease expired`. The fixture starts with a 50 ms consumer
+lease and renews with a 120 ms invocation lease. An
+[isolated exact-test retry](../evidence/ci-heartbeat-isolated-2026-10-27.log)
+passed in 1.108 seconds. Concurrent hook/UI work and slow-loop warnings were
+observed during the first gate; they do not prove the only possible cause.
+The failed full report and its raw log are retained. A serial full rerun uses
+the same source hashes and lease limits, with no concurrent local hook/UI/test
+commands. This repair does not change timing thresholds to obtain a pass.
+
+The [serial successor](../evidence/postgres-ci-style-regression-serial-2026-10-27.json)
+then passed all 164 tests in 748.077 seconds, including the exact heartbeat
+test, without skips or source drift. Its 126 Python/HTML hashes equal the
+failed trial's hashes and match published commit
+`6d03a45e28c009f384c09cdbcfb3057432ea2e99`. The synchronous `remote_apply`
+profile and documentation checks pass; no unclosed-socket or ResourceWarning
+was recorded. All 197 SQLite/source/soak regressions and two complete pinned
+pre-commit passes also succeed. These observations establish the selected
+source-hygiene successor; they do not establish execution under arbitrary
+event-loop starvation or actual long-duration runner acceptance.
+
+The [Principal review](../evidence/ci-source-hygiene-principal-review-2026-10-27.json)
+accepts this repair and current-source short regression with no blockers.
+The [source-hygiene manifest](../evidence/ci-source-hygiene-manifest-2026-10-27.json)
+records all 48 changed Python files: 35 retain the exact AST, and the remaining
+13 differ only by documented import, docstring and test-local name cleanup.
+Every pre-existing evidence artifact retains its hash. The
+[final documentation graph](../evidence/adr-graph-ci-repair-2026-10-27.json)
+checks links and retained statuses after publication references were added.
+The earned short experimental percentage remains 100%; this ADR remains
+`progress` for its actual-run and long-duration criteria.
 
 ## Consequences
 

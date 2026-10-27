@@ -237,6 +237,22 @@ earns 95%; it does not claim whole-cluster DR, zero RPO or general worker isolat
 
 Separate nonblocking follow-up: **DS-052a** — `progress` — actual 72-hour soak, with its own workload, faults, resource and invariant evidence. The user directed use of the three existing self-hosted runners; the CI chain and deterministic reviewer are being configured under [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) and the [operator guide](soak_ci.md). It carries no percentage in the current delivery; the user selected short acceptance now in [ADR-0027](adr/ADR-0027-short-acceptance-and-separate-long-soak.md). A short smoke is not a long-duration PASS.
 
+2026-10-27 follow-up: the repository transfer is verified and the
+[static-analysis repair](evidence/ci-static-analysis-repair-2026-10-27.json)
+passes hosted repository hooks and type checking. The replacement smoke is
+queued without an ARC host. Source-hygiene re-acceptance preserves the failed
+full trial and requires a passing serial frozen-source successor; DS-052a and
+its long-duration criteria remain open.
+
+The [serial full successor](evidence/postgres-ci-style-regression-serial-2026-10-27.json)
+now passes 164/164 with no drift and the same source hashes as the preserved
+failed trial. Together with 197 fast regressions and hosted static analysis,
+it validates the source-hygiene change without changing the short-delivery
+percentage or closing long-duration work.
+
+The [Principal review](evidence/ci-source-hygiene-principal-review-2026-10-27.json)
+accepts this source-hygiene successor with no blockers.
+
 Exit: workload, configuration, raw results, and invariant report are archived;
 only this complete gate earns 100% and permits eligible ADRs to become
 `accepted`.

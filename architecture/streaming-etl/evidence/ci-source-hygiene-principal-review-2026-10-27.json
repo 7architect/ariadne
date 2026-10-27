@@ -1,0 +1,132 @@
+{
+  "blocking_findings": [],
+  "evidence": {
+    "failed_full_gate": {
+      "duration_seconds": 759.19,
+      "error": "postgres_stream_v2.StaleOwner: owner lease expired",
+      "error_boundary": "delivery of the second turn after the first turn had completed",
+      "passed": false,
+      "report": "postgres-ci-style-regression-2026-10-27.json",
+      "report_sha256": "cdf3836a852f8e606a0bbd97ec07a3101adde4e9b70c4a3568bfc502bd1627d3",
+      "raw_log": "postgres-ci-style-regression-2026-10-27.log",
+      "raw_log_sha256": "eba84112605eb876107f888785b34c1c50a3c6348dea10126c20ad8c19e725c7",
+      "source_drift": [],
+      "test_count": 164,
+      "test_errors": 1
+    },
+    "fast_regression": {
+      "duration_seconds": 25.181,
+      "passed": 197,
+      "raw_log": "ci-prototype-regression-2026-10-27.log",
+      "raw_log_sha256": "46238f1b7a6acb19dee1d3391080bcbcbce8ebc1afe8c109a477709027559d0d"
+    },
+    "isolated_heartbeat_control": {
+      "passed": true,
+      "raw_log": "ci-heartbeat-isolated-2026-10-27.log",
+      "raw_log_sha256": "cdaad6dee8896f53136bae2c265e58cef4c4e6121a5ddcdd9a3fd0a997858596",
+      "test_count": 1
+    },
+    "precommit": {
+      "first_log": "ci-precommit-local-2026-10-27.log",
+      "first_log_sha256": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
+      "idempotent_passes": 2,
+      "repeat_log": "ci-precommit-repeat-2026-10-27.log",
+      "repeat_log_sha256": "3562c879fe0ff629a1bc215be839623b1d775fa265202e86adec72fe31e9913c",
+      "ruff_version": "0.15.19"
+    },
+    "serial_successor_gate": {
+      "documentation": {
+        "local_links": 671,
+        "markdown_documents": 42,
+        "passed": true,
+        "violations": []
+      },
+      "duration_seconds": 748.077,
+      "durability_profile_passed": true,
+      "expected_tests": 164,
+      "passed": true,
+      "postgres_version": "17.11",
+      "report": "postgres-ci-style-regression-serial-2026-10-27.json",
+      "report_sha256": "08d0fe79f061b1d3624194c57607116d9285983f158fd949358c072851f636b1",
+      "resource_warnings": 0,
+      "raw_log": "postgres-ci-style-regression-serial-2026-10-27.log",
+      "raw_log_sha256": "4fcadd0136f0744f1ed15bcc9b315769324db69e55e9e324cb85b12f97f26c6a",
+      "replica_state": "streaming",
+      "replica_sync_state": "sync",
+      "source_drift": [],
+      "synchronous_commit": "remote_apply",
+      "test_count": 164,
+      "test_returncode": 0,
+      "timed_out": false,
+      "unclosed_socket_warnings": 0
+    },
+    "source_hygiene_manifest": {
+      "changed_python_files": 48,
+      "exact_ast_equal": 35,
+      "historical_artifacts_unchanged": 155,
+      "normalized_reviewed_ast_equal": 48,
+      "path": "ci-source-hygiene-manifest-2026-10-27.json",
+      "sha256": "c44dde2a93ea72a156b8843ff4c1f6ed0dc36d34f90a895649cfde61968f77f9"
+    }
+  },
+  "failed_trial_disposition": {
+    "causal_attribution": "Concurrent local hook and UI work plus event-loop stalls were observed, but they are not asserted as the sole cause.",
+    "classification": "non-awarding failed trial",
+    "reason": "The expired owner was rejected before the second delivery or invocation; no stale terminal result was published.",
+    "safety_result": "fail-closed",
+    "serial_pass_does_not_claim": "liveness under event-loop starvation"
+  },
+  "hosted_checks": {
+    "codeql": {
+      "conclusion": "success",
+      "run": "https://github.com/Anacreonsystems/ariadne/actions/runs/40484377298"
+    },
+    "static_analysis": {
+      "conclusion": "success",
+      "head_sha": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",
+      "precommit_job": "success",
+      "run": "https://github.com/Anacreonsystems/ariadne/actions/runs/40484377266",
+      "type_checks_job": "success"
+    }
+  },
+  "limitations": [
+    "This review accepts source hygiene and the current-source short experimental regression only; it is not a production-readiness claim.",
+    "The actual 72-hour campaign has not started and contributes no acceptance percentage.",
+    "The self-hosted soak preparation job was still queued without an assigned runner at review time.",
+    "The serial successor gate does not demonstrate liveness during event-loop starvation or concurrent UI/npm load.",
+    "Historical acceptance reports remain evidence for their own byte-bound source revisions; they were not rewritten.",
+    "Arbitrary external effects remain client-owned and require client determinism and idempotency.",
+    "The accepted protocol scope remains one durable terminal yield or return per input."
+  ],
+  "publication_followups": [
+    "Link this review from ADR-0028, the task board and the prototype evidence index.",
+    "Run the documentation graph validator after those links are added.",
+    "Keep the timing-sensitive between-turn lease case as a separate liveness test follow-up; do not reinterpret the failed trial as a pass."
+  ],
+  "repair_scope": {
+    "active_prototypes_excluded_from_static_checks": false,
+    "codespell_exclusion": "raw architecture/streaming-etl/evidence/*.log process output only",
+    "historical_evidence_rewritten": false,
+    "ruff_exclusions": [
+      "architecture/streaming-etl/evidence/prefect-storage-discovery-baseline-2026-10-26.py",
+      "architecture/streaming-etl/evidence/prefect-storage-discovery-configured-2026-10-26.py"
+    ],
+    "timing_thresholds_changed": false
+  },
+  "review": {
+    "current_source_hash_count": 126,
+    "current_source_hashes_match_published_commit": true,
+    "failed_and_serial_gate_source_hashes_equal": true,
+    "published_source_commit": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",
+    "repository": "Anacreonsystems/ariadne",
+    "review_role": "independent ETL and high-load architecture gate",
+    "reviewed_at": "2026-10-27T10:18:00Z"
+  },
+  "scope_result": {
+    "earned_short_experimental_scope_changed": false,
+    "earned_short_experimental_scope_percent": 100,
+    "long_soak_passed": false,
+    "style_repair_accepted": true
+  },
+  "verdict": "PASS_STYLE_REPAIR_CURRENT_SOURCE_SHORT_REGRESSION"
+}

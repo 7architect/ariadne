@@ -136,3 +136,12 @@ specifically repository hooks; its type-check job passed. The
 local hook/regression results, publication and hosted check outcomes.
 [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) documents the exact
 immutable-file exceptions and the required successor source-hash gate.
+
+The repair's
+[static-analysis run](https://github.com/Anacreonsystems/ariadne/actions/runs/40484377266)
+passed both pre-commit and type checking at commit
+`6d03a45e28c009f384c09cdbcfb3057432ea2e99`. The obsolete queued smoke was
+cancelled before publication; its
+[replacement](https://github.com/Anacreonsystems/ariadne/actions/runs/40484370723)
+is queued for `anacreon-runners` without an assigned host. The 72-hour profile
+has not been dispatched.

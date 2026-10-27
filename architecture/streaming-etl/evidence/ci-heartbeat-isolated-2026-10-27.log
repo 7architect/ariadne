@@ -1,0 +1,7 @@
+test_heartbeat_and_same_owner_recovery (test_postgres_generator_runtime.PostgresGeneratorRuntimeTests.test_heartbeat_and_same_owner_recovery) ... Executing <Task finished name='Task-8' coro=<PostgresGeneratorRuntimeTests.test_heartbeat_and_same_owner_recovery() done, defined at /workspace/ariadne/architecture/streaming-etl/prototypes/test_postgres_generator_runtime.py:207> result=None created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py:100> took 0.173 seconds
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.108s
+
+OK

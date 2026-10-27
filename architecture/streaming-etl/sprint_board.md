@@ -108,6 +108,21 @@ DS-052a is a separate `progress` lane with no percentage: configure the continuo
 [CI status and run instructions](soak_ci.md) distinguish local checks, published
 workflows, GitHub smoke evidence and actual long-duration acceptance.
 
+CI follow-up on 2026-10-27: repository transfer to `Anacreonsystems` is verified.
+The [static-analysis repair](evidence/ci-static-analysis-repair-2026-10-27.json)
+passed hosted pre-commit and type checks. The replacement streaming smoke still
+awaits an ARC host; DS-052a remains `progress` with no additional percentage.
+The source-hygiene successor gate separately records every failed and passing
+trial without rewriting historical acceptance evidence.
+
+The [serial source-hygiene successor](evidence/postgres-ci-style-regression-serial-2026-10-27.json)
+passes 164/164 on identical source bytes after the retained first-trial lease
+expiry. The selected short-delivery percentage remains 100%; hosted runner and
+72-hour acceptance remain separate open criteria.
+
+[Principal acceptance](evidence/ci-source-hygiene-principal-review-2026-10-27.json)
+confirms the repair with no blockers and retains the current scoped percentage.
+
 R1/R2 gate evidence is recorded in
 [ADR-0018](adr/ADR-0018-postgresql-authoritative-data-plane.md),
 [ADR-0019](adr/ADR-0019-production-generator-state-and-replacement.md), and

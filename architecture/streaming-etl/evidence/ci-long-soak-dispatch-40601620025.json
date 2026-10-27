@@ -1,0 +1,60 @@
+{
+  "accepted_branch_commit": "24e49ec87cbcfa20a42f3a53fba2b54d10ff18c0",
+  "adr_status": "progress",
+  "campaign_id": "gh-40601620025-1",
+  "jobs": [
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "html_url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025/job/122530886147",
+      "id": 122530886147,
+      "labels": [
+        "self-hosted"
+      ],
+      "name": "Prepare on an existing self-hosted runner",
+      "runner_group_name": null,
+      "runner_name": null,
+      "started_at": "2026-10-27T23:21:56Z",
+      "status": "queued"
+    }
+  ],
+  "limitations": [
+    "Dispatch acceptance does not establish runner availability or workload startup.",
+    "Queue time is not measured soak duration.",
+    "A future independent review must verify all 18 segments, actual duration, faults, invariants and resource limits."
+  ],
+  "long_soak_passed": false,
+  "observed_at": "2026-10-27T23:23:14.292236+00:00",
+  "process_loss_segments": [
+    5,
+    11
+  ],
+  "profile": "72h",
+  "protocol": "ariadne-long-soak-dispatch-observation/v1",
+  "pull_request": {
+    "merge_commit": "3776be1382d3d047485c6f96a14f9a5c1a1cb458",
+    "merged_at": "2026-10-27T23:20:44Z",
+    "number": 1,
+    "state": "MERGED"
+  },
+  "repository": "Anacreonsystems/ariadne",
+  "required_runner_name": "k8s-runner",
+  "run": {
+    "conclusion": null,
+    "created_at": "2026-10-27T23:21:54Z",
+    "event": "workflow_dispatch",
+    "head_branch": "main",
+    "head_sha": "3776be1382d3d047485c6f96a14f9a5c1a1cb458",
+    "html_url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025",
+    "id": 40601620025,
+    "run_attempt": 1,
+    "status": "queued"
+  },
+  "scope": "Standalone Python/PostgreSQL durable-stream workload; actual Prefect integration remains a separate short gate.",
+  "segment_count": 18,
+  "segment_seconds": 14400,
+  "source_tree_matches_accepted_branch": true,
+  "static_runner_assignment_verified": false,
+  "target_seconds": 259200,
+  "workload_start_verified": false
+}

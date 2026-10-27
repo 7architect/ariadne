@@ -260,6 +260,12 @@ with recovery, four oracles, public export and owned cleanup, and its
 closes the smoke repair. The 72-hour run and DS-052a remain open/unstarted;
 this follow-up contributes no additional short-delivery percentage.
 
+Post-merge dispatch on 2026-10-27: the
+[72-hour campaign](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+now exists on `main`; the [dispatch record](evidence/ci-long-soak-dispatch-40601620025.json)
+shows its prepare job queued without an assigned persistent runner. DS-052a
+remains `progress`; startup and actual long-duration acceptance are still open.
+
 Exit: workload, configuration, raw results, and invariant report are archived;
 only this complete gate earns 100% and permits eligible ADRs to become
 `accepted`.

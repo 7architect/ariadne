@@ -193,3 +193,19 @@ The ZIP archive could not be downloaded through the current connection
 (HTTP 403); the retrieved job logs, exporter result and uploaded-artifact
 metadata provide the acceptance evidence. Actual 72-hour execution on the
 static runner remains a separate open step.
+
+## Long-profile dispatch after merge (2026-10-27)
+
+PR #1 is merged and the workflow is active on `main` at
+`3776be1382d3d047485c6f96a14f9a5c1a1cb458`. The
+[72-hour workflow](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+was manually dispatched with campaign ID `gh-40601620025-1`. Its prepare job
+was queued for `self-hosted` without an assigned runner in the
+[recorded observation](evidence/ci-long-soak-dispatch-40601620025.json).
+The existing `k8s-runner` name guard and persistent-root checks still apply.
+
+Do not start a duplicate campaign or rerun all jobs merely because this one
+is queued. Assignment is verified from the actual job, and measured workload
+duration begins at service startup, not dispatch time. This is a dispatch
+record, not a long-duration PASS. Follow [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md)
+for acceptance and retained evidence.

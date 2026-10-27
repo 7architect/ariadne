@@ -130,6 +130,13 @@ pass after the shared-directory and short-resource-policy repairs. Existing
 runner access and the one-job smoke are verified. DS-052a remains `progress`
 for the unstarted static-runner 72-hour campaign; no percentage is added.
 
+Post-merge dispatch on 2026-10-27: the
+[long-profile run](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+is queued on the merged `main` source. Its
+[dispatch observation](evidence/ci-long-soak-dispatch-40601620025.json)
+does not yet verify runner assignment or workload startup. DS-052a remains
+`progress` with no percentage added.
+
 R1/R2 gate evidence is recorded in
 [ADR-0018](adr/ADR-0018-postgresql-authoritative-data-plane.md),
 [ADR-0019](adr/ADR-0019-production-generator-state-and-replacement.md), and

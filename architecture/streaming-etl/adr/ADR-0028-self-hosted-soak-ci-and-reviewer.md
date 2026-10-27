@@ -355,6 +355,31 @@ own regression controls and fresh hosted execution. ARC access and the one-job
 smoke are verified. The static runner's real 18-job/72-hour campaign remains
 unstarted, so this ADR and DS-052a remain `progress` with no percentage added.
 
+## Main-branch dispatch observation (2026-10-27)
+
+The user merged PR #1 at `3776be1382d3d047485c6f96a14f9a5c1a1cb458`.
+Its tree exactly matches the accepted branch tip
+`24e49ec87cbcfa20a42f3a53fba2b54d10ff18c0`; no implementation changes were
+introduced by the merge. The workflow is now active on the default branch.
+
+The separate [`72h` dispatch](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+was accepted at 2026-10-27 23:21:54 UTC with campaign ID
+`gh-40601620025-1`. The [dispatch observation](../evidence/ci-long-soak-dispatch-40601620025.json)
+records a queued prepare job requesting `self-hosted`, with no runner assigned
+at that observation. Bootstrap still requires the actual runner name to be
+`k8s-runner`, a shared persistent state root and the existing Docker checks.
+
+As a user, I want the merged source to receive its separate long-duration
+validation on the existing persistent runner. As a developer, I can inspect
+the exact source commit, campaign ID and queued job; this dispatch satisfies
+traceability only. Queue time does not count toward the 259200-second workload.
+Actual startup, all 18 observations and the final independent reviewer remain
+open acceptance criteria. This ADR and DS-052a remain `progress` with no
+additional percentage. See the [operator guide](../soak_ci.md),
+[task lane](../todo.md) and [sprint board](../sprint_board.md).
+The [dispatch evidence graph](../evidence/adr-graph-long-dispatch-40601620025.json)
+checks the retained statuses and local documentation links.
+
 ## Consequences
 
 The separate campaign occupies the existing static host for at least 72 hours.

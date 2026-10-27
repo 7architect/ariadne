@@ -1,0 +1,29 @@
+name: Streaming ETL soak cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Campaign ID from the report, for example gh-123456789-1"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 10
+    env:
+      ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+      CAMPAIGN: ${{ inputs.run_id }}
+    steps:
+      - name: Verify the existing persistent runner
+        run: test "$RUNNER_NAME" = k8s-runner
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Remove only resources owned by the explicit campaign
+        run: python3 architecture/streaming-etl/prototypes/ci_soak/cli.py stop --run-id "$CAMPAIGN" --cleanup

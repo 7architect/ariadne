@@ -1,0 +1,121 @@
+{
+  "bounded_measurement": {
+    "json_bytes": [
+      25194,
+      25207,
+      25220,
+      25303
+    ],
+    "logical_byte_budget": 262144,
+    "logical_row_budget": 512,
+    "name": "control_http_100_cycles",
+    "rows": [
+      62,
+      62,
+      62,
+      62
+    ],
+    "sample_cycles": [
+      25,
+      50,
+      75,
+      100
+    ],
+    "scope": "logical rows/JSON bytes; excludes heap/index/WAL"
+  },
+  "closed_hostile_findings": [
+    "a single installed native worker could previously authorize an incomplete graph; activation now requires the exact immutable participant, input and configuration manifests",
+    "native recovery/control hooks could be absent when a run activated; activation and reconciliation now require the complete regional schema, sealed topology and exact enabled storage guards",
+    "execution mode could previously be inferred from mutable runtime rows; each run now freezes immutable NATIVE_JOIN or LEGACY_SOURCE authority",
+    "a source consumer could previously make a routed legacy topology appear executable; LEGACY_SOURCE now rejects every declared participant input outside the exact source manifest",
+    "source publication and control admission could diverge across process loss; the accepted record and PUBLISHED witness now commit atomically, with bounded retirement and an explicit idempotency horizon",
+    "drain could miss ordered barriers, active recovery or a partial operator graph; the fixed point now covers DATA cursors, ordered-log scan, invocations, blocked inputs, checkpoint lifecycle and global/regional recovery",
+    "cancellation could leave a valid old worker or recovery generation able to publish; durable storage guards fence legacy, native and regional terminal/progress paths",
+    "source-only ownership allowed cross-tenant output mixing; deployment activation now claims every source, intermediate and leaf output partition with an immutable role"
+  ],
+  "current_tree_hash_mismatches": [],
+  "explicit_limits": [
+    "protocol schema installation and direct database credentials remain a trusted provisioning boundary; DS-051c must enforce production worker credentials and DDL isolation",
+    "LEGACY_SOURCE supports only the exact installed source-consumer manifest and no routed participant input; NATIVE_JOIN requires full R3 bootstrap before activation",
+    "the prototype supports one revision-bound control run and one structured producer per owned source partition",
+    "a cancelled unprocessed suffix remains pinned until a separately specified discard policy; it is not treated as completed",
+    "logical row/JSON-byte census does not measure PostgreSQL heap, indexes, WAL, vacuum or the later soak gate",
+    "Prefect integration, production IAM and transport deployment, upgrades, infrastructure chaos and the 72-hour soak remain later gates"
+  ],
+  "generated_at": "2026-10-25T16:03:30+00:00",
+  "independent_targeted_rerun": {
+    "command": [
+      "/workspace/ariadne/.venv/bin/python",
+      "-m",
+      "unittest",
+      "-v",
+      "test_postgres_control_plane.PostgresControlPlaneTests.test_native_run_rejects_partial_graph_and_missing_control_hooks",
+      "test_postgres_control_plane.PostgresControlPlaneTests.test_run_binds_exact_legacy_consumer_manifest",
+      "test_postgres_control_plane.PostgresControlPlaneTests.test_cancel_fences_live_regional_recovery",
+      "test_postgres_control_plane.PostgresControlPlaneTests.test_actual_http_and_process_loss_resume_durable_drain",
+      "test_postgres_control_plane.PostgresControlPlaneTests.test_projection_is_exact_and_auth_rejects_before_mutation"
+    ],
+    "duration_seconds": 5.908,
+    "returncode": 0,
+    "summary": "Ran 5 tests in 5.908s; OK",
+    "test_count": 5
+  },
+  "phase": "R4-A independent ETL Architect / HighLoad Principal gate review",
+  "readiness_gate": {
+    "approved": true,
+    "from_percent": 75,
+    "production_acceptance": false,
+    "to_percent": 83
+  },
+  "reviewed_evidence": {
+    "database": {
+      "postgres_version": "17.11",
+      "replicas": [
+        {
+          "application_name": "walreceiver",
+          "state": "streaming",
+          "sync_state": "sync"
+        }
+      ],
+      "synchronous_commit": "remote_apply"
+    },
+    "durability_profile_passed": true,
+    "duration_seconds": 444.602,
+    "expected_tests": 110,
+    "passed": true,
+    "path": "evidence/postgres-r4a-candidate2-2026-10-25.json",
+    "raw_log_path": "evidence/postgres-r4a-candidate2-2026-10-25.log",
+    "raw_log_sha256": "3828a0d9c8e149ea6ddb414d2b2063c461a8fb91dfd1e8557a450828aa769d29",
+    "sha256": "cc297b1c9748c4d503a4226aeb7a3a3274badad976d813741edd137cc46c7f67",
+    "source_drift": [],
+    "test_count": 110
+  },
+  "source_sha256": {
+    "postgres_control_plane.py": "5cca7866e478f89847d0ca9b3cf0ab4decc7b170a385d9227c11085da7e587c5",
+    "postgres_control_plane_client.py": "259e7b1e6fefe6a252279ba3363ee3a87e3e8d683ad196ac2606a74e4ad7960e",
+    "postgres_control_plane_oracle.py": "c560c1d045ffa3adf9f0ceeb5c6d1d579ca62cd9b393a9e1f9bd5b111e5c2db3",
+    "postgres_control_plane_server.py": "57eabf64ecef610dcaaae2724947de04010d257b266cc6b8703e5ee3217bbbff",
+    "postgres_release_gate_harness.py": "365db843494ddfbac34197a2788bedf51f54287ce929dc2b9d303441a528a82a",
+    "test_postgres_control_plane.py": "cdcfad08facf89c1a4059417ed4aade7dbbfb5be324953a5f32a5e1ef41c0b7a",
+    "test_postgres_control_plane_streaming.py": "635f626a1fc976ccc3c2c605bcc5183410df889de8308e005a10a3131eb35351"
+  },
+  "task_verdicts": {
+    "DS-040a": {
+      "basis": "actual-socket run/partition/operator/input/barrier/recovery/pressure projections match an independent read-only PostgreSQL oracle, including fresh-server process-loss continuity",
+      "verdict": "PASS"
+    },
+    "DS-040b": {
+      "basis": "database-time control leader leases, locked epoch validation, stale-writer rejection, takeover and durable exact command retry after a lost HTTP response",
+      "verdict": "PASS"
+    },
+    "DS-040c": {
+      "basis": "deployment/run lifecycle, atomic bounded source admission/publication, true DAG drain fixed point, legacy/native/regional cancellation fencing and 100-cycle credit-return census",
+      "verdict": "PASS"
+    },
+    "DS-040d": {
+      "basis": "in-transaction capability revalidation, revocation/expiry/role controls, cross-tenant denial and exclusive role-bound ownership of all revision source/output partitions",
+      "verdict": "PASS"
+    }
+  },
+  "verdict": "PASS"
+}

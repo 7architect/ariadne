@@ -1,0 +1,50 @@
+{
+  "name": "postgres-release-isolation-r5a",
+  "recorded_at": "2026-10-25T18:46:05Z",
+  "verdict": "PASS_SELECTED_PROFILE",
+  "tests": {
+    "command": "python -m unittest test_postgres_release_authority.py test_postgres_isolated_operator.py -v",
+    "passed": 9,
+    "failed": 0,
+    "elapsed_seconds": 20.464
+  },
+  "source_sha256": {
+    "postgres_release_authority.py": "642b8164244da452c1c84e4cd59cc733e5f8b76b761f07917ede359612d95074",
+    "postgres_release_oracle.py": "d92c34de8ff22fd997ebfab3a7e443b8f85b7b8ccac7c46b251c822813b7b211",
+    "test_postgres_release_authority.py": "57b4552d16c854ad42f8e163613ac66a88d760d470ebb8eb900c2c60d11a9520",
+    "postgres_isolated_operator.py": "b54b2aa43b95cfa2f577e92139bb1b38b983dba808113a3a9acf2231308a4915",
+    "isolated_operator_worker.py": "6122ee7d45ce62eecc1c6c8543fc6c9921002c840646bf4db08d145c142b667e",
+    "test_postgres_isolated_operator.py": "f8bb694e25810ae39aa329fe315304712edc161e8d0124e6a5bb528b96dddf00"
+  },
+  "container": {
+    "docker_server": "28.4.0",
+    "base_image": "python@sha256:b658b05ce9c4eb97ec6fc19424818a1f31993659c2b505a532f470e83807815d",
+    "network": "none",
+    "rootfs": "read-only",
+    "bind_mounts": 0,
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "pids_limit": 32,
+    "memory_bytes": 67108864,
+    "nano_cpus": 500000000,
+    "rpc": "strict JSON lines over stdio"
+  },
+  "proved": [
+    "migration and compatibility history have immutable configured hard caps checked before expansion and cutover",
+    "worker image ID and labels bind the exact worker code and the artifact digest from the existing operator registry",
+    "the container recomputes the registry digest from the exact executed operator source before becoming ready",
+    "worker environment has no platform DSN, token, password, secret, credential, or AWS variables",
+    "worker has no Docker socket, host proc mount, or platform PostgreSQL network reachability",
+    "untrusted RPC computation alone cannot mutate PostgreSQL cursor, state, or outputs",
+    "the platform rejects forged artifact result identity and oversized or malformed results",
+    "failure after worker computation but before the platform transaction leaves cursor and output unchanged; exact retry commits once",
+    "execution-attempt replacement fences the old owner before another terminal publication"
+  ],
+  "limits": [
+    "the Docker daemon, platform process, host kernel, and image builder are trusted",
+    "the accepted profile is closed-network and supports one pinned uppercase operator artifact",
+    "external connector credentials are not passed to isolated operators and connector execution is unsupported",
+    "general container escape resistance and multi-tenant hostile-kernel isolation are not claimed",
+    "this evidence does not replace the separate PostgreSQL HA storage evidence"
+  ]
+}

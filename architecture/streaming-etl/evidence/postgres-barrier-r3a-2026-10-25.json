@@ -1,0 +1,66 @@
+{
+  "command": [
+    "/workspace/ariadne/.venv/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_postgres_barrier_coordinator.py"
+  ],
+  "database": {
+    "replicas": [
+      {
+        "application_name": "walreceiver",
+        "state": "streaming",
+        "sync_state": "sync"
+      }
+    ],
+    "server_version": "17.11",
+    "synchronous_commit": "remote_apply",
+    "synchronous_standby_names": "*"
+  },
+  "gate": "R3-A coordinator barriers",
+  "generated_at": "2026-10-25T10:26:49.915078+00:00",
+  "git_revision": "87b5243845e733ed938b21cf7b9aeda6d6a4e194",
+  "independent_oracle": "postgres_barrier_oracle.py imports no runtime module",
+  "passed": true,
+  "real_process_crash_boundaries": [
+    "intent_before_commit",
+    "intent_after_commit",
+    "barrier_after_partition_lock",
+    "barrier_before_commit",
+    "barrier_after_commit",
+    "participant_before_commit",
+    "participant_after_commit",
+    "complete_after_validation",
+    "complete_before_commit",
+    "complete_after_commit",
+    "recovery_plan_before_commit",
+    "recovery_plan_after_commit",
+    "recovery_ready_before_commit",
+    "recovery_ready_after_commit"
+  ],
+  "real_process_crash_boundary_count": 14,
+  "source_sha256": {
+    "postgres_barrier_coordinator.py": "111a6663c4f351f07e75615871244d0e6cf0e28cbcd2c443567d06817dc6456c",
+    "postgres_barrier_crash_worker.py": "09528c038d0e21afc196d7003a8e25b6a06dddd1e16e05a1cb846d866408817b",
+    "postgres_barrier_gate_harness.py": "a98e491f520874745ca51229cdb60e143eca7cc7cd21cb018823f1b616b91c90",
+    "postgres_barrier_oracle.py": "d0d228e1dcb4cd92e7c5e6caf45083aa2cea0b8a4bd2f4fb42361e682e0f5acd",
+    "postgres_checkpoint_runtime.py": "b8ed0a44ddbd25addc1a096b714172301fd967202666c34f6ad3e5361beb200b",
+    "postgres_stream_v2.py": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "test_postgres_barrier_coordinator.py": "9f6ac369486295a43305cc956d792eb99d953bc717d73aabdca58be439303083"
+  },
+  "test_cases": [
+    "test_checkpoint_budget_is_public_and_hard (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_checkpoint_budget_is_public_and_hard)",
+    "test_compaction_race_and_output_barrier_do_not_lose_tail (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_compaction_race_and_output_barrier_do_not_lose_tail)",
+    "test_complete_only_selection_and_frozen_recovery_plan (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_complete_only_selection_and_frozen_recovery_plan)",
+    "test_data_and_barrier_share_one_serial_order (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_data_and_barrier_share_one_serial_order)",
+    "test_identity_drift_storage_guards_and_unsafe_control (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_identity_drift_storage_guards_and_unsafe_control)",
+    "test_oracle_reports_missing_barrier_without_crashing (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_oracle_reports_missing_barrier_without_crashing)",
+    "test_ordered_log_has_a_hard_accounted_capacity (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_ordered_log_has_a_hard_accounted_capacity)",
+    "test_real_process_crash_matrix_exact_retry (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_real_process_crash_matrix_exact_retry)",
+    "test_recovery_pin_cannot_be_released_or_compacted (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_recovery_pin_cannot_be_released_or_compacted)",
+    "test_takeover_resumes_intent_and_fences_old_owner (test_postgres_barrier_coordinator.PostgresBarrierCoordinatorTests.test_takeover_resumes_intent_and_fences_old_owner)"
+  ],
+  "test_count": 10,
+  "test_returncode": 0
+}

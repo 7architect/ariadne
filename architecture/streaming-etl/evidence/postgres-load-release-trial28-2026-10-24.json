@@ -1,0 +1,408 @@
+{
+  "capacity": {
+    "max_bytes": 1258291200,
+    "max_records": 60000,
+    "min_max_age_seconds": 65.0,
+    "partitions": 4,
+    "required_age_seconds": 60,
+    "required_bytes_for_60s": 501350400.0,
+    "required_records_for_60s": 30600.0,
+    "used_bytes": 0,
+    "used_records": 0
+  },
+  "checks": {
+    "backlog_recovered_during_ingress": true,
+    "byte_horizon": true,
+    "catchup": true,
+    "compaction": true,
+    "duration": true,
+    "independent_oracle": true,
+    "ingress": true,
+    "invariants": true,
+    "metadata_compaction": true,
+    "no_errors": true,
+    "p95": true,
+    "p99": true,
+    "record_horizon": true,
+    "remote_apply": true,
+    "replication": true,
+    "time_horizon": true
+  },
+  "compaction": {
+    "credits_after": {
+      "p0": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p1": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p2": {
+        "used_bytes": 0,
+        "used_records": 0
+      },
+      "p3": {
+        "used_bytes": 0,
+        "used_records": 0
+      }
+    },
+    "reclaimed_bytes": 501350400,
+    "reclaimed_records": 30600,
+    "reclaimed_records_per_second": 792.5539589537718,
+    "safe_through": {
+      "p0": 7650,
+      "p1": 7650,
+      "p2": 7650,
+      "p3": 7650
+    },
+    "scope": "live ingress partitions with completed consumer history",
+    "seconds": 38.60935858599987
+  },
+  "duration_seconds": 60.05819244799932,
+  "errors": [],
+  "independent_oracle": {
+    "observations": {
+      "completions": 4,
+      "consumers": 4,
+      "metadata_operations": 1,
+      "metadata_summaries": 4,
+      "object_identities": 0,
+      "partitions": 4,
+      "records": 0,
+      "tombstones": 0
+    },
+    "passed": true,
+    "violations": []
+  },
+  "ingested_records": 30600,
+  "ingress_records_per_second": 510.0,
+  "invariants": {
+    "bad_capacity": 0,
+    "bad_invocations": 0,
+    "bad_objects": 0,
+    "bad_progress": 0,
+    "passed": true,
+    "sequence_gaps": 0
+  },
+  "latency": {
+    "append_round_trip_ms": {
+      "max": 190.04221099930874,
+      "p95": 20.203647000016645,
+      "p99": 24.412147999100853
+    },
+    "batch_scheduler_delay_ms": {
+      "max": 179.33838829412707,
+      "p95": 2.423964411718771,
+      "p99": 35.972381352621596
+    },
+    "by_payload_bytes": {
+      "1024": {
+        "count": 24480,
+        "p50_ms": 23.680898253587657,
+        "p95_ms": 35.726033745959285,
+        "p99_ms": 66.72439980502531
+      },
+      "16384": {
+        "count": 4590,
+        "p50_ms": 24.125503607137944,
+        "p95_ms": 35.80610792232619,
+        "p99_ms": 74.66025307803648
+      },
+      "262144": {
+        "count": 1530,
+        "p50_ms": 25.44901737201144,
+        "p95_ms": 37.14624427448143,
+        "p99_ms": 68.61801484228636
+      }
+    },
+    "definition": "per offered record from scheduled offer time through group commit ACK",
+    "group_size": 3,
+    "mean_ms": 24.91984820217469,
+    "p50_ms": 23.833507490053307,
+    "p95_ms": 35.84314186264237,
+    "p99_ms": 67.48280986357713
+  },
+  "mean_payload_bytes": 16384,
+  "metadata_compaction": {
+    "expired_retry_rejected": true,
+    "idempotent_retry": true,
+    "locations": {
+      "load/p0": {
+        "anchor_digest": "bbe18ec1bbf339860e9f5099461af53dd8bf79393f6642d2ddaba9033fb0f26f",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-0"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p0",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "fe720084cbdb1b926c5d05b795f537961e6593723816fa7e1dfd3aaaeea58619"
+      },
+      "load/p1": {
+        "anchor_digest": "41bd75238bc24aaf514d1b8540d33f1901274239d3e5f017e8d01a78c8cc8fe7",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-1"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p1",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "4e75252f70ca744d6e3cd26cdc723bef4cfb396b099dbc52ddeeb8273ad5f0e5"
+      },
+      "load/p2": {
+        "anchor_digest": "819548afd8da6da1a535e9aa8cf9c96fdd8df46f6a35d96840c56c9897966f1c",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-2"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p2",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "50a3034cbbffe59570fb5de1b5eed9a4aec75379b2d6f9207290655178a7880e"
+      },
+      "load/p3": {
+        "anchor_digest": "6deeabf0b7316d1a2235a4e885c612d23d6ffefaafaa1f712db218a113556689",
+        "anchors": {
+          "consumers": [
+            {
+              "completion_retired_through": 7649,
+              "consumer_id": "stalled-consumer-3"
+            }
+          ],
+          "producers": [
+            {
+              "producer_id": "load-producer-p3",
+              "retired_through": 7650
+            }
+          ]
+        },
+        "retired_attempts": 7650,
+        "retired_completions": 7649,
+        "retired_through": 7650,
+        "rolling_digest": "c221fe21ec94ab6da68df11de87626eccc0cd18d0d62ad033c191dd6cf7e590e"
+      }
+    },
+    "operation_id": "metadata:926dc2c21d425a247d53873b72fbde670b53bed55dcd16dfea787983a5c54f6c",
+    "pressure_after": {
+      "p0": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p0",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      },
+      "p1": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p1",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      },
+      "p2": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p2",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      },
+      "p3": {
+        "binding_dimensions": [],
+        "channel": "load",
+        "hot_metadata_rows": {
+          "append_attempts": 0,
+          "completions": 1,
+          "consumers": 1,
+          "manifests": 0,
+          "metadata_operations": 1,
+          "producers": 1,
+          "tombstones": 0
+        },
+        "hot_metadata_rows_total": 4,
+        "max_age_seconds": 65.0,
+        "max_bytes": 314572800,
+        "max_consumers": 128,
+        "max_metadata_records": 30000,
+        "max_records": 15000,
+        "oldest_age_seconds": null,
+        "oldest_metadata_age_seconds": null,
+        "partition": "p3",
+        "projected_bytes": 0,
+        "projected_consumers": 1,
+        "projected_metadata_records": 0,
+        "projected_records": 0,
+        "retry_condition": "retention root advances and compaction returns credit",
+        "used_bytes": 0,
+        "used_consumers": 1,
+        "used_metadata_records": 0,
+        "used_records": 0
+      }
+    },
+    "seconds": 13.897094408999692
+  },
+  "offered_records_per_second": 510,
+  "passed": true,
+  "payload_distribution": {
+    "16KiB": 0.15,
+    "1KiB": 0.8,
+    "256KiB": 0.05,
+    "partition_phase_offsets": [
+      0,
+      5,
+      10,
+      15
+    ]
+  },
+  "provenance": {
+    "data_plane_sha256": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "git_revision": "87b5243845e733ed938b21cf7b9aeda6d6a4e194",
+    "harness_sha256": "75a3981e5a594bc08561e2e10e14da2cf51558a600814a611f67fe205d9f92a2",
+    "oracle_sha256": "2c1db770e65277a90ced9c2f10af83ab16a8e11aae0da4fb346dd445bde5d2e2",
+    "postgres_image_digest": "sha256:ab20e934b27ba3ff927c1b4c9ff8cf6c32f315f743efe68dd3441182a87fb085"
+  },
+  "replication": [
+    {
+      "application_name": "walreceiver",
+      "state": "streaming",
+      "sync_state": "sync"
+    }
+  ],
+  "schema": "ds011_release_trial28_20261024",
+  "settings": {
+    "checkpoint_completion_target": "0.9",
+    "checkpoint_timeout": "15min",
+    "max_wal_size": "4GB",
+    "min_wal_size": "1GB",
+    "server_version": "17.11",
+    "shared_buffers": "128MB",
+    "synchronous_commit": "remote_apply",
+    "synchronous_standby_names": "*",
+    "wal_level": "replica"
+  },
+  "stalled_consumer": {
+    "backlog_basis": "records durably appended during measured 10-second outage",
+    "backlog_records": 5088,
+    "backlog_recovered_during_ingress": true,
+    "catchup_rate_definition": "gross durable completions per second from consumer start until the outage backlog is first eliminated",
+    "catchup_records_per_second": 901.744377874,
+    "catchup_seconds": 12.810725837000064,
+    "caught_up_records": 30600,
+    "completions_at_backlog_recovery": 11552,
+    "configured_catchup_limit_records_per_second": 900,
+    "idle_poll_seconds": 0.02,
+    "lag_at_backlog_recovery": 124,
+    "live_ingress_continued": true,
+    "outage_seconds": 10
+  },
+  "thresholds": {
+    "append_p95_ms": 40,
+    "append_p99_ms": 100,
+    "backlog_seconds": 60,
+    "catchup_records_per_second": 637.5,
+    "compaction_records_per_second": 637.5,
+    "duration_seconds": 60,
+    "ingress_records_per_second": 500
+  }
+}

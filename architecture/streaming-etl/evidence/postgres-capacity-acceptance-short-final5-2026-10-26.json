@@ -1,0 +1,283 @@
+{
+  "command": "PYTHONASYNCIODEBUG=1 timeout 180 /workspace/ariadne/.venv/bin/python -m unittest -v test_postgres_capacity_acceptance",
+  "criteria": {
+    "actual_prefect_flow_completed": true,
+    "backlog_reduction_records": 3,
+    "durable_publication_time_authority": "durable admission published_at",
+    "final_both_branches_completed": true,
+    "final_live_credits_returned": true,
+    "hard_admission_records_observed": true,
+    "peak_backlog_records": 3,
+    "recovered_backlog_records": 0,
+    "six_independent_oracles_passed": true,
+    "source_advanced_during_catchup": true
+  },
+  "limits": [
+    "one source and two independent terminal branches in the selected PostgreSQL/Prefect prototype profile",
+    "source delay is a one-second minimum interval; measured effective ingress is reported rather than asserted as a production SLO",
+    "relation allocation and WAL insertion are observations, not filesystem-free-space or retained-WAL measurements",
+    "short run does not establish production throughput, multi-tenant capacity, connector isolation, or 72-hour stability"
+  ],
+  "log": {
+    "bytes": 11260,
+    "path": "evidence/postgres-capacity-acceptance-short-final5-2026-10-26.log",
+    "sha256": "59c7cde81d9b2e1202458509c4235efd5bb2189fe9c0d2f5583cb199362c887c"
+  },
+  "long_soak_passed": false,
+  "measurement": {
+    "baseline": {
+      "accepted": 10,
+      "accepted_published_at": 1793024916.331892,
+      "branch_completed": 9,
+      "logical_json_bytes": 592042,
+      "logical_rows": 147,
+      "max_admission_bytes": 1000000,
+      "max_admission_records": 4,
+      "max_bytes": 1000000,
+      "max_records": 4,
+      "physical_relation_bytes": 4833280,
+      "time": 26178.921977299,
+      "total_partition_used_bytes": 262144,
+      "total_partition_used_records": 4,
+      "used_admission_bytes": 131072,
+      "used_admission_records": 2,
+      "used_bytes": 131072,
+      "used_records": 2,
+      "wal_bytes": 6652644048
+    },
+    "calibration_peak": {
+      "accepted": 3,
+      "accepted_published_at": 1793024899.120507,
+      "branch_completed": 1,
+      "logical_json_bytes": 554493,
+      "logical_rows": 83,
+      "max_admission_bytes": 1000000,
+      "max_admission_records": 4,
+      "max_bytes": 1000000,
+      "max_records": 4,
+      "physical_relation_bytes": 3096576,
+      "time": 26161.161906903,
+      "total_partition_used_bytes": 393216,
+      "total_partition_used_records": 6,
+      "used_admission_bytes": 196608,
+      "used_admission_records": 3,
+      "used_bytes": 196608,
+      "used_records": 3,
+      "wal_bytes": 6651184520
+    },
+    "calibration_recovered": {
+      "accepted": 4,
+      "accepted_published_at": 1793024900.326561,
+      "branch_completed": 4,
+      "logical_json_bytes": 1098246,
+      "logical_rows": 129,
+      "max_admission_bytes": 1000000,
+      "max_admission_records": 4,
+      "max_bytes": 1000000,
+      "max_records": 4,
+      "physical_relation_bytes": 3457024,
+      "time": 26164.108122321,
+      "total_partition_used_bytes": 524288,
+      "total_partition_used_records": 8,
+      "used_admission_bytes": 262144,
+      "used_admission_records": 4,
+      "used_bytes": 262144,
+      "used_records": 4,
+      "wal_bytes": 6651362456
+    },
+    "checkpoint_interval_records": 4,
+    "declared_live_logical_bytes_budget": 786432,
+    "declared_logical_json_bytes_budget": 4194304,
+    "documents": 20,
+    "final": {
+      "accepted": 20,
+      "accepted_published_at": null,
+      "branch_completed": 20,
+      "logical_json_bytes": 53988,
+      "logical_rows": 115,
+      "max_admission_bytes": 1000000,
+      "max_admission_records": 4,
+      "max_bytes": 1000000,
+      "max_records": 4,
+      "physical_relation_bytes": 5660672,
+      "time": 26200.641628478,
+      "total_partition_used_bytes": 0,
+      "total_partition_used_records": 0,
+      "used_admission_bytes": 0,
+      "used_admission_records": 0,
+      "used_bytes": 0,
+      "used_records": 0,
+      "wal_bytes": 6654972688
+    },
+    "long_soak_passed": false,
+    "max_checkpoint_delay_seconds": 5.0,
+    "name": "prefect_two_branch_capacity_catchup_short",
+    "payload_bytes": 65536,
+    "peak": {
+      "accepted": 12,
+      "accepted_published_at": 1793024918.704892,
+      "branch_completed": 9,
+      "logical_json_bytes": 861464,
+      "logical_rows": 162,
+      "max_admission_bytes": 1000000,
+      "max_admission_records": 4,
+      "max_bytes": 1000000,
+      "max_records": 4,
+      "physical_relation_bytes": 5111808,
+      "time": 26180.802612136,
+      "total_partition_used_bytes": 524288,
+      "total_partition_used_records": 8,
+      "used_admission_bytes": 262144,
+      "used_admission_records": 4,
+      "used_bytes": 262144,
+      "used_records": 4,
+      "wal_bytes": 6652960128
+    },
+    "prediction": {
+      "calibration_gross_catchup_records_per_second": 1.0182554818196032,
+      "calibration_live_ingress_records_per_second": 0.3394184939398677,
+      "calibration_net_catchup_records_per_second": 0.6788369878797356,
+      "declared_ingress_records_per_second": 1.0,
+      "declared_payload_bytes": 65536,
+      "hypothetical_fully_retained_wal_headroom_seconds": 8061.21629967097,
+      "observed_backlog_recovery_seconds": 6.385178081996855,
+      "observed_backlog_reduction_records": 3,
+      "observed_credit_byte_growth_per_second": 55234.72615349435,
+      "observed_credit_record_growth_per_second": 0.8428150353011222,
+      "observed_relation_growth_bytes_per_second": 117373.7930761755,
+      "observed_seconds_to_selected_saturation": 2.372999906539917,
+      "observed_stall_ingress_records_per_second": 0.8428150353011222,
+      "observed_target_gross_catchup_records_per_second": 0.6264508129034153,
+      "observed_target_live_ingress_records_per_second": 0.15661270322585383,
+      "observed_target_net_catchup_records_per_second": 0.46983810967756146,
+      "observed_wal_insert_bytes_per_second": 133198.48817898936,
+      "peak_backlog_records": 3,
+      "physical_relation_growth_bytes": 278528,
+      "predicted_backlog_recovery_seconds": 2.946215418000065,
+      "predicted_seconds_to_byte_credit_exhaustion": 13.2587890625,
+      "predicted_seconds_to_first_logical_saturation": 2.0,
+      "predicted_seconds_to_record_credit_exhaustion": 2.0,
+      "pressure_accepted_records": 2,
+      "pressure_time_authority": "durable admission published_at",
+      "pressure_window_seconds": 2.372999906539917,
+      "recovered_backlog_records": 0,
+      "selected_disk_headroom_bytes": 1073741824,
+      "selected_relation_headroom_exhaustion_seconds": 9148.054227941177,
+      "storage_model_limit": "relation headroom uses only observed schema-relation growth; WAL insert volume is reported separately and its headroom estimate assumes every inserted WAL byte remains retained. Neither is actual filesystem free space, vacuum/checkpoint amplification, or long-duration evidence",
+      "target_backlog_records": 1,
+      "wal_insert_growth_bytes": 316080
+    },
+    "prefect_task_ids": {
+      "maintenance": "01a1789c-abc3-7bfd-bc85-99d66e9780ee",
+      "operators": [
+        "01a1789c-abbf-7a43-bf3d-3594b3545881",
+        "01a1789c-abc0-7215-a807-4a2fa8bc5e14"
+      ],
+      "source": "01a1789c-abbe-7e48-ad12-8cbe9129c521"
+    },
+    "recovered": {
+      "accepted": 13,
+      "accepted_published_at": 1793024925.033808,
+      "branch_completed": 13,
+      "logical_json_bytes": 54176,
+      "logical_rows": 114,
+      "max_admission_bytes": 1000000,
+      "max_admission_records": 4,
+      "max_bytes": 1000000,
+      "max_records": 4,
+      "physical_relation_bytes": 5382144,
+      "time": 26187.187790218,
+      "total_partition_used_bytes": 131072,
+      "total_partition_used_records": 2,
+      "used_admission_bytes": 65536,
+      "used_admission_records": 1,
+      "used_bytes": 65536,
+      "used_records": 1,
+      "wal_bytes": 6653312504
+    },
+    "scope": "single source, two independent terminal branches, real Prefect tasks, PostgreSQL barriers/retention, 1 record/s declared ingress, one bounded in-process branch stall; no production disk, WAL retention, vacuum, multi-tenant, or 72-hour capacity claim",
+    "source_remained_open_during_catchup": true,
+    "stall_at_sequence": 10,
+    "stall_participant": "b"
+  },
+  "name": "prefect_two_branch_capacity_catchup_short",
+  "recorded_at": "2026-10-26T14:28:59Z",
+  "rejected_trials": [
+    {
+      "path": "postgres-capacity-acceptance-focused-failed-2026-10-26.json",
+      "sha256": "d79616e2a6a553efaa0eb561a6dd42afc55ca3afd31bda1c7c1fc8f163a59fbc"
+    },
+    {
+      "path": "postgres-capacity-acceptance-focused-final-failed-2026-10-26.json",
+      "sha256": "520ab88f069465f73be54cf0e8daefbf30edf7062e46c89521cd25971e738e6b"
+    },
+    {
+      "path": "postgres-capacity-acceptance-focused-retry-failed-2026-10-26.json",
+      "sha256": "637ad0af07311cecab8def7bfa3cb4ca40b695ec225c575df4d8284ace02cdeb"
+    },
+    {
+      "path": "postgres-capacity-acceptance-short-candidate-failed-2026-10-26.json",
+      "sha256": "b148870f21bab4c15c137f75bcf8a592e36aa769b21fd8c7c48ea6f19feed899"
+    },
+    {
+      "path": "postgres-capacity-acceptance-short-failed-2026-10-26.json",
+      "sha256": "86f9530bdc1f40b1815c58a4ff9acd042ea9fdac340a9587240e714bb726f6e2"
+    },
+    {
+      "path": "postgres-capacity-acceptance-short-final-failed-2026-10-26.json",
+      "sha256": "89d29b63357112dfc0cc4ff74e018dc5f2864ad52f97bbe6396c8c4705654004"
+    },
+    {
+      "path": "postgres-capacity-acceptance-short-final2-failed-2026-10-26.json",
+      "sha256": "e75e393ad58f32ca12fc2b9ce4c2a54c64a5bd357d653beac35980e09bdab8db"
+    },
+    {
+      "path": "postgres-capacity-acceptance-short-final3-failed-2026-10-26.json",
+      "sha256": "d39bed986edb6542eee3e2046e7ece18c7e65bca255b92c562f4504123f0650f"
+    }
+  ],
+  "resource_warnings": 0,
+  "schema_version": 1,
+  "short_capacity_passed": true,
+  "source_drift": [],
+  "source_sha256_after": {
+    "postgres_barrier_coordinator.py": "3dc5e69b8065c37a7032def392b26a2f7d2acbc7ebe5e5be377aca339213cd8c",
+    "postgres_control_plane.py": "846e6d5686baf1272ca1b39f4731eda82bcd7311e63b39a59e461a712d8d0df9",
+    "postgres_join_retention.py": "b1b8f6b385b7e62ac792c9276ddf15df3056a02ae86196bc596098f8541793fe",
+    "postgres_join_runtime.py": "4128295492c4afbfa52741bb4e7397e03492e18ebf2de0f71718b671975dee62",
+    "postgres_prefect_attempts.py": "a7b59978b5fd8e7aece7b82db67c6bf307e14ada4ca04cb094453c55165f68f1",
+    "postgres_prefect_maintenance.py": "f5a987347cb9be1932bd1fe794824e842111b0d084817db19ce8043439ef0b30",
+    "postgres_stream_v2.py": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "postgres_streaming_retention.py": "58b1213ecd5c901c46458d88d42c4d4a9b21090c5878cd6aae4fa8dde4675af1",
+    "prefect_stream_adapter.py": "dc5737f8e9285bd419d5d2926dd283d44ec3af53d1cbb4878cd465bcf983e4b5",
+    "test_postgres_capacity_acceptance.py": "12c9edfd06e3be1790ec29e1fa10cc664257768758622ed8372675a5ca8bff51",
+    "test_postgres_prefect_adapter.py": "651120e59a16d123aedf02c7fa4e996152cfd7ee239a185dd427b83f1a8100fc"
+  },
+  "source_sha256_before": {
+    "postgres_barrier_coordinator.py": "3dc5e69b8065c37a7032def392b26a2f7d2acbc7ebe5e5be377aca339213cd8c",
+    "postgres_control_plane.py": "846e6d5686baf1272ca1b39f4731eda82bcd7311e63b39a59e461a712d8d0df9",
+    "postgres_join_retention.py": "b1b8f6b385b7e62ac792c9276ddf15df3056a02ae86196bc596098f8541793fe",
+    "postgres_join_runtime.py": "4128295492c4afbfa52741bb4e7397e03492e18ebf2de0f71718b671975dee62",
+    "postgres_prefect_attempts.py": "a7b59978b5fd8e7aece7b82db67c6bf307e14ada4ca04cb094453c55165f68f1",
+    "postgres_prefect_maintenance.py": "f5a987347cb9be1932bd1fe794824e842111b0d084817db19ce8043439ef0b30",
+    "postgres_stream_v2.py": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "postgres_streaming_retention.py": "58b1213ecd5c901c46458d88d42c4d4a9b21090c5878cd6aae4fa8dde4675af1",
+    "prefect_stream_adapter.py": "dc5737f8e9285bd419d5d2926dd283d44ec3af53d1cbb4878cd465bcf983e4b5",
+    "test_postgres_capacity_acceptance.py": "12c9edfd06e3be1790ec29e1fa10cc664257768758622ed8372675a5ca8bff51",
+    "test_postgres_prefect_adapter.py": "651120e59a16d123aedf02c7fa4e996152cfd7ee239a185dd427b83f1a8100fc"
+  },
+  "supersedes": [
+    {
+      "path": "postgres-capacity-acceptance-short-final4-2026-10-26.json",
+      "reason": "successor binds ingress timing to durable publication timestamps rather than sampler boundaries"
+    }
+  ],
+  "tests": {
+    "elapsed_seconds": 62.854,
+    "errors": 0,
+    "failures": 0,
+    "passed": 5,
+    "run": 5
+  },
+  "verdict": "PASS_SELECTED_SHORT_PROFILE"
+}

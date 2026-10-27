@@ -1,0 +1,59 @@
+{
+  "command": "PYTHONASYNCIODEBUG=1 timeout 180 /workspace/ariadne/.venv/bin/python -m unittest -v test_postgres_capacity_acceptance",
+  "failure": {
+    "classification": "acceptance criterion required zero backlog at an arbitrary sample; final observation shows backlog reduced to one but no capacity claim awarded",
+    "message": "full equality catch-up condition timed out while live source continued",
+    "type": "AssertionError"
+  },
+  "log": {
+    "bytes": 506772,
+    "path": "evidence/postgres-capacity-acceptance-short-final2-2026-10-26.log",
+    "sha256": "d17686a41e186a6986a358f0e983ffd946071c806f8212dcb2df98dd0b37a50d"
+  },
+  "long_soak_passed": false,
+  "measurement": null,
+  "name": "prefect_two_branch_capacity_catchup_short",
+  "observed_last_sample": {
+    "accepted": 18,
+    "branch_completed": 17,
+    "logical_json_bytes": 1138101,
+    "logical_rows": 196,
+    "max_admission_bytes": 1000000,
+    "max_admission_records": 4,
+    "max_bytes": 1000000,
+    "max_records": 4,
+    "physical_relation_bytes": 5677056,
+    "time": 24764.303250614,
+    "total_partition_used_bytes": 196608,
+    "total_partition_used_records": 3,
+    "used_admission_bytes": 131072,
+    "used_admission_records": 2,
+    "used_bytes": 131072,
+    "used_records": 2,
+    "wal_bytes": 6500811496
+  },
+  "recorded_at": "2026-10-26T14:05:07Z",
+  "schema_version": 1,
+  "short_capacity_passed": false,
+  "source_sha256_before": {
+    "postgres_barrier_coordinator.py": "3dc5e69b8065c37a7032def392b26a2f7d2acbc7ebe5e5be377aca339213cd8c",
+    "postgres_control_plane.py": "846e6d5686baf1272ca1b39f4731eda82bcd7311e63b39a59e461a712d8d0df9",
+    "postgres_join_retention.py": "b1b8f6b385b7e62ac792c9276ddf15df3056a02ae86196bc596098f8541793fe",
+    "postgres_join_runtime.py": "4128295492c4afbfa52741bb4e7397e03492e18ebf2de0f71718b671975dee62",
+    "postgres_prefect_attempts.py": "a7b59978b5fd8e7aece7b82db67c6bf307e14ada4ca04cb094453c55165f68f1",
+    "postgres_prefect_maintenance.py": "f5a987347cb9be1932bd1fe794824e842111b0d084817db19ce8043439ef0b30",
+    "postgres_stream_v2.py": "02abed18e9a419d826b970468408a8ccb61c862abf2f89c46afb90eb4f06965e",
+    "postgres_streaming_retention.py": "58b1213ecd5c901c46458d88d42c4d4a9b21090c5878cd6aae4fa8dde4675af1",
+    "prefect_stream_adapter.py": "78080384e2c523b9a9000d0469751168c7f7113f2dc17cbc46a2fb79868b8814",
+    "test_postgres_capacity_acceptance.py": "678c5f6da604086208e4dcb9db5591149fd9d1f7fbd89169a5385c3d2ee36a1a",
+    "test_postgres_prefect_adapter.py": "8f8990b5336fde1532244891c4dfa99290f95e8b6b8f6bd577b3ce5f69fee31e"
+  },
+  "tests": {
+    "elapsed_seconds": 54.506,
+    "errors": 0,
+    "failures": 1,
+    "passed": 3,
+    "run": 4
+  },
+  "verdict": "FAIL"
+}

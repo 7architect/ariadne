@@ -1,0 +1,1567 @@
+{
+  "artifact_archive_download_verified": false,
+  "artifacts": [
+    {
+      "digest": "sha256:7a680b33ba6114b55eb9e70f6608ac2fe547185a85e4ae49ae7be7c6e026fffa",
+      "expired": false,
+      "id": 12768936446,
+      "name": "streaming-soak-smoke-40578404646-1",
+      "size_in_bytes": 9136
+    }
+  ],
+  "bind_mount_probe": {
+    "legacy_persistent_root_control": {
+      "bidirectional": false,
+      "docker_exit_code": 125,
+      "source_path_missing": true
+    },
+    "profile": "smoke",
+    "protocol": "ariadne-ci-bind-mount/v1",
+    "run_attempt": "1",
+    "run_id": "40578404646",
+    "selected_root": {
+      "bidirectional": true,
+      "docker_exit_code": 0,
+      "source_path_missing": false
+    },
+    "state_root": "/home/runner/_work/_temp/ariadne-soak",
+    "state_root_kind": "runner_temp"
+  },
+  "export": {
+    "complete": true,
+    "credentials_exported": false,
+    "expected_segments": 1,
+    "files": [
+      "manifest.json",
+      "review.json",
+      "review.md",
+      "segments/segment-00.json"
+    ],
+    "observed_segments": 1,
+    "output": "/home/runner/_work/_temp/soak-public",
+    "run_id": "gh-40578404646-1"
+  },
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 122450940162,
+      "name": "Prepare on an existing self-hosted runner",
+      "runner_name": "anacreon-runners-runner-xjl9q",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+        },
+        {
+          "conclusion": "success",
+          "name": "Validate profile, runner and campaign ID"
+        },
+        {
+          "conclusion": "success",
+          "name": "Verify bidirectional state sharing with Docker"
+        },
+        {
+          "conclusion": "success",
+          "name": "Clear this job's public export directory"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Start immutable continuous campaign"
+        },
+        {
+          "conclusion": "success",
+          "name": "Start smoke and exercise process recovery"
+        },
+        {
+          "conclusion": "success",
+          "name": "Review smoke independently"
+        },
+        {
+          "conclusion": "success",
+          "name": "Export smoke public evidence"
+        },
+        {
+          "conclusion": "success",
+          "name": "Preserve a bounded CI diagnostic even if bootstrap failed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+        },
+        {
+          "conclusion": "success",
+          "name": "Remove only smoke-owned Docker resources"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job"
+        }
+      ]
+    }
+  ],
+  "origin": "Decoded from exact GitHub step logs, not a downloaded artifact archive.",
+  "raw_log": "github-arc-smoke-passed-40578404646.log",
+  "raw_log_sha256": "1c1aafec451e5a24dba0da2ac0bf86529a20f0eeada82922ecca0d6ded44f243",
+  "review": {
+    "actual_prefect_in_72h": false,
+    "elapsed_seconds": 65.122762,
+    "generated_at": "2026-10-27T20:31:18.821083+00:00",
+    "long_soak_passed": false,
+    "manifest_digest": "1831a11c000178bd3127bdd010c1d83e7d04276525771bae85c0257cd86826d0",
+    "owner_faults": 7,
+    "process_boots": 2,
+    "protocol": "ariadne-long-soak-review/v1",
+    "resource_measurements": {
+      "latter_half_primary_bytes_per_hour": -20009279.931298006,
+      "latter_half_schema_bytes_per_hour": 8649693.73880337,
+      "latter_half_service_rss_bytes_per_hour": 26295010.89306727,
+      "max_primary_data_bytes": 70919155,
+      "max_schema_relation_bytes": 6537216,
+      "max_service_rss_bytes": 38010880
+    },
+    "resource_policy": {
+      "absolute_caps_bytes": {
+        "primary_data": 8589934592,
+        "schema_relation": 536870912,
+        "service_rss": 805306368
+      },
+      "absolute_caps_enforced": true,
+      "growth_rate_caps_bytes_per_hour": {
+        "primary_data": 33554432,
+        "schema_relation": 8388608,
+        "service_rss": 16777216
+      },
+      "growth_rate_caps_enforced": false,
+      "growth_rates_descriptive": true,
+      "profile": "smoke_absolute_caps"
+    },
+    "run_id": "gh-40578404646-1",
+    "scope": [
+      "real PostgreSQL 17 synchronous remote_apply pair",
+      "ordinary Python yield DAG source->A->{B,C}->J->D",
+      "periodic barriers and bounded retirement/GC",
+      "release-session storage guard",
+      "owner loss and externally scheduled service-process loss",
+      "actual Prefect integration remains separate short R4-B evidence"
+    ],
+    "segment_count": 1,
+    "smoke_passed": true,
+    "source_completed": 22,
+    "violations": []
+  },
+  "run_attempt": 1,
+  "run_id": 40578404646,
+  "runner_name": "anacreon-runners-runner-xjl9q",
+  "segment": {
+    "duration_seconds": 63.042671,
+    "ended_at": "2026-10-27T20:31:18.450352+00:00",
+    "manifest_digest": "1831a11c000178bd3127bdd010c1d83e7d04276525771bae85c0257cd86826d0",
+    "oracles": {
+      "barrier": {
+        "observations": {
+          "checkpoint_intents": 1,
+          "completions": 1,
+          "log_entries": 6,
+          "participant_acks": 5,
+          "recovery_plans": 0,
+          "revisions": 1,
+          "source_barriers": 1
+        },
+        "passed": true,
+        "returncode": 0,
+        "violations": []
+      },
+      "join": {
+        "observations": [
+          {
+            "buffered": 0,
+            "participant": "soak-r1:D",
+            "receipts": 0,
+            "turns": 0
+          },
+          {
+            "buffered": 0,
+            "participant": "soak-r1:J",
+            "receipts": 0,
+            "turns": 0
+          },
+          {
+            "buffered": 0,
+            "participant": "soak-r1:A",
+            "receipts": 0,
+            "turns": 0
+          },
+          {
+            "buffered": 0,
+            "participant": "soak-r1:C",
+            "receipts": 0,
+            "turns": 0
+          },
+          {
+            "buffered": 0,
+            "participant": "soak-r1:B",
+            "receipts": 0,
+            "turns": 0
+          }
+        ],
+        "passed": true,
+        "returncode": 0,
+        "violations": []
+      },
+      "release": {
+        "passed": true,
+        "returncode": 0,
+        "violations": []
+      },
+      "stream": {
+        "observations": {
+          "completions": 0,
+          "consumers": 0,
+          "metadata_operations": 1,
+          "metadata_summaries": 6,
+          "object_identities": 0,
+          "partitions": 6,
+          "records": 0,
+          "tombstones": 0
+        },
+        "passed": true,
+        "returncode": 0,
+        "violations": []
+      }
+    },
+    "passed": true,
+    "previous_segment_digest": null,
+    "process_loss_injected": true,
+    "protocol": "ariadne-long-soak-segment/v1",
+    "run_id": "gh-40578404646-1",
+    "runner_identity_digest": "3a6b7d1ca2c9892513d8a6ec2e10bf412a8b310e9953622ce1451566bb9565d1",
+    "samples": [
+      {
+        "boot_id": "4f34f6fc03f8496589a1099a16f3e196",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 10802867,
+          "release_session_remaining_seconds": 299.242613,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001504",
+              "replay_lag": "0:00:00.001969",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000551"
+            }
+          ],
+          "schema_relation_bytes": 3022848.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 1.410793,
+        "last_checkpoint_source": 0,
+        "metrics": {
+          "primary_data_bytes": 68213419,
+          "service": {
+            "BlockIO": "0B / 4.62MB",
+            "CPUPerc": "36.67%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.54%",
+            "MemUsage": "36.25MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "639kB / 827kB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 36.67,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 38010880,
+          "standby_data_bytes": 68266447
+        },
+        "observed_at": "2026-10-27T20:30:16.891916+00:00",
+        "owner_faults": 0,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 10,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 10,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          }
+        ],
+        "process_boots": 1,
+        "source_completed": 1
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 11294387,
+          "release_session_remaining_seconds": 298.937836,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001045",
+              "replay_lag": "0:00:00.001178",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000362"
+            }
+          ],
+          "schema_relation_bytes": 3727360.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 9.492779,
+        "last_checkpoint_source": 2,
+        "metrics": {
+          "primary_data_bytes": 68778667,
+          "service": {
+            "BlockIO": "0B / 4.63MB",
+            "CPUPerc": "26.78%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.27%",
+            "MemUsage": "33.48MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "1.77MB / 1.92MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 26.78,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 35106324,
+          "standby_data_bytes": 68856271
+        },
+        "observed_at": "2026-10-27T20:30:27.438885+00:00",
+        "owner_faults": 1,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 30,
+            "used_metadata_records": 3,
+            "used_records": 3
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 30,
+            "used_metadata_records": 3,
+            "used_records": 3
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 30,
+            "used_metadata_records": 3,
+            "used_records": 3
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 30,
+            "used_metadata_records": 6,
+            "used_records": 6
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 30,
+            "used_metadata_records": 6,
+            "used_records": 6
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 30,
+            "used_metadata_records": 3,
+            "used_records": 3
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 3
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 11998899,
+          "release_session_remaining_seconds": 296.745126,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001095",
+              "replay_lag": "0:00:00.001209",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000389"
+            }
+          ],
+          "schema_relation_bytes": 4612096.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 16.448548,
+        "last_checkpoint_source": 6,
+        "metrics": {
+          "primary_data_bytes": 68975275,
+          "service": {
+            "BlockIO": "0B / 4.64MB",
+            "CPUPerc": "38.00%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.33%",
+            "MemUsage": "34.12MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "2.77MB / 2.89MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 38.0,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 35777413,
+          "standby_data_bytes": 69208527
+        },
+        "observed_at": "2026-10-27T20:30:31.861043+00:00",
+        "owner_faults": 2,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 6
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 12236467,
+          "release_session_remaining_seconds": 298.932944,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001185",
+              "replay_lag": "0:00:00.001399",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000303"
+            }
+          ],
+          "schema_relation_bytes": 4898816.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 21.17354,
+        "last_checkpoint_source": 8,
+        "metrics": {
+          "primary_data_bytes": 69439311,
+          "service": {
+            "BlockIO": "0B / 4.65MB",
+            "CPUPerc": "39.44%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.36%",
+            "MemUsage": "34.39MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "3.66MB / 3.76MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 39.44,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36060528,
+          "standby_data_bytes": 69585359
+        },
+        "observed_at": "2026-10-27T20:30:36.216445+00:00",
+        "owner_faults": 3,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 10,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 10,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 10,
+            "used_metadata_records": 1,
+            "used_records": 1
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 9
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 12474035,
+          "release_session_remaining_seconds": 299.287862,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001584",
+              "replay_lag": "0:00:00.001596",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000473"
+            }
+          ],
+          "schema_relation_bytes": 5160960.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 24.950961,
+        "last_checkpoint_source": 10,
+        "metrics": {
+          "primary_data_bytes": 69668687,
+          "service": {
+            "BlockIO": "0B / 4.66MB",
+            "CPUPerc": "40.40%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.38%",
+            "MemUsage": "34.58MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "4.5MB / 4.59MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 40.4,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36259758,
+          "standby_data_bytes": 69855695
+        },
+        "observed_at": "2026-10-27T20:30:40.667668+00:00",
+        "owner_faults": 3,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 11
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 12662451,
+          "release_session_remaining_seconds": 299.183817,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.004152",
+              "replay_lag": "0:00:00.004159",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000445"
+            }
+          ],
+          "schema_relation_bytes": 5373952.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 29.250455,
+        "last_checkpoint_source": 12,
+        "metrics": {
+          "primary_data_bytes": 69922639,
+          "service": {
+            "BlockIO": "0B / 4.67MB",
+            "CPUPerc": "34.69%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.40%",
+            "MemUsage": "34.79MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "5.41MB / 5.46MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 34.69,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36479959,
+          "standby_data_bytes": 70150607
+        },
+        "observed_at": "2026-10-27T20:30:45.072638+00:00",
+        "owner_faults": 4,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 13
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 12850867,
+          "release_session_remaining_seconds": 298.922164,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.002242",
+              "replay_lag": "0:00:00.002334",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000333"
+            }
+          ],
+          "schema_relation_bytes": 5619712.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 33.460686,
+        "last_checkpoint_source": 14,
+        "metrics": {
+          "primary_data_bytes": 70176591,
+          "service": {
+            "BlockIO": "0B / 4.67MB",
+            "CPUPerc": "31.87%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.41%",
+            "MemUsage": "34.94MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "6.31MB / 6.36MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 31.87,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36637245,
+          "standby_data_bytes": 70494671
+        },
+        "observed_at": "2026-10-27T20:30:49.464388+00:00",
+        "owner_faults": 5,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 15
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 13063859,
+          "release_session_remaining_seconds": 299.338165,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001820",
+              "replay_lag": "0:00:00.002238",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000740"
+            }
+          ],
+          "schema_relation_bytes": 5865472.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 36.908733,
+        "last_checkpoint_source": 16,
+        "metrics": {
+          "primary_data_bytes": 70525939,
+          "service": {
+            "BlockIO": "0B / 4.69MB",
+            "CPUPerc": "32.54%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.42%",
+            "MemUsage": "35.03MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "7.25MB / 7.29MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 32.54,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36731617,
+          "standby_data_bytes": 70724047
+        },
+        "observed_at": "2026-10-27T20:30:53.827865+00:00",
+        "owner_faults": 5,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 11,
+            "used_metadata_records": 2,
+            "used_records": 2
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 11,
+            "used_metadata_records": 1,
+            "used_records": 1
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 17
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 13416115,
+          "release_session_remaining_seconds": 297.413717,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.000698",
+              "replay_lag": "0:00:00.001180",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000254"
+            }
+          ],
+          "schema_relation_bytes": 6266880.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 43.158742,
+        "last_checkpoint_source": 20,
+        "metrics": {
+          "primary_data_bytes": 70738931,
+          "service": {
+            "BlockIO": "0B / 4.7MB",
+            "CPUPerc": "27.21%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.43%",
+            "MemUsage": "35.13MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "8.22MB / 8.23MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 27.21,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36836474,
+          "standby_data_bytes": 70969807
+        },
+        "observed_at": "2026-10-27T20:30:58.209601+00:00",
+        "owner_faults": 6,
+        "phase": "IDLE",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 20
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 13629107,
+          "release_session_remaining_seconds": 296.485723,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001707",
+              "replay_lag": "0:00:00.001713",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000432"
+            }
+          ],
+          "schema_relation_bytes": 6537216.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 47.681721,
+        "last_checkpoint_source": 22,
+        "metrics": {
+          "primary_data_bytes": 70919155,
+          "service": {
+            "BlockIO": "0B / 4.72MB",
+            "CPUPerc": "3.06%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.43%",
+            "MemUsage": "35.13MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "8.85MB / 8.86MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 3.06,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36836474,
+          "standby_data_bytes": 71166415
+        },
+        "observed_at": "2026-10-27T20:31:02.612337+00:00",
+        "owner_faults": 7,
+        "phase": "TARGET_REACHED",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 22
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 13629107,
+          "release_session_remaining_seconds": 292.123696,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.000894",
+              "replay_lag": "0:00:00.001011",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000330"
+            }
+          ],
+          "schema_relation_bytes": 6537216.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 52.058121,
+        "last_checkpoint_source": 22,
+        "metrics": {
+          "primary_data_bytes": 70919155,
+          "service": {
+            "BlockIO": "0B / 4.76MB",
+            "CPUPerc": "2.64%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.43%",
+            "MemUsage": "35.13MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "8.9MB / 8.89MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 2.64,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36836474,
+          "standby_data_bytes": 71166415
+        },
+        "observed_at": "2026-10-27T20:31:06.966862+00:00",
+        "owner_faults": 7,
+        "phase": "TARGET_REACHED",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 22
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 13629107,
+          "release_session_remaining_seconds": 287.802273,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.000999",
+              "replay_lag": "0:00:00.001134",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000321"
+            }
+          ],
+          "schema_relation_bytes": 6537216.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 56.378019,
+        "last_checkpoint_source": 22,
+        "metrics": {
+          "primary_data_bytes": 70919155,
+          "service": {
+            "BlockIO": "0B / 4.79MB",
+            "CPUPerc": "2.23%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.43%",
+            "MemUsage": "35.13MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "8.95MB / 8.92MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 2.23,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36836474,
+          "standby_data_bytes": 71166415
+        },
+        "observed_at": "2026-10-27T20:31:11.319519+00:00",
+        "owner_faults": 7,
+        "phase": "TARGET_REACHED",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 22
+      },
+      {
+        "boot_id": "20ae1739aff64461bb323784eb2bce76",
+        "container_restart_count": 0,
+        "database": {
+          "database_bytes": 12763663,
+          "release_session_remaining_seconds": 283.440189,
+          "replicas": [
+            {
+              "application_name": "walreceiver",
+              "flush_lag": "0:00:00.001493",
+              "replay_lag": "0:00:00.001592",
+              "state": "streaming",
+              "sync_state": "sync",
+              "write_lag": "0:00:00.000405"
+            }
+          ],
+          "schema_relation_bytes": 5685248.0,
+          "synchronous_commit": "remote_apply"
+        },
+        "elapsed_seconds": 60.73675,
+        "last_checkpoint_source": 22,
+        "metrics": {
+          "primary_data_bytes": 70024987,
+          "service": {
+            "BlockIO": "0B / 4.82MB",
+            "CPUPerc": "2.28%",
+            "Container": "ariadne-soak-74178ee9d543-service",
+            "ID": "dea867beb099",
+            "MemPerc": "3.43%",
+            "MemUsage": "35.13MiB / 1GiB",
+            "Name": "ariadne-soak-74178ee9d543-service",
+            "NetIO": "9MB / 8.95MB",
+            "PIDs": "3"
+          },
+          "service_cpu_percent": 2.28,
+          "service_memory_limit_bytes": 1073741824,
+          "service_rss_bytes": 36836474,
+          "standby_data_bytes": 70216143
+        },
+        "observed_at": "2026-10-27T20:31:15.712619+00:00",
+        "owner_faults": 7,
+        "phase": "TARGET_REACHED",
+        "pressure": [
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "a",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "b",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "c",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "d",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "j",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          },
+          {
+            "channel": "soak",
+            "max_bytes": 16777216,
+            "max_records": 1000,
+            "partition_id": "source",
+            "used_bytes": 0,
+            "used_metadata_records": 0,
+            "used_records": 0
+          }
+        ],
+        "process_boots": 2,
+        "source_completed": 22
+      }
+    ],
+    "segment": 0,
+    "source_manifest_digest": "6a08fc551c1c19f2f2c266f7dadf236ddfc76b45d4290383be6c1f9d7d85319c",
+    "started_at": "2026-10-27T20:30:15.407681+00:00"
+  },
+  "source_commit": "270f5de15617016c6d093049f2d3c7ca97d315e6"
+}

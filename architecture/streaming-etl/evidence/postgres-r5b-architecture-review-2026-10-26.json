@@ -1,0 +1,120 @@
+{
+  "accepted_guarantees": [
+    "platform-owned durable append-only partition channels with ObjectRef payload authority",
+    "per-consumer in-flight ownership and cursor advancement only after a durable terminal yield or return",
+    "periodic coordinator barriers for checkpoint-managed state and aligned multi-input cuts, separate from each per-turn handoff",
+    "bounded retained replay horizons, branch-local recovery, backpressure credits, exact retry identities and named horizon refusal",
+    "selected PostgreSQL release/session migration and signed schema-restore cutover with fail-closed stale authority",
+    "actual Prefect long-lived source/operator tasks, failed-operator-only retry, control lifecycle and independent authority projections without Prefect core changes"
+  ],
+  "capacity_observation": {
+    "actual_ingress_records_per_second": 0.950228857382776,
+    "calibrated_net_records_per_second": 0.7728391501694811,
+    "documents": 20,
+    "final_accepted": 20,
+    "final_completed": 20,
+    "final_live_records": 0,
+    "hard_admission_records": 4,
+    "long_soak_passed": false,
+    "observed_net_records_per_second": 0.9932404396141146,
+    "observed_recovery_seconds": 2.013611125999887,
+    "payload_bytes": 65536,
+    "peak_backlog_records": 3,
+    "predicted_recovery_seconds_to_target": 2.587860617000842,
+    "recovered_backlog_records": 1,
+    "time_authority": "durable admission published_at"
+  },
+  "client_responsibility": "Workflow code must remain deterministic for replay and idempotent for arbitrary external effects.",
+  "documentation_graph": {
+    "local_links": 655,
+    "markdown_documents": 42,
+    "note": "The graph is rerun after linking this review; the path and pass/counts are authoritative rather than a pre-link file hash.",
+    "passed": true,
+    "path": "adr-graph-final-2026-10-26.json",
+    "statuses": {
+      "ADR-0000-decision-lifecycle.md": "progress",
+      "ADR-0026-release-compatibility-and-disaster-recovery.md": "accepted",
+      "ADR-0027-short-acceptance-and-separate-long-soak.md": "accepted",
+      "ADR-0029-short-capacity-calibration-and-release-scope.md": "accepted"
+    }
+  },
+  "independent_controls": {
+    "passed": true,
+    "path": "postgres-r5b-independent-controls-review-2026-10-26.json",
+    "resource_warnings": 0,
+    "sha256": "071b554307103527c19a5c108853b3d6b895109f748f02c46555b2db29bc7c8d",
+    "source_drift": [],
+    "tests": {
+      "elapsed_seconds": 52.153,
+      "errors": 0,
+      "failures": 0,
+      "passed": 7,
+      "run": 7
+    }
+  },
+  "limits": [
+    "This is an experimental prototype acceptance, not a production deployment or general Prefect feature claim.",
+    "Arbitrary external effects belong to client determinism and idempotency; the platform does not make them atomically exactly-once.",
+    "Capacity is measured only for the declared short one-source/two-branch workload and is not a production throughput, disk, WAL-retention or multi-tenant SLO.",
+    "The selected closed-network operator boundary trusts the host kernel, container runtime, platform daemon, PostgreSQL role design and direct database credential boundary; general connectors and hostile-kernel isolation remain unsupported.",
+    "Backup evidence is schema-scoped with an explicit recovery point, not whole-cluster recovery or zero RPO.",
+    "Missing durable payload beyond the retained horizon and non-rewindable external sources fail at an explicit unrecoverable boundary; bytes are not regenerated implicitly.",
+    "The physical HA campaign supports the storage/data-plane layer and does not by itself prove every release/session guard during failover.",
+    "The separate 72-hour DS-052a campaign is queued but has not started; no long-soak PASS is claimed."
+  ],
+  "name": "streaming_etl_short_experimental_delivery_architecture_review",
+  "native_short_observation": {
+    "documents": 100,
+    "duration_seconds": 40.385,
+    "long_soak_passed": false,
+    "native_tasks": 4,
+    "throughput_documents_per_second": 2.476
+  },
+  "production_readiness_claimed": false,
+  "readiness_percent": 100,
+  "readiness_scope": "selected experimental prototype delivery",
+  "recorded_at": "2026-10-26T14:48:00Z",
+  "reviewed_gate": {
+    "current_source_recheck_drift": [],
+    "duration_seconds": 931.889,
+    "expected_tests": 164,
+    "passed": true,
+    "path": "postgres-r5b-final2-2026-10-26.json",
+    "postgres_version": "17.11",
+    "raw_log_path": "postgres-r5b-final2-2026-10-26.log",
+    "raw_log_sha256": "fb7858bf985b0ed67ec950eba043008e4ec5351e6f3bf0001f31dbb4475e62eb",
+    "resource_warnings": 0,
+    "sha256": "4f07425d777fba0223fbd4e4a869e5b0ad57dc48a2110713d0b29a64b404c548",
+    "source_drift": [],
+    "source_files": 126,
+    "synchronous_commit": "remote_apply",
+    "synchronous_replica": true,
+    "tests": 164
+  },
+  "schema_version": 1,
+  "supporting_reviews": [
+    {
+      "path": "postgres-r5a-architecture-review-2026-10-26.json",
+      "sha256": "83f25f14b4c3829d7ad14eda8195a2c0b06bd5b135a52fba1ea17f76951c329f",
+      "verdict": "PASS_SELECTED_SCHEMA_DR_PROFILE"
+    },
+    {
+      "path": "postgres-capacity-acceptance-short-final5-2026-10-26.json",
+      "sha256": "35da80bc27b8c21b5db50b073fdc89ebf5ec4abb3a7a5a67edae0c2fcf71467c",
+      "verdict": "PASS_SELECTED_SHORT_PROFILE"
+    }
+  ],
+  "task_verdicts": {
+    "DS-050a": "PASS",
+    "DS-050b": "PASS",
+    "DS-050c": "PASS_SELECTED_SCHEMA_DR_PROFILE",
+    "DS-050d": "PASS",
+    "DS-051a": "PASS_SELECTED_SHORT_PROFILE",
+    "DS-051b": "PASS_SELECTED_CAPACITY_PROFILE",
+    "DS-051c": "PASS_SELECTED_CLOSED_NETWORK_OPERATOR_PROFILE",
+    "DS-051d": "PASS",
+    "DS-052a": "DEFERRED_QUEUED_NOT_STARTED_SEPARATE_NONBLOCKING_FOLLOWUP"
+  },
+  "terminal_progress_rule": "For the accepted v2 scope, one durably observed terminal yield or return commits managed state/output witnesses and advances the input cursor.",
+  "verdict": "PASS_SHORT_EXPERIMENTAL_100"
+}

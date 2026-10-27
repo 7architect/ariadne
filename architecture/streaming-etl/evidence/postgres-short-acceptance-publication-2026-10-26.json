@@ -1,0 +1,36 @@
+{
+  "architecture_review": {
+    "path": "evidence/postgres-r5b-architecture-review-2026-10-26.json",
+    "sha256": "64fdc6a7fb96d9ec00f72fff8f89adc7b54db8b6d83447704d03c85502af95c5",
+    "verdict": "PASS_SHORT_EXPERIMENTAL_100"
+  },
+  "branch": "streaming-etl-adrs",
+  "documentation": {
+    "documents": 42,
+    "links": 663,
+    "passed": true,
+    "path": "evidence/adr-graph-final-2026-10-26.json",
+    "sha256": "fc9a778be11b824b14502a99cb64f73ad610343ab9812440daa05286a0a7ea98"
+  },
+  "github_smoke": {
+    "conclusion": null,
+    "run_id": 40343803001,
+    "runner_selector": "anacreon-runners",
+    "status": "queued",
+    "url": "https://github.com/7architect/ariadne/actions/runs/40343803001"
+  },
+  "long_soak_passed": false,
+  "long_soak_started": false,
+  "observed_at": "2026-10-26T14:53:59.188489+00:00",
+  "passed_full_gate": {
+    "path": "evidence/postgres-r5b-final2-2026-10-26.json",
+    "sha256": "4f07425d777fba0223fbd4e4a869e5b0ad57dc48a2110713d0b29a64b404c548",
+    "tests": 164
+  },
+  "production_readiness_claim": false,
+  "protocol": "ariadne-short-acceptance-publication/v1",
+  "published_code_commit": "480e8a16f43d0d8048514d0df77fb0797e14143f",
+  "published_sources_match_tested_manifest": true,
+  "remote_head_verified": true,
+  "source_files_checked": 126
+}

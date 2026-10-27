@@ -1,0 +1,334 @@
+﻿2026-10-27T20:05:08.2483323Z Current runner version: '2.338.2'
+2026-10-27T20:05:08.2496549Z Runner name: 'anacreon-runners-runner-km72x'
+2026-10-27T20:05:08.2497979Z Runner group name: 'default'
+2026-10-27T20:05:08.2499714Z Machine name: 'anacreon-runners-runner-km72x'
+2026-10-27T20:05:08.2505798Z ##[group]GITHUB_TOKEN Permissions
+2026-10-27T20:05:08.2510845Z Contents: read
+2026-10-27T20:05:08.2511674Z Metadata: read
+2026-10-27T20:05:08.2512478Z ##[endgroup]
+2026-10-27T20:05:08.2518230Z Secret source: Actions
+2026-10-27T20:05:08.2519719Z Cache mode: write
+2026-10-27T20:05:08.2520866Z Prepare workflow directory
+2026-10-27T20:05:08.3415356Z Prepare all required actions
+2026-10-27T20:05:08.3523644Z Getting action download info
+2026-10-27T20:05:08.9332138Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-27T20:05:09.8183493Z Download action repository 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-27T20:05:10.9253327Z Complete job name: Prepare on an existing self-hosted runner
+2026-10-27T20:05:11.1154154Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-27T20:05:11.1157668Z with:
+2026-10-27T20:05:11.1159438Z   ref: 6d03a45e28c009f384c09cdbcfb3057432ea2e99
+2026-10-27T20:05:11.1161730Z   persist-credentials: false
+2026-10-27T20:05:11.1164041Z   repository: Anacreonsystems/ariadne
+2026-10-27T20:05:11.1184520Z   token: ***
+2026-10-27T20:05:11.1186171Z   ssh-strict: true
+2026-10-27T20:05:11.1187783Z   ssh-user: git
+2026-10-27T20:05:11.1189285Z   clean: true
+2026-10-27T20:05:11.1190997Z   sparse-checkout-cone-mode: true
+2026-10-27T20:05:11.1193276Z   fetch-depth: 1
+2026-10-27T20:05:11.1194941Z   fetch-tags: false
+2026-10-27T20:05:11.1196679Z   show-progress: true
+2026-10-27T20:05:11.1198428Z   lfs: false
+2026-10-27T20:05:11.1200006Z   submodules: false
+2026-10-27T20:05:11.1201603Z   set-safe-directory: true
+2026-10-27T20:05:11.1203787Z   allow-unsafe-pr-checkout: false
+2026-10-27T20:05:11.1207377Z env:
+2026-10-27T20:05:11.1209088Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:05:11.1211823Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:05:11.1214658Z ##[endgroup]
+2026-10-27T20:05:11.3483904Z Syncing repository: Anacreonsystems/ariadne
+2026-10-27T20:05:11.3489284Z ##[group]Getting Git version info
+2026-10-27T20:05:11.3491686Z Working directory is '/home/runner/_work/ariadne/ariadne'
+2026-10-27T20:05:11.3553307Z [command]/usr/bin/git version
+2026-10-27T20:05:11.3556150Z git version 2.56.0
+2026-10-27T20:05:11.3598759Z ##[endgroup]
+2026-10-27T20:05:11.3612053Z Temporarily overriding HOME='/home/runner/_work/_temp/57750d97-801d-4759-b422-6878a3a0622c' before making global git config changes
+2026-10-27T20:05:11.3619073Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-27T20:05:11.3624409Z [command]/usr/bin/git config --global --add safe.directory /home/runner/_work/ariadne/ariadne
+2026-10-27T20:05:11.3630814Z Deleting the contents of '/home/runner/_work/ariadne/ariadne'
+2026-10-27T20:05:11.3634850Z ##[group]Determining repository object format
+2026-10-27T20:05:11.3637248Z ##[endgroup]
+2026-10-27T20:05:11.3639116Z ##[group]Initializing the repository
+2026-10-27T20:05:11.3640688Z [command]/usr/bin/git init /home/runner/_work/ariadne/ariadne
+2026-10-27T20:05:11.3919396Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-27T20:05:11.3923809Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-27T20:05:11.3926281Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-27T20:05:11.3928886Z hint: call:
+2026-10-27T20:05:11.3930175Z hint:
+2026-10-27T20:05:11.3931474Z hint: 	git config --global init.defaultBranch <name>
+2026-10-27T20:05:11.3933273Z hint:
+2026-10-27T20:05:11.3935189Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-27T20:05:11.3939829Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-27T20:05:11.3944127Z hint:
+2026-10-27T20:05:11.3951798Z hint: 	git branch -m <name>
+2026-10-27T20:05:11.3975139Z hint:
+2026-10-27T20:05:11.3978577Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-27T20:05:11.3982330Z Initialized empty Git repository in /home/runner/_work/ariadne/ariadne/.git/
+2026-10-27T20:05:11.3987647Z [command]/usr/bin/git remote add origin https://github.com/Anacreonsystems/ariadne
+2026-10-27T20:05:11.4027197Z ##[endgroup]
+2026-10-27T20:05:11.4030126Z ##[group]Disabling automatic garbage collection
+2026-10-27T20:05:11.4037223Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-27T20:05:11.4073084Z ##[endgroup]
+2026-10-27T20:05:11.4076129Z ##[group]Setting up auth
+2026-10-27T20:05:11.4079055Z Removing SSH command configuration
+2026-10-27T20:05:11.4106221Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-27T20:05:11.4200094Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-27T20:05:11.4703301Z Removing HTTP extra header
+2026-10-27T20:05:11.4706452Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-27T20:05:11.4715981Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-27T20:05:11.5320801Z Removing includeIf entries pointing to credentials config files
+2026-10-27T20:05:11.5324264Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-27T20:05:11.5382688Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-27T20:05:11.5998039Z [command]/usr/bin/git config --file /home/runner/_work/_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-27T20:05:11.6063398Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/_work/ariadne/ariadne/.git.path /home/runner/_work/_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:11.6134012Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path /home/runner/_work/_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:11.6199232Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:11.6270726Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:11.6325144Z ##[endgroup]
+2026-10-27T20:05:11.6328122Z ##[group]Fetching the repository
+2026-10-27T20:05:11.6333342Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 6d03a45e28c009f384c09cdbcfb3057432ea2e99
+2026-10-27T20:05:17.6099503Z From https://github.com/Anacreonsystems/ariadne
+2026-10-27T20:05:17.6101303Z  * branch            6d03a45e28c009f384c09cdbcfb3057432ea2e99 -> FETCH_HEAD
+2026-10-27T20:05:17.6204091Z [command]/usr/bin/git rev-parse --verify --quiet 6d03a45e28c009f384c09cdbcfb3057432ea2e99^{object}
+2026-10-27T20:05:17.6239172Z 6d03a45e28c009f384c09cdbcfb3057432ea2e99
+2026-10-27T20:05:17.6247365Z ##[endgroup]
+2026-10-27T20:05:17.6247893Z ##[group]Determining the checkout info
+2026-10-27T20:05:17.6248417Z ##[endgroup]
+2026-10-27T20:05:17.6257987Z [command]/usr/bin/git sparse-checkout disable
+2026-10-27T20:05:17.6431855Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-27T20:05:17.6483622Z ##[group]Checking out the ref
+2026-10-27T20:05:17.6492286Z [command]/usr/bin/git checkout --progress --force 6d03a45e28c009f384c09cdbcfb3057432ea2e99
+2026-10-27T20:05:18.4657468Z Note: switching to '6d03a45e28c009f384c09cdbcfb3057432ea2e99'.
+2026-10-27T20:05:18.4663911Z 
+2026-10-27T20:05:18.4679773Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-27T20:05:18.4681324Z changes and commit them, and you can discard any commits you make in this
+2026-10-27T20:05:18.4682858Z state without impacting any branches by switching back to a branch.
+2026-10-27T20:05:18.4724611Z 
+2026-10-27T20:05:18.4794937Z If you want to create a new branch to retain commits you create, you may
+2026-10-27T20:05:18.4844681Z do so (now or later) by using -c with the switch command. Example:
+2026-10-27T20:05:18.4898511Z 
+2026-10-27T20:05:18.4899667Z   git switch -c <new-branch-name>
+2026-10-27T20:05:18.4900900Z 
+2026-10-27T20:05:18.4902435Z Or undo this operation with:
+2026-10-27T20:05:18.4903302Z 
+2026-10-27T20:05:18.4903704Z   git switch -
+2026-10-27T20:05:18.4904087Z 
+2026-10-27T20:05:18.4905118Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-27T20:05:18.4905908Z 
+2026-10-27T20:05:18.4906637Z HEAD is now at 6d03a45 Fix streaming prototype checks and preserve immutable evidence
+2026-10-27T20:05:18.4909600Z ##[endgroup]
+2026-10-27T20:05:18.4911187Z [command]/usr/bin/git log -1 --format=%H
+2026-10-27T20:05:18.4911678Z 6d03a45e28c009f384c09cdbcfb3057432ea2e99
+2026-10-27T20:05:18.4919713Z ##[group]Removing auth
+2026-10-27T20:05:18.4920319Z Removing SSH command configuration
+2026-10-27T20:05:18.4921011Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-27T20:05:18.5149866Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-27T20:05:18.5726608Z Removing HTTP extra header
+2026-10-27T20:05:18.5733692Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-27T20:05:18.5795190Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-27T20:05:18.6266513Z Removing includeIf entries pointing to credentials config files
+2026-10-27T20:05:18.6286758Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-27T20:05:18.6368449Z includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path
+2026-10-27T20:05:18.6400644Z includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path
+2026-10-27T20:05:18.6418449Z includeif.gitdir:/github/workspace/.git.path
+2026-10-27T20:05:18.6424698Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-27T20:05:18.6429605Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path
+2026-10-27T20:05:18.6465032Z /home/runner/_work/_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:18.6495365Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path \/home\/runner\/_work\/_temp\/git\-credentials\-71db6df0\-467b\-4ed2\-80d6\-add70f782722\.config
+2026-10-27T20:05:18.6563994Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path
+2026-10-27T20:05:18.6645692Z /home/runner/_work/_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:18.6659758Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path \/home\/runner\/_work\/_temp\/git\-credentials\-71db6df0\-467b\-4ed2\-80d6\-add70f782722\.config
+2026-10-27T20:05:18.6703070Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-27T20:05:18.6854954Z /github/runner_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:18.6859585Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-71db6df0\-467b\-4ed2\-80d6\-add70f782722\.config
+2026-10-27T20:05:18.6945727Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-27T20:05:18.6977920Z /github/runner_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config
+2026-10-27T20:05:18.6993103Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-71db6df0\-467b\-4ed2\-80d6\-add70f782722\.config
+2026-10-27T20:05:18.7069666Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-27T20:05:18.7895537Z Removing credentials config '/home/runner/_work/_temp/git-credentials-71db6df0-467b-4ed2-80d6-add70f782722.config'
+2026-10-27T20:05:18.7919602Z ##[endgroup]
+2026-10-27T20:05:18.8518027Z ##[group]Run python3 - <<'PY'
+2026-10-27T20:05:18.8518679Z [36;1mpython3 - <<'PY'[0m
+2026-10-27T20:05:18.8519230Z [36;1mimport os[0m
+2026-10-27T20:05:18.8519685Z [36;1mimport sys[0m
+2026-10-27T20:05:18.8520182Z [36;1mfrom pathlib import Path[0m
+2026-10-27T20:05:18.8520783Z [36;1mif sys.version_info < (3, 11):[0m
+2026-10-27T20:05:18.8521670Z [36;1m    raise SystemExit("The existing runner needs Python 3.11 or newer.")[0m
+2026-10-27T20:05:18.8522607Z [36;1mprofile = os.environ["PROFILE"][0m
+2026-10-27T20:05:18.8524513Z [36;1mif profile == "72h" and os.environ["RUNNER_NAME"] != "k8s-runner":[0m
+2026-10-27T20:05:18.8526126Z [36;1m    raise SystemExit("72h requires the existing persistent k8s-runner; ephemeral ARC runners cannot retain this campaign between jobs.")[0m
+2026-10-27T20:05:18.8527539Z [36;1mrun_id = "gh-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"][0m
+2026-10-27T20:05:18.8528599Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a") as output:[0m
+2026-10-27T20:05:18.8529542Z [36;1m    output.write(f"long={str(profile == '72h').lower()}\nrun_id={run_id}\n")[0m
+2026-10-27T20:05:18.8530518Z [36;1mwith open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:[0m
+2026-10-27T20:05:18.8531644Z [36;1m    summary.write(f"Runner: {os.environ['RUNNER_NAME']}\n\nCampaign: {run_id}\n\nProfile: {profile}\n")[0m
+2026-10-27T20:05:18.8533120Z [36;1mPath(os.environ["ARIADNE_SOAK_ROOT"]).mkdir(parents=True, exist_ok=True)[0m
+2026-10-27T20:05:18.8533976Z [36;1mPY[0m
+2026-10-27T20:05:18.8534795Z [36;1menv -u DOCKER_HOST -u DOCKER_CONTEXT -u DOCKER_TLS -u DOCKER_TLS_VERIFY -u DOCKER_CERT_PATH \[0m
+2026-10-27T20:05:18.8536215Z [36;1m  docker --host=unix:///var/run/docker.sock info --format '{{.ServerVersion}}'[0m
+2026-10-27T20:05:18.8561092Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:05:18.8561610Z env:
+2026-10-27T20:05:18.8562041Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:05:18.8563045Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:05:18.8563751Z   PROFILE: smoke
+2026-10-27T20:05:18.8564191Z ##[endgroup]
+2026-10-27T20:05:19.0867203Z 29.9.2
+2026-10-27T20:05:19.1043185Z ##[group]Run python3 - <<'PY'
+2026-10-27T20:05:19.1043696Z [36;1mpython3 - <<'PY'[0m
+2026-10-27T20:05:19.1044088Z [36;1mimport os[0m
+2026-10-27T20:05:19.1044454Z [36;1mimport shutil[0m
+2026-10-27T20:05:19.1044865Z [36;1mfrom pathlib import Path[0m
+2026-10-27T20:05:19.1045428Z [36;1mpath = Path(os.environ['RUNNER_TEMP']) / 'soak-public'[0m
+2026-10-27T20:05:19.1046072Z [36;1mshutil.rmtree(path, ignore_errors=True)[0m
+2026-10-27T20:05:19.1046600Z [36;1mpath.mkdir(parents=True)[0m
+2026-10-27T20:05:19.1047015Z [36;1mPY[0m
+2026-10-27T20:05:19.1058341Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:05:19.1058821Z env:
+2026-10-27T20:05:19.1059245Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:05:19.1059849Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:05:19.1060504Z ##[endgroup]
+2026-10-27T20:05:19.1701347Z ##[group]Run python3 "$SOAK_CLI" start --bootstrap --run-id "$CAMPAIGN" --require-clean --smoke \
+2026-10-27T20:05:19.1703118Z [36;1mpython3 "$SOAK_CLI" start --bootstrap --run-id "$CAMPAIGN" --require-clean --smoke \[0m
+2026-10-27T20:05:19.1704045Z [36;1m  --target-seconds 45 --segment-seconds 60 --segment-count 1 \[0m
+2026-10-27T20:05:19.1704979Z [36;1m  --records-per-second 2 --checkpoint-every 2 --owner-fault-every 3 \[0m
+2026-10-27T20:05:19.1705609Z [36;1m  --process-loss-segments 0[0m
+2026-10-27T20:05:19.1706399Z [36;1mpython3 "$SOAK_CLI" watch --run-id "$CAMPAIGN" --segment 0 --duration 60 --poll-seconds 3[0m
+2026-10-27T20:05:19.1720063Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:05:19.1720535Z env:
+2026-10-27T20:05:19.1720939Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:05:19.1721639Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:05:19.1722329Z   CAMPAIGN: gh-40484370723-2
+2026-10-27T20:05:19.1723017Z ##[endgroup]
+2026-10-27T20:08:00.5755675Z Traceback (most recent call last):
+2026-10-27T20:08:00.5779678Z   File "/home/runner/_work/ariadne/ariadne/architecture/streaming-etl/prototypes/ci_soak/cli.py", line 941, in <module>
+2026-10-27T20:08:00.5804470Z     raise SystemExit(main())
+2026-10-27T20:08:00.5835438Z                      ^^^^^^
+2026-10-27T20:08:00.5865183Z   File "/home/runner/_work/ariadne/ariadne/architecture/streaming-etl/prototypes/ci_soak/cli.py", line 914, in main
+2026-10-27T20:08:00.5894753Z     result = start(args)
+2026-10-27T20:08:00.5926086Z              ^^^^^^^^^^^
+2026-10-27T20:08:00.5940650Z   File "/home/runner/_work/ariadne/ariadne/architecture/streaming-etl/prototypes/ci_soak/cli.py", line 587, in start
+2026-10-27T20:08:00.5961243Z     raise RuntimeError("long-soak service did not publish readiness")
+2026-10-27T20:08:00.5963779Z RuntimeError: long-soak service did not publish readiness
+2026-10-27T20:08:00.5985680Z ##[error]Process completed with exit code 1.
+2026-10-27T20:08:00.6099625Z ##[group]Run python3 "$SOAK_CLI" review --run-id "$CAMPAIGN"
+2026-10-27T20:08:00.6100646Z [36;1mpython3 "$SOAK_CLI" review --run-id "$CAMPAIGN"[0m
+2026-10-27T20:08:00.6117902Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:08:00.6118438Z env:
+2026-10-27T20:08:00.6118918Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:08:00.6119762Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:08:00.6120536Z   CAMPAIGN: gh-40484370723-2
+2026-10-27T20:08:00.6121063Z ##[endgroup]
+2026-10-27T20:08:00.7723303Z Traceback (most recent call last):
+2026-10-27T20:08:00.7724307Z   File "/home/runner/_work/ariadne/ariadne/architecture/streaming-etl/prototypes/ci_soak/review.py", line 380, in <module>
+2026-10-27T20:08:00.7725408Z     raise SystemExit(main())
+2026-10-27T20:08:00.7726947Z                      ^^^^^^
+2026-10-27T20:08:00.7728038Z   File "/home/runner/_work/ariadne/ariadne/architecture/streaming-etl/prototypes/ci_soak/review.py", line 370, in main
+2026-10-27T20:08:00.7728822Z     report = review(args.root, args.run_id)
+2026-10-27T20:08:00.7729324Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-27T20:08:00.7730440Z   File "/home/runner/_work/ariadne/ariadne/architecture/streaming-etl/prototypes/ci_soak/review.py", line 95, in review
+2026-10-27T20:08:00.7731768Z     status = json.loads((directory / "service-status.json").read_text())
+2026-10-27T20:08:00.7732635Z                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-27T20:08:00.7733588Z   File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+2026-10-27T20:08:00.7740077Z     with self.open(mode='r', encoding=encoding, errors=errors) as f:
+2026-10-27T20:08:00.7740993Z          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-27T20:08:00.7741905Z   File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+2026-10-27T20:08:00.7743428Z     return io.open(self, mode, buffering, encoding, errors, newline)
+2026-10-27T20:08:00.7744949Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-27T20:08:00.7746756Z FileNotFoundError: [Errno 2] No such file or directory: '/var/tmp/ariadne-soak/gh-40484370723-2/service-status.json'
+2026-10-27T20:08:00.7945636Z ##[error]Process completed with exit code 1.
+2026-10-27T20:08:00.8044531Z ##[group]Run python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+2026-10-27T20:08:00.8045403Z [36;1mpython3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"[0m
+2026-10-27T20:08:00.8046012Z [36;1mif [ -f "$RUNNER_TEMP/soak-public/review.md" ]; then[0m
+2026-10-27T20:08:00.8046845Z [36;1m  cat "$RUNNER_TEMP/soak-public/review.md" >> "$GITHUB_STEP_SUMMARY"[0m
+2026-10-27T20:08:00.8047409Z [36;1mfi[0m
+2026-10-27T20:08:00.8060962Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:08:00.8061302Z env:
+2026-10-27T20:08:00.8061573Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:08:00.8062043Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:08:00.8063078Z   CAMPAIGN: gh-40484370723-2
+2026-10-27T20:08:00.8063476Z ##[endgroup]
+2026-10-27T20:08:00.8921050Z {
+2026-10-27T20:08:00.8922020Z   "complete": false,
+2026-10-27T20:08:00.8922930Z   "credentials_exported": false,
+2026-10-27T20:08:00.8923605Z   "expected_segments": 1,
+2026-10-27T20:08:00.8924150Z   "files": [
+2026-10-27T20:08:00.8924687Z     "manifest.json"
+2026-10-27T20:08:00.8925193Z   ],
+2026-10-27T20:08:00.8925670Z   "observed_segments": 0,
+2026-10-27T20:08:00.8926330Z   "output": "/home/runner/_work/_temp/soak-public",
+2026-10-27T20:08:00.8927202Z   "run_id": "gh-40484370723-2"
+2026-10-27T20:08:00.8927776Z }
+2026-10-27T20:08:00.9140372Z ##[group]Run python3 - <<'PY'
+2026-10-27T20:08:00.9141129Z [36;1mpython3 - <<'PY'[0m
+2026-10-27T20:08:00.9141669Z [36;1mimport json[0m
+2026-10-27T20:08:00.9142109Z [36;1mimport os[0m
+2026-10-27T20:08:00.9142524Z [36;1mfrom pathlib import Path[0m
+2026-10-27T20:08:00.9143570Z [36;1mtarget = Path(os.environ['RUNNER_TEMP']) / 'soak-public'[0m
+2026-10-27T20:08:00.9144769Z [36;1mtarget.mkdir(parents=True, exist_ok=True)[0m
+2026-10-27T20:08:00.9146073Z [36;1mvalue = {key: os.environ.get(key) for key in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'RUNNER_NAME', 'JOB_STATUS')}[0m
+2026-10-27T20:08:00.9147723Z [36;1m(target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')[0m
+2026-10-27T20:08:00.9148683Z [36;1mPY[0m
+2026-10-27T20:08:00.9167713Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:08:00.9168308Z env:
+2026-10-27T20:08:00.9168791Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:08:00.9169682Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:08:00.9170482Z   JOB_STATUS: failure
+2026-10-27T20:08:00.9170996Z ##[endgroup]
+2026-10-27T20:08:00.9922552Z ##[group]Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+2026-10-27T20:08:00.9923478Z with:
+2026-10-27T20:08:00.9923950Z   name: streaming-soak-smoke-40484370723-2
+2026-10-27T20:08:00.9924565Z   path: /home/runner/_work/_temp/soak-public/
+2026-10-27T20:08:00.9925159Z   if-no-files-found: error
+2026-10-27T20:08:00.9925609Z   retention-days: 30
+2026-10-27T20:08:00.9927552Z   compression-level: 6
+2026-10-27T20:08:00.9927990Z   overwrite: false
+2026-10-27T20:08:00.9928421Z   include-hidden-files: false
+2026-10-27T20:08:00.9928923Z   archive: true
+2026-10-27T20:08:00.9929316Z env:
+2026-10-27T20:08:00.9929733Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:08:00.9930452Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:08:00.9931151Z ##[endgroup]
+2026-10-27T20:08:01.2707485Z With the provided path, there will be 2 files uploaded
+2026-10-27T20:08:01.2713589Z Artifact name is valid!
+2026-10-27T20:08:01.2714728Z Root directory input is valid!
+2026-10-27T20:08:01.8534089Z Uploading artifact: streaming-soak-smoke-40484370723-2.zip
+2026-10-27T20:08:01.8608170Z Beginning upload of artifact content to blob storage
+2026-10-27T20:08:02.5398467Z Uploaded bytes 4304
+2026-10-27T20:08:02.6751175Z Finished uploading artifact content to blob storage!
+2026-10-27T20:08:02.6752272Z SHA256 digest of uploaded artifact is d7f06bfdd3f9b5bdbf7f7f57260328566c3b55fff08a86a38aabe56e638418ca
+2026-10-27T20:08:02.6753321Z Finalizing artifact upload
+2026-10-27T20:08:03.4659189Z Artifact streaming-soak-smoke-40484370723-2 successfully finalized. Artifact ID 12766468724
+2026-10-27T20:08:03.4660554Z Artifact streaming-soak-smoke-40484370723-2 has been successfully uploaded! Final size is 4304 bytes. Artifact ID is 12766468724
+2026-10-27T20:08:03.4702499Z Artifact download URL: https://github.com/Anacreonsystems/ariadne/actions/runs/40484370723/artifacts/12766468724
+2026-10-27T20:08:03.4973557Z ##[group]Run python3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup
+2026-10-27T20:08:03.4974317Z [36;1mpython3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup[0m
+2026-10-27T20:08:03.4991534Z shell: /usr/bin/bash -e {0}
+2026-10-27T20:08:03.4991913Z env:
+2026-10-27T20:08:03.4992337Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-27T20:08:03.4993270Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-27T20:08:03.4993905Z   CAMPAIGN: gh-40484370723-2
+2026-10-27T20:08:03.4994352Z ##[endgroup]
+2026-10-27T20:08:05.1938961Z {
+2026-10-27T20:08:05.1943071Z   "cleanup": true,
+2026-10-27T20:08:05.1943439Z   "manifest_present": true,
+2026-10-27T20:08:05.1943872Z   "run_id": "gh-40484370723-2",
+2026-10-27T20:08:05.1944229Z   "service_stopped": true
+2026-10-27T20:08:05.1944618Z }
+2026-10-27T20:08:05.2291866Z Post job cleanup.
+2026-10-27T20:08:05.3710427Z [command]/usr/bin/git version
+2026-10-27T20:08:05.3781221Z git version 2.56.0
+2026-10-27T20:08:05.3832011Z Temporarily overriding HOME='/home/runner/_work/_temp/3484f111-4a15-4fcd-9631-78dd377a4235' before making global git config changes
+2026-10-27T20:08:05.3833992Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-27T20:08:05.3837519Z [command]/usr/bin/git config --global --add safe.directory /home/runner/_work/ariadne/ariadne
+2026-10-27T20:08:05.3888273Z Removing SSH command configuration
+2026-10-27T20:08:05.3901626Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-27T20:08:05.3980261Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-27T20:08:05.4346104Z Removing HTTP extra header
+2026-10-27T20:08:05.4353730Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-27T20:08:05.4410419Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-27T20:08:05.4886811Z Removing includeIf entries pointing to credentials config files
+2026-10-27T20:08:05.4887770Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-27T20:08:05.4949490Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-27T20:08:05.5607910Z Evaluate and set job outputs
+2026-10-27T20:08:05.5616857Z Set output 'long'
+2026-10-27T20:08:05.5619699Z Set output 'run_id'
+2026-10-27T20:08:05.5621672Z Cleaning up orphan processes

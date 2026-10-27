@@ -1,0 +1,165 @@
+{
+  "bounded_measurements": [
+    {
+      "json_bytes": [
+        25195,
+        25204,
+        25221,
+        25304
+      ],
+      "logical_byte_budget": 262144,
+      "logical_row_budget": 512,
+      "name": "control_http_100_cycles",
+      "rows": [
+        62,
+        62,
+        62,
+        62
+      ],
+      "sample_cycles": [
+        25,
+        50,
+        75,
+        100
+      ],
+      "scope": "logical rows/JSON bytes; excludes heap/index/WAL"
+    },
+    {
+      "json_bytes": [
+        30324,
+        30340,
+        30347,
+        30454
+      ],
+      "logical_byte_budget": 262144,
+      "logical_row_budget": 512,
+      "name": "streaming_retention_100_cycles",
+      "rows": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "sample_cycles": [
+        25,
+        50,
+        75,
+        100
+      ],
+      "scope": "logical row/JSON bytes; excludes heap/index/WAL"
+    }
+  ],
+  "closed_hostile_findings": [
+    "record-count-only checkpoint scheduling could deadlock on a retained byte tail; a bounded age trigger now checkpoints any advanced frontier, and a 9-byte retained tail plus a 2-byte retry under a 10-byte limit converges after process replacement",
+    "bootstrap anchoring could churn zero-delta checkpoints because one live completed checkpoint always remains; exact durable participant retirement anchors now suppress idle churn and the open-source regression proves the checkpoint ordinal remains stable across many polls",
+    "the maintenance process retained every checkpoint ID in an unbounded set; it now keeps one latest retired checkpoint ID while PostgreSQL remains the durable retry authority",
+    "maintenance process loss at an injected barrier or after checkpoint completion could strand control/retention work; fresh execution attempts resume the pending checkpoint or completed retention gap and converge through independent oracles",
+    "a hard-coded passthrough task could not execute a declared graph; immutable per-participant artifacts and code digests now run a real RETURN filter and uppercase transform and reject graph/code drift before DATA",
+    "attempt replacement or stale source/operator actors could publish after takeover; durable attempt, source-capability and operator-binding fences reject old actors while same-flow task retry rebinds only the failed participant",
+    "telemetry compared a committed writer epoch with a concurrently renewed lease and could fail execution; terminal coordinates now come only from committed turn/receipt rows and a missing observation emits a bounded diagnostic without becoming progress authority",
+    "the real browser test left profile writers racing teardown; graceful CDP Browser.close, isolated process-group cleanup and bounded exact directory cleanup pass three consecutive real Chromium runs"
+  ],
+  "current_tree_hash_mismatches": [],
+  "explicit_limits": [
+    "the selected adapter profile is one structured source partition feeding a fully bootstrapped native join DAG with asynchronous nonblocking source iteration",
+    "regional recovery remains supported by R3 standalone, but starting it while a Prefect execution attempt is ACTIVE is rejected atomically; the two ownership protocols are not composed in this gate",
+    "arbitrary output byte amplification is not predicted; unsafe fan-in capacity is rejected before DATA, while a single oversized source document is a permanent named input error and oversized operator output fails and fences the flow",
+    "a caught terminal adapter exception closes the logical run; same-run execution replacement is supported only while the durable lifecycle remains ACTIVE after infrastructure/process loss",
+    "direct database credentials and protocol schema provisioning remain trusted until DS-051c",
+    "telemetry storage is bounded in-process evidence rather than a production durable tracing backend, and native Prefect history has its own later retention policy",
+    "upgrade compatibility, schema backup/restore, infrastructure chaos, worker credential isolation and the 72-hour soak remain R5 gates",
+    "logical row/JSON-byte census excludes PostgreSQL heap, indexes, WAL and vacuum amplification"
+  ],
+  "generated_at": "2026-10-25T17:45:50.194856+00:00",
+  "independent_targeted_rerun": {
+    "command": [
+      "/workspace/ariadne/.venv/bin/python",
+      "-m",
+      "unittest",
+      "-v",
+      "test_postgres_prefect_adapter.PostgresPrefectAttemptTests.test_delayed_checkpoint_releases_retained_byte_tail_without_churn",
+      "test_postgres_prefect_adapter.PostgresPrefectAttemptTests.test_killed_maintenance_process_resumes_pending_and_retention_gap",
+      "test_postgres_prefect_adapter.PostgresPrefectAttemptTests.test_actual_prefect_maintenance_crosses_hard_capacity",
+      "test_postgres_prefect_authority_oracle"
+    ],
+    "duration_seconds": 54.321,
+    "returncode": 0,
+    "summary": "Ran 7 tests in 54.321s; OK",
+    "test_count": 7
+  },
+  "phase": "R4-B independent ETL Architect / HighLoad Principal gate review",
+  "readiness_gate": {
+    "approved": true,
+    "from_percent": 83,
+    "production_acceptance": false,
+    "to_percent": 90
+  },
+  "reviewed_evidence": {
+    "database": {
+      "postgres_version": "17.11",
+      "replicas": [
+        {
+          "application_name": "walreceiver",
+          "state": "streaming",
+          "sync_state": "sync"
+        }
+      ],
+      "synchronous_commit": "remote_apply"
+    },
+    "documentation": {
+      "local_links": 540,
+      "markdown_documents": 36,
+      "passed": true
+    },
+    "durability_profile_passed": true,
+    "duration_seconds": 593.842,
+    "expected_tests": 139,
+    "passed": true,
+    "path": "evidence/postgres-r4b-candidate3-2026-10-25.json",
+    "raw_log_path": "evidence/postgres-r4b-candidate3-2026-10-25.log",
+    "raw_log_sha256": "6e301fa98a146e1ed6909224f8bb13f817d11a96c4c0ad010f291eac9b90fee4",
+    "sha256": "f8215e8e456288ef4ad3cd95a8b1da2b4e0945d661ba107045bba8a987a38c96",
+    "source_drift": [],
+    "test_count": 139
+  },
+  "source_sha256": {
+    "postgres_control_plane.py": "846e6d5686baf1272ca1b39f4731eda82bcd7311e63b39a59e461a712d8d0df9",
+    "postgres_control_plane_client.py": "4db1d140153bf1e10ee9db27b5e63ce5beffe3f1a64f74b030f94460730fb38a",
+    "postgres_control_plane_server.py": "be4cd810ec337a4dd9bfb6c7662d18ee1a394f3da8362ebd49dc95f2beec6a8c",
+    "postgres_operational_server.py": "a8ee91100cc3f54f6f4abb08af55cb4aea4f1c61d8cdb29928ca9606047fef43",
+    "postgres_prefect_attempt_oracle.py": "4fb556946099b48d7a65d4f892af3369b42f1e0331e7855f781b8ce9fd2e3756",
+    "postgres_prefect_attempts.py": "59288810fabb8cf95c79b380058b4611a6d651dffdc5e14e27b4ddc42880cc7f",
+    "postgres_prefect_maintenance.py": "81dae06bcdfa030ff637d9c0e75b1d4f0d1ecd4840bd329ac5d56cf3311e1b19",
+    "postgres_prefect_maintenance_oracle.py": "1d26f2ee10c68132339451eee3a2a97f119068ec92514bb021d635f276982cc9",
+    "postgres_release_gate_harness.py": "c53786c6e1d8eb31be565de1b22cea5e5c2bd49ed0d2709df0a81343d37145bc",
+    "postgres_stream_observability.py": "8b12f5d1860bd10b4344ead5257e0032f91f714f512d6710fdc7c30f4d50dd08",
+    "postgres_stream_telemetry.py": "35d3a5e97b1afaf394e30e15ea8250616acbaf1bd48e768fd75919863b8198fe",
+    "prefect_stream_adapter.py": "78080384e2c523b9a9000d0469751168c7f7113f2dc17cbc46a2fb79868b8814",
+    "prefect_stream_adapter_runner.py": "bdfcb01e3d75d2365deab3143afc3aa904d04484435621226c7273db8fa9212c",
+    "stream_dashboard.html": "31827440e5dbe6d046301239f98312ca8f5ef4cdb945151975619eba3807d2a2",
+    "stream_runbook.html": "ee7c4fe71decf6efd8f6574360215b8f8443ebdb759a9a867a70888d1adf5c6b",
+    "test_postgres_operations_browser.py": "d4dc22c5553bf364fb12903458270ee8ed9d6ed7552ea7e5a2f7914ebe1aa971",
+    "test_postgres_prefect_adapter.py": "28651ace645c5bfa7b441b506a959c75330959c88d68bd256434ea6dcd10e927",
+    "test_postgres_prefect_authority_oracle.py": "9d32b7778893b29ad0769c83f3e80dc3fccba99a6f6b5d4c687c46dad4398d05",
+    "test_postgres_stream_operations.py": "fa125d0d4578b6d72da4e62be8e22364540c2b7233fe1d2e567ca1da695a3287"
+  },
+  "task_verdicts": {
+    "DS-041a": {
+      "basis": "feature-flagged actual Prefect 3 flow and long-lived per-node/source tasks stream documents immediately through immutable operator artifacts, durable R3 authority and public Prefect states without per-document task runs or persisted secrets",
+      "verdict": "PASS"
+    },
+    "DS-041b": {
+      "basis": "durable bounded execution attempts, source capabilities and participant bindings survive API/controller restart, isolate participant retry, fence whole-infrastructure replacement and resume the first incomplete document plus pending maintenance state",
+      "verdict": "PASS"
+    },
+    "DS-041c": {
+      "basis": "independent PostgreSQL projection/oracle, real Prefect API states, W3C trace correlation and committed terminal coordinates expose lag, exact in-flight owner/input, completion, barrier and recovery causes without payload/token leakage",
+      "verdict": "PASS"
+    },
+    "DS-041d": {
+      "basis": "authenticated HTTP metrics/dashboard, real Chromium mobile/drain/auth checks, alert/runbook drills, bounded maintenance across hard capacity and two 100-cycle logical-storage censuses pass under the frozen remote_apply profile",
+      "verdict": "PASS"
+    }
+  },
+  "verdict": "PASS"
+}

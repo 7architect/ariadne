@@ -1,0 +1,403 @@
+{
+  "accepted_run": {
+    "artifact_archive_download_verified": false,
+    "artifact_download_http_status": 403,
+    "artifact_metadata": [
+      {
+        "digest": "sha256:7a680b33ba6114b55eb9e70f6608ac2fe547185a85e4ae49ae7be7c6e026fffa",
+        "expired": false,
+        "id": 12768936446,
+        "name": "streaming-soak-smoke-40578404646-1",
+        "size_in_bytes": 9136
+      }
+    ],
+    "export": {
+      "complete": true,
+      "credentials_exported": false,
+      "expected_segments": 1,
+      "files": [
+        "manifest.json",
+        "review.json",
+        "review.md",
+        "segments/segment-00.json"
+      ],
+      "observed_segments": 1,
+      "output": "/home/runner/_work/_temp/soak-public",
+      "run_id": "gh-40578404646-1"
+    },
+    "observation_report": "ci-arc-smoke-observed-40578404646.json",
+    "observation_report_sha256": "2f996ba4a424a9164e041963a36310a01f8f352636a370100e3d83608cd65fb9",
+    "raw_log": "github-arc-smoke-passed-40578404646.log",
+    "raw_log_sha256": "1c1aafec451e5a24dba0da2ac0bf86529a20f0eeada82922ecca0d6ded44f243",
+    "review": {
+      "actual_prefect_in_72h": false,
+      "elapsed_seconds": 65.122762,
+      "generated_at": "2026-10-27T20:31:18.821083+00:00",
+      "long_soak_passed": false,
+      "manifest_digest": "1831a11c000178bd3127bdd010c1d83e7d04276525771bae85c0257cd86826d0",
+      "owner_faults": 7,
+      "process_boots": 2,
+      "protocol": "ariadne-long-soak-review/v1",
+      "resource_measurements": {
+        "latter_half_primary_bytes_per_hour": -20009279.931298006,
+        "latter_half_schema_bytes_per_hour": 8649693.73880337,
+        "latter_half_service_rss_bytes_per_hour": 26295010.89306727,
+        "max_primary_data_bytes": 70919155,
+        "max_schema_relation_bytes": 6537216,
+        "max_service_rss_bytes": 38010880
+      },
+      "resource_policy": {
+        "absolute_caps_bytes": {
+          "primary_data": 8589934592,
+          "schema_relation": 536870912,
+          "service_rss": 805306368
+        },
+        "absolute_caps_enforced": true,
+        "growth_rate_caps_bytes_per_hour": {
+          "primary_data": 33554432,
+          "schema_relation": 8388608,
+          "service_rss": 16777216
+        },
+        "growth_rate_caps_enforced": false,
+        "growth_rates_descriptive": true,
+        "profile": "smoke_absolute_caps"
+      },
+      "run_id": "gh-40578404646-1",
+      "scope": [
+        "real PostgreSQL 17 synchronous remote_apply pair",
+        "ordinary Python yield DAG source->A->{B,C}->J->D",
+        "periodic barriers and bounded retirement/GC",
+        "release-session storage guard",
+        "owner loss and externally scheduled service-process loss",
+        "actual Prefect integration remains separate short R4-B evidence"
+      ],
+      "segment_count": 1,
+      "smoke_passed": true,
+      "source_completed": 22,
+      "violations": []
+    },
+    "run_attempt": 1,
+    "run_id": 40578404646,
+    "runner_name": "anacreon-runners-runner-xjl9q",
+    "source_commit": "270f5de15617016c6d093049f2d3c7ca97d315e6",
+    "url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40578404646"
+  },
+  "arc_smoke_passed": true,
+  "architecture_review": {
+    "report": "ci-arc-smoke-principal-review-2026-10-27.json",
+    "sha256": "7bbda22a4a9353940c0363a8022f3d307b4fd3fe19d44dace0943c602c87c8e1",
+    "verdict": "PASS_ARC_SMOKE_REPAIR"
+  },
+  "attempt1": {
+    "cause": "Runner was assigned during cancellation of the previously queued attempt; no accepted test outcome.",
+    "conclusion": "cancelled",
+    "jobs": [
+      {
+        "conclusion": "cancelled",
+        "id": 122122347981,
+        "name": "Prepare on an existing self-hosted runner",
+        "runner_name": "anacreon-runners-runner-s2jvf",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+          },
+          {
+            "conclusion": "success",
+            "name": "Validate profile, runner and campaign ID"
+          },
+          {
+            "conclusion": "success",
+            "name": "Clear this job's public export directory"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Start immutable continuous campaign"
+          },
+          {
+            "conclusion": "cancelled",
+            "name": "Start smoke and exercise process recovery"
+          },
+          {
+            "conclusion": "failure",
+            "name": "Review smoke independently"
+          },
+          {
+            "conclusion": "success",
+            "name": "Export smoke public evidence"
+          },
+          {
+            "conclusion": "success",
+            "name": "Preserve a bounded CI diagnostic even if bootstrap failed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+          },
+          {
+            "conclusion": "success",
+            "name": "Remove only smoke-owned Docker resources"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job"
+          }
+        ]
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437928006,
+        "name": "Monitor 01 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437928107,
+        "name": "Monitor 00 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437929354,
+        "name": "Monitor 02 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437930521,
+        "name": "Monitor 03 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437931736,
+        "name": "Monitor 04 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437932519,
+        "name": "Monitor 05 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437933098,
+        "name": "Monitor 06 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437933657,
+        "name": "Monitor 07 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437933981,
+        "name": "Monitor 08 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437936280,
+        "name": "Monitor 09 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437936441,
+        "name": "Monitor 11 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437937073,
+        "name": "Monitor 10 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437937791,
+        "name": "Monitor 12 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437939627,
+        "name": "Monitor 13 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437939976,
+        "name": "Monitor 14 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437941188,
+        "name": "Monitor 16 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437943152,
+        "name": "Monitor 17 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "id": 122437943189,
+        "name": "Monitor 15 of 17",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "cancelled",
+        "id": 122437944177,
+        "name": "Final independent review and evidence",
+        "runner_name": null,
+        "status": "completed",
+        "steps": []
+      }
+    ]
+  },
+  "attempt2": {
+    "artifact_download_error": "HTTP 403 from artifact storage",
+    "artifact_downloaded": false,
+    "artifact_id": 12766468724,
+    "conclusion": "failure",
+    "failure": "RuntimeError: long-soak service did not publish readiness",
+    "missing_file": "service-status.json",
+    "raw_log": "github-arc-smoke-failed-40484370723-attempt2.log",
+    "raw_log_sha256": "85fcf98ec9f8836c36c80b6ab104522cccfbd84c62921669738e0abd462d6683",
+    "readiness_published_to_host": false,
+    "runner_name": "anacreon-runners-runner-km72x"
+  },
+  "ci_source_sha256": {
+    "Dockerfile": "9a7814eaef1a9573cd79c9b7cdb95eb8a154183a495248d774e0a5790e081177",
+    "README.md": "e1f89143672d0abfe964eb11fea747233e43f883bb29a105d6f06f13a475ace3",
+    "cli.py": "715c7a7603eba60de386161bdd386213dbbe3e025e6088da92aecfbf5fade461",
+    "pyproject.toml": "d69bb3924e6e40bb6fce5247c1ab6a49b1656c802903c07a895a870bf11e02b2",
+    "review.py": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+    "service.py": "c41e959c00234b32c70188da1aa63adb4313c210504d62481d0eb9c06b73aa6e",
+    "supervisor.py": "6b347d55d25a52f902f2aabda82d266dde07243fa76836a71b2ef94ad5a4334c",
+    "test_review.py": "0cdd5a52a623c50a9d5a4c57c9081d1e233412444ff6890de10f894d6debfd29",
+    "uv.lock": "678faf1e7e7b4a9ff17631d99615c687c125d6d7afe12666788d8fb02c9b1252"
+  },
+  "core_or_cli_changed": false,
+  "current_ci_sources_match_observed_digest": true,
+  "date": "2026-10-27",
+  "documentation_graph": "adr-graph-arc-smoke-2026-10-27.json",
+  "existing_core_gate_sources_still_match": 126,
+  "generated_at": "2026-10-27T20:34:30.537456+00:00",
+  "hypothesis": {
+    "confirmed": true,
+    "description": "ARC runner and Docker daemon do not share the /var/tmp campaign directory; the workflow must use their shared work volume for the one-job smoke.",
+    "verification": "Bidirectional selected-root probe plus bounded legacy-root control, followed by actual smoke recovery and independent review."
+  },
+  "local_validation": {
+    "actionlint": "1.7.12",
+    "actionlint_passed": true,
+    "arc_boundary_proven_locally": false,
+    "config_profiles_passed": [
+      "smoke",
+      "72h"
+    ],
+    "inline_python_compile_passed": true,
+    "local_bidirectional_probe_report": "ci-arc-bind-mount-local-2026-10-27.json",
+    "local_legacy_root_also_visible": true,
+    "local_probe_sha256": "36557d7cc652005ae4788aef573b59a9ffbc8cd8a0cdeecdbf1cc2c91e92e2d7",
+    "long_root_unchanged": "/var/tmp/ariadne-soak",
+    "smoke_root": "RUNNER_TEMP/ariadne-soak"
+  },
+  "long_soak_passed": false,
+  "mount_fix_run": {
+    "legacy_root_source_missing": true,
+    "mount_probe_passed": true,
+    "observation_report": "ci-arc-smoke-observed-40577088311.json",
+    "raw_log": "github-arc-smoke-resource-failed-40577088311.log",
+    "raw_log_sha256": "53d07ab8ca146492630b67dff350996b4e461b00098be5d11eb70de625a568be",
+    "readiness_and_watch_passed": true,
+    "review_violations": [
+      "unexplained_primary_growth",
+      "unexplained_schema_growth"
+    ],
+    "run_id": 40577088311,
+    "runner_name": "anacreon-runners-runner-8gxj7",
+    "smoke_passed": false,
+    "source_commit": "c1e5d114e0b2ef7cb89798b45dd9bcfe38e04a55"
+  },
+  "proposed_roots": {
+    "72h": "/var/tmp/ariadne-soak",
+    "smoke": "RUNNER_TEMP/ariadne-soak"
+  },
+  "protocol": "ariadne-arc-bind-mount-repair/v1",
+  "repository": "Anacreonsystems/ariadne",
+  "reviewer_policy_repair": {
+    "after_tests": {
+      "count": 8,
+      "passed": true,
+      "raw_log": "ci-smoke-resource-policy-after-2026-10-27.log"
+    },
+    "before_tests": {
+      "count": 8,
+      "errors": 1,
+      "failures": 1,
+      "raw_log": "ci-smoke-resource-policy-before-2026-10-27.log"
+    },
+    "description": "Short smoke retains absolute caps and reports growth rates descriptively. Non-smoke retains the same absolute and growth-rate caps.",
+    "long_numeric_limits_changed": false,
+    "reviewer_after_sha256": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+    "reviewer_before_sha256": "d59502efea82d760e9594a66b04dd7e0297b0b2c659d678c852585a68bd9a8e1"
+  },
+  "run_id": 40484370723,
+  "runner_access_confirmed": true,
+  "source_commit": "6d03a45e28c009f384c09cdbcfb3057432ea2e99",
+  "status": "accepted_arc_smoke_repair"
+}

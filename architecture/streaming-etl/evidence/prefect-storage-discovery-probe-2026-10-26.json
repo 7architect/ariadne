@@ -1,0 +1,32 @@
+{
+  "artifacts_sha256": {
+    "prefect-storage-discovery-baseline-2026-10-26.log": "7edf70329f34419131a5035bc68c73d36b7f7a02cd5ff5b110ff7a5a9768a903",
+    "prefect-storage-discovery-baseline-2026-10-26.py": "ddffc9605c8a6fb42c1646fbe3019c87a44121e61486865204b7b71083f21216",
+    "prefect-storage-discovery-configured-2026-10-26.log": "59b1a2b1931625731152702b2fc0ac5edc7afd90ad4e81f5b54e71589bd5e42e",
+    "prefect-storage-discovery-configured-2026-10-26.py": "d2c52bb4b2d6efbea8111ed396ed6b46da1bf17dc96266e953bd344af07c76ad"
+  },
+  "baseline": {
+    "allocation_origin": "prefect.results._read_server_default_result_storage_block_id -> get_client(sync_client=True) -> read_server_default_result_storage",
+    "completed": true,
+    "resource_warning_count": 1,
+    "streaming_platform_used": false
+  },
+  "claims": {
+    "long_native_prefect_stability": false,
+    "sdk_core_modified": false,
+    "selected_test_fixture_uses_explicit_storage": true
+  },
+  "configured": {
+    "completed": true,
+    "public_configuration": "persisted LocalFileSystem plus PREFECT_RESULTS_DEFAULT_STORAGE_BLOCK",
+    "resource_warning_count": 0,
+    "streaming_platform_used": false
+  },
+  "limits": [
+    "The archived programs used the fixture before its explicit default-storage setup was added. Clearing the default-storage setting is necessary to reproduce the baseline against the successor fixture.",
+    "The experiment diagnoses an inherited SDK path; it does not prove general long-term native runtime resource stability."
+  ],
+  "protocol": "ariadne-prefect-storage-discovery-probe/v1",
+  "recorded_at": "2026-10-26T14:13:44.832345+00:00",
+  "sdk_results_source_sha256": "579e8887c7cd9490273adaf7e185ea9ce996cc799a1145a1ddb0a4f4236d2380"
+}

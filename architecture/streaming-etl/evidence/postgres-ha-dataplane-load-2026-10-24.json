@@ -1,0 +1,73 @@
+{
+  "commands": {
+    "primary_profile": [
+      "postgres:17-alpine",
+      "wal_level=replica",
+      "max_wal_senders=10",
+      "hot_standby=on"
+    ],
+    "promotion": "pg_ctl promote -w",
+    "standby_seed": "pg_basebackup -Fp -Xs -R"
+  },
+  "data_plane_after_promotion": {
+    "completion_count": 1,
+    "cursor": 1,
+    "exact_retry_sequence": 1,
+    "invariants": {
+      "bad_capacity": 0,
+      "bad_invocations": 0,
+      "bad_objects": 0,
+      "bad_progress": 0,
+      "passed": true,
+      "sequence_gaps": 0
+    },
+    "managed_state": "{\"signed\": 1}",
+    "next_contiguous_sequence": 3,
+    "output_payload_sha256": "c51918c02040c947850fa145cf3d1d031509601ac4d793fb28e4f66c7d335533"
+  },
+  "durability_profile": "synchronous remote_apply",
+  "failover_during_stream_load": {
+    "acknowledged_before_loss": 24,
+    "acknowledged_survivors": 24,
+    "client_errors_at_loss": [
+      "producer:InterfaceError:cannot call Transaction.__aexit__(): the underlying connection is closed",
+      "consumer:InterfaceError:cannot call Transaction.__aexit__(): the underlying connection is closed"
+    ],
+    "completed_after_recovery": 200,
+    "completed_before_loss_observed_by_client": 16,
+    "contiguous_sequences": true,
+    "durable_completed_after_promotion": 16,
+    "planned_records": 200,
+    "recovery": "retry all immutable attempts, lease takeover, drain suffix"
+  },
+  "former_primary_fence": {
+    "mechanism": "container removed; persistent volume quarantined",
+    "restart_returncode": 1
+  },
+  "git_revision": "87b5243845e733ed938b21cf7b9aeda6d6a4e194",
+  "harness_sha256": "025b29929daa22e94ba1e3d18e89c1a0d293212ab61cc446ba36332de0aa9c64",
+  "passed": true,
+  "postgres_image_digest": "sha256:ab20e934b27ba3ff927c1b4c9ff8cf6c32f315f743efe68dd3441182a87fb085",
+  "postgres_version": "17.11",
+  "primary_commit_lsn": "0/3082C10",
+  "primary_settings": {
+    "synchronous_commit": "remote_apply",
+    "synchronous_standby_names": "*"
+  },
+  "promoted_flush_lsn": "0/30FC098",
+  "promotion_seconds": 1.6532130569999026,
+  "promotion_slo_seconds": 15,
+  "replication_after_restart": {
+    "application_name": "walreceiver",
+    "state": "streaming",
+    "sync_state": "sync"
+  },
+  "replication_before": {
+    "application_name": "walreceiver",
+    "state": "streaming",
+    "sync_state": "sync"
+  },
+  "restart_seconds": 0.42354972800012547,
+  "restart_slo_seconds": 15,
+  "standby_replay_lsn_before_loss": "0/3082C10"
+}

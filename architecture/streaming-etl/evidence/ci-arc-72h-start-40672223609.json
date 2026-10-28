@@ -1,0 +1,305 @@
+{
+  "adr_status": "progress",
+  "artifact_archive_download_verified": false,
+  "bootstrap_artifacts": [
+    {
+      "digest": "sha256:54902d3d3ec255f68e5fb4fad07af25814423491e21b3e26c30cd60a019e6c69",
+      "expired": false,
+      "id": 12809371005,
+      "name": "streaming-soak-bootstrap-40672223609-1",
+      "size_in_bytes": 4353
+    }
+  ],
+  "campaign_id": "gh-40672223609-1",
+  "completion_requirements": [
+    "Original-pod deterministic review passes after at least 259200 measured seconds and 18 linked segments.",
+    "Fresh collector validates the same run/attempt/source and successfully publishes its artifact."
+  ],
+  "exact_database_started_at_observed": false,
+  "gate_control": "ci-arc-transport-smoke-observed-40671702946.json",
+  "job_timeout_minutes": 4500,
+  "local_regressions": "ci-arc-target-tail-validation-2026-10-28.json",
+  "long_soak_passed": false,
+  "observed_at": "2026-10-28T10:32:36.537860+00:00",
+  "principal_review": "PASS_FOR_NEW_HOSTED_SUCCESSOR",
+  "process_loss_segments": [
+    5,
+    11
+  ],
+  "protocol": "ariadne-continuous-arc-campaign-start/v1",
+  "run": {
+    "conclusion": null,
+    "created_at": "2026-10-28T10:27:07Z",
+    "event": "workflow_dispatch",
+    "head_branch": "streaming-soak-arc",
+    "head_sha": "ff4972fb2c6df313056e828f72a3cad41dce9258",
+    "html_url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609",
+    "id": 40672223609,
+    "run_attempt": 1,
+    "status": "in_progress"
+  },
+  "runner_name": "anacreon-runners-runner-8xffs",
+  "segment_count": 18,
+  "segment_seconds": 14400,
+  "selected_execution": "arc",
+  "selected_profile": "72h",
+  "source_job_id": 122761609939,
+  "startup_verification": "Immutable campaign start step completed successfully after CLI readiness; monitor 00 is executing and bootstrap artifact upload succeeded.",
+  "steps": [
+    {
+      "completed_at": "2026-10-28T10:27:34Z",
+      "conclusion": "success",
+      "name": "Set up job",
+      "started_at": "2026-10-28T10:27:31Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:27:40Z",
+      "conclusion": "success",
+      "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "started_at": "2026-10-28T10:27:34Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:27:40Z",
+      "conclusion": "success",
+      "name": "Validate profile, runner and campaign ID",
+      "started_at": "2026-10-28T10:27:40Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:27:48Z",
+      "conclusion": "success",
+      "name": "Verify bidirectional state sharing with Docker",
+      "started_at": "2026-10-28T10:27:40Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:27:48Z",
+      "conclusion": "success",
+      "name": "Clear this job's public export directory",
+      "started_at": "2026-10-28T10:27:48Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:27:49Z",
+      "conclusion": "success",
+      "name": "Observe Docker volume and state capacity",
+      "started_at": "2026-10-28T10:27:48Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:28:32Z",
+      "conclusion": "success",
+      "name": "Start immutable continuous campaign",
+      "started_at": "2026-10-28T10:27:49Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:28:32Z",
+      "conclusion": "skipped",
+      "name": "Start smoke and exercise process recovery",
+      "started_at": "2026-10-28T10:28:32Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:28:33Z",
+      "conclusion": "success",
+      "name": "Export and frame initial ARC evidence",
+      "started_at": "2026-10-28T10:28:32Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:28:36Z",
+      "conclusion": "success",
+      "name": "Upload early long-profile evidence",
+      "started_at": "2026-10-28T10:28:33Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-10-28T10:28:36Z",
+      "conclusion": "skipped",
+      "name": "Frame the completed smoke segment",
+      "started_at": "2026-10-28T10:28:36Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 00 of 17",
+      "started_at": "2026-10-28T10:28:36Z",
+      "status": "in_progress"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 01 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 02 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 03 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 04 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 05 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 06 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 07 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 08 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 09 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 10 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 11 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 12 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 13 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 14 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 15 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 16 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run ARC monitor 17 of 17",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Review ARC campaign independently",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Export ARC public evidence",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Preserve a bounded CI diagnostic even if bootstrap failed",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Frame final ARC evidence before owned cleanup",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Remove only this ARC campaign's Docker resources",
+      "started_at": null,
+      "status": "pending"
+    },
+    {
+      "completed_at": null,
+      "conclusion": null,
+      "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "started_at": null,
+      "status": "pending"
+    }
+  ],
+  "target_seconds": 259200,
+  "workload_ready_no_later_than": "2026-10-28T10:28:32Z",
+  "workload_start_verified": true
+}

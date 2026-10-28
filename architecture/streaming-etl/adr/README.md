@@ -92,6 +92,7 @@ graph TD
     A0026 --> A0028
     A0028 --> A0009
     A0027 --> A0029[ADR-0029: Short capacity calibration and release scope]
+    A0028 --> A0030[ADR-0030: Continuous ARC soak and evidence collection]
     A0025 --> A0029
     A0029 --> A0009
     A0011 --> A0020[ADR-0020: Bounded metadata and idempotency horizon]
@@ -162,6 +163,7 @@ graph TD
 - [ADR-0027: Short acceptance and a separate long soak](ADR-0027-short-acceptance-and-separate-long-soak.md) — `accepted`
 - [ADR-0028: Existing self-hosted soak CI and reviewer](ADR-0028-self-hosted-soak-ci-and-reviewer.md) — `progress`
 - [ADR-0029: Short capacity calibration and release scope](ADR-0029-short-capacity-calibration-and-release-scope.md) — `accepted`
+- [ADR-0030: Continuous ARC soak and fresh-job evidence collection](ADR-0030-continuous-arc-soak-and-evidence-collection.md) — `progress`
 - [ADR-0090: Use Prefect transactions as the streaming coordinator](ADR-0090-prefect-transactions-as-coordinator.md) — `rejected`
 - [ADR-0091: Idempotency alone provides multi-sink atomicity](ADR-0091-idempotency-alone-is-atomic.md) — `rejected`
 - [ADR-0092: Split lifecycle and progress state machines](ADR-0092-split-safety-state-machines.md) — `rejected`

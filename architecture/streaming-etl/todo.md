@@ -4,6 +4,19 @@ This registry slices the [ADR graph](adr/README.md) into delivery tasks. Task
 completion does not make an ADR `accepted`; evidence for every criterion in
 the declared ADR scope must be linked back to it.
 
+Current separate DS-052a work follows
+[ADR-0030](adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md): one
+continuous ARC job, 18 monitor steps and a fresh evidence collector. Its gates
+are a short end-to-end publication control, the real 72-hour workload, and
+successful final reconstruction/upload. It remains `progress` and contributes
+no additional short-delivery percentage.
+
+Actual execution: [72-hour ARC run 40672223609](https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609)
+passed bootstrap and entered monitor 00 on 2026-10-28 at 10:28:36 UTC. Its
+[start record](evidence/ci-arc-72h-start-40672223609.json) binds the source and
+[passing short successor](evidence/ci-arc-transport-smoke-observed-40671702946.json).
+DS-052a remains `progress` pending full duration, final review and publication.
+
 Delivery states are separate from ADR statuses. Sizes assume `S` ≤ 2 engineer
 days, `M` = 3–4 days, and `L` ≈ one engineer week. `H` and `M` denote high and
 medium delivery risk.
@@ -259,6 +272,20 @@ with recovery, four oracles, public export and owned cleanup, and its
 [Principal acceptance](evidence/ci-arc-smoke-principal-review-2026-10-27.json)
 closes the smoke repair. The 72-hour run and DS-052a remain open/unstarted;
 this follow-up contributes no additional short-delivery percentage.
+
+Post-merge dispatch on 2026-10-27: the
+[72-hour campaign](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+now exists on `main`; the [dispatch record](evidence/ci-long-soak-dispatch-40601620025.json)
+shows its prepare job queued without an assigned persistent runner. DS-052a
+remains `progress`; startup and actual long-duration acceptance are still open.
+
+2026-10-28 retrigger: the user confirmed ARC availability and requested a fresh
+trigger. The [unstarted static-profile run was cancelled](evidence/ci-long-soak-cancelled-40601620025.json),
+and the [fresh merged-source ARC smoke](evidence/ci-arc-smoke-observed-40650444560.json)
+passes recovery, four oracles, review/export and cleanup. DS-052a remains
+`progress`: no 72-hour workload ran, and an ARC long profile requires the
+separate state/lifetime/evidence validation recorded in
+[ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md).
 
 Exit: workload, configuration, raw results, and invariant report are archived;
 only this complete gate earns 100% and permits eligible ADRs to become

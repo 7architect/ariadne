@@ -666,6 +666,9 @@ class LongSoakService:
                 continue
             if elapsed >= self.config.target_seconds:
                 self.phase = "TARGET_REACHED"
+                # Monitors and final oracles can outlive the workload target.
+                # Keep storage authority live until explicit service shutdown.
+                await self._renew()
                 async with self.stream.pool.acquire() as conn:
                     await conn.execute(
                         "UPDATE soak_run_v1 SET completed_at=COALESCE(completed_at,"

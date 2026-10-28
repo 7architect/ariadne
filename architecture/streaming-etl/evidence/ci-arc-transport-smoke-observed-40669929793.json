@@ -1,0 +1,142 @@
+{
+  "artifact_archive_download_verified": false,
+  "artifacts": [
+    {
+      "digest": "sha256:4b34281d64d6fcf7da3efc3973b3d76309b1a0a0e0a25cd8b6ab7dfa3ec3216e",
+      "expired": false,
+      "id": 12808271100,
+      "name": "streaming-soak-collected-40669929793-1",
+      "size_in_bytes": 9384
+    },
+    {
+      "digest": "sha256:70bf31d50d0fb6ae989848ee51f9cd520667476ebc596a89811f02dda435023a",
+      "expired": false,
+      "id": 12807837896,
+      "name": "streaming-soak-smoke-40669929793-1",
+      "size_in_bytes": 9397
+    }
+  ],
+  "bind_mount_probe": {
+    "legacy_persistent_root_control": {
+      "bidirectional": false,
+      "docker_exit_code": 125,
+      "source_path_missing": true
+    },
+    "profile": "smoke",
+    "protocol": "ariadne-ci-bind-mount/v1",
+    "run_attempt": "1",
+    "run_id": "40669929793",
+    "selected_root": {
+      "bidirectional": true,
+      "docker_exit_code": 0,
+      "source_path_missing": false
+    },
+    "state_root": "/home/runner/_work/_temp/ariadne-soak",
+    "state_root_kind": "runner_temp"
+  },
+  "capacity": {
+    "docker_volume_free_bytes": 96136507392,
+    "passed": true,
+    "required_free_bytes": 0,
+    "state_free_bytes": 96136708096
+  },
+  "conclusion": "success",
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 122753839061,
+      "name": "Prepare on an existing self-hosted runner",
+      "runner_name": "anacreon-runners-runner-n2drk",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 122755079266,
+      "name": "Publish ARC evidence with fresh credentials",
+      "runner_name": "anacreon-runners-runner-sc2k7",
+      "status": "completed"
+    }
+  ],
+  "long_soak_passed": false,
+  "origin": "Exact original and fresh-collector job logs, with authenticated run/job/artifact metadata; artifact archive bytes not downloaded.",
+  "raw_logs": {
+    "collector": {
+      "file": "github-arc-transport-collector-40669929793.log",
+      "sha256": "edef6fe1f5f9aea43fba8d9470923a0e49ce621935e7c6d22009bcf3f590e1d5"
+    },
+    "source": {
+      "file": "github-arc-transport-source-40669929793.log",
+      "sha256": "b152653af5498be7bed15dbc5a0503c62ddd6e34739c70f256622308de32d6c7"
+    }
+  },
+  "review": {
+    "actual_prefect_in_72h": false,
+    "elapsed_seconds": 65.755864,
+    "generated_at": "2026-10-28T10:12:34.697616+00:00",
+    "long_soak_passed": false,
+    "manifest_digest": "415ddfcc571ba9042587603ea065b20b364e333e6e36726ddcda2c5909e979e9",
+    "owner_faults": 7,
+    "process_boots": 2,
+    "protocol": "ariadne-long-soak-review/v1",
+    "resource_measurements": {
+      "latter_half_primary_bytes_per_hour": -32135724.97809323,
+      "latter_half_schema_bytes_per_hour": 117982042.23274344,
+      "latter_half_service_rss_bytes_per_hour": -14832110.464143546,
+      "max_primary_data_bytes": 71009267,
+      "max_schema_relation_bytes": 6537216,
+      "max_service_rss_bytes": 38430310
+    },
+    "resource_policy": {
+      "absolute_caps_bytes": {
+        "primary_data": 8589934592,
+        "schema_relation": 536870912,
+        "service_rss": 805306368
+      },
+      "absolute_caps_enforced": true,
+      "growth_rate_caps_bytes_per_hour": {
+        "primary_data": 33554432,
+        "schema_relation": 8388608,
+        "service_rss": 16777216
+      },
+      "growth_rate_caps_enforced": false,
+      "growth_rates_descriptive": true,
+      "profile": "smoke_absolute_caps"
+    },
+    "run_id": "gh-40669929793-1",
+    "scope": [
+      "real PostgreSQL 17 synchronous remote_apply pair",
+      "ordinary Python yield DAG source->A->{B,C}->J->D",
+      "periodic barriers and bounded retirement/GC",
+      "release-session storage guard",
+      "owner loss and externally scheduled service-process loss",
+      "actual Prefect integration remains separate short R4-B evidence"
+    ],
+    "segment_count": 1,
+    "smoke_passed": true,
+    "source_completed": 22,
+    "violations": []
+  },
+  "run_attempt": 1,
+  "run_id": 40669929793,
+  "source_commit": "77cbaa28e85bb5cf1a6c2a89fadca44ec672a836",
+  "transport_review": {
+    "collector_live_review_performed": false,
+    "collector_live_review_reason": "collector runner identity differs from the source runner",
+    "expected_campaign": "gh-40669929793-1",
+    "expected_source_sha": "77cbaa28e85bb5cf1a6c2a89fadca44ec672a836",
+    "observed_files": [
+      "manifest.json",
+      "review.json",
+      "review.md",
+      "segments/segment-00.json"
+    ],
+    "passed": true,
+    "protocol": "ariadne-soak-transport-review/v1",
+    "segment_count": 1,
+    "source_completed": 22,
+    "source_conclusion": "success",
+    "transport_violations": [],
+    "violations": []
+  },
+  "url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40669929793"
+}

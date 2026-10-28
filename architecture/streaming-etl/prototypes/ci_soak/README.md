@@ -1,8 +1,12 @@
 # Segmented 72-hour streaming soak
 
 This harness runs one detached, immutable Docker workload across 18 sequential
-four-hour monitor jobs on a dedicated self-hosted runner. Refreshing CI jobs do
-not restart the ETL process, PostgreSQL primary, or synchronous standby.
+four-hour monitor steps in one ARC job, or across monitor jobs on the existing
+static runner when explicitly selected. Monitor boundaries do not restart the
+ETL process, PostgreSQL primary, or synchronous standby. The ARC profile uses
+a fresh dependent job to reconstruct public evidence from bound log frames
+and publish its artifact without relying on a 72-hour-old repository token.
+See [ADR-0030](../../adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md).
 
 The selected profile is a real PostgreSQL-backed Python yield DAG
 `source -> A -> {B,C} -> J -> D`, periodic global barriers, bounded retirement
@@ -38,3 +42,7 @@ The persistent state directory contains `credentials.json`; it must never be
 uploaded. CI artifacts are restricted to `manifest.json`, `segments/*.json`,
 `review.json`, and `review.md`. The manifest records dirty local provenance;
 `--require-clean` makes CI bootstrap fail unless the pinned checkout is clean.
+
+After the workload target is reached, the service keeps its storage authority
+live until shutdown while producing no further data or checkpoints. This
+allows monitor/oracle/export overhead without relaxing final lease checks.

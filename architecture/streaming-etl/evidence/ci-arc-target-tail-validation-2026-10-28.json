@@ -1,0 +1,55 @@
+{
+  "change": "Renew existing control authority at target without further DATA/checkpoint processing; renewal failures propagate.",
+  "existing_postgres_core_changed": false,
+  "existing_reviewer_changed": false,
+  "fresh_hosted_control_required": true,
+  "long_soak_passed": false,
+  "model_clock_seconds": 610,
+  "model_lease_seconds": 300,
+  "previous_hosted_control": 40670304409,
+  "principal_verdict": "PASS_FOR_NEW_HOSTED_SUCCESSOR",
+  "problem": "TARGET_REACHED stopped renewing 300-second release authority while final monitor samples could continue beyond that lease.",
+  "raw_log_sha256": {
+    "ci-arc-target-green-2026-10-28.log": "f195538234fa47588d8e2f010f395e1dda5382d0812aa8b3b4561d5e10acb5b8",
+    "ci-arc-target-red-bounded-2026-10-28.log": "b63df949169e25142347ae7ffda46000be0bc3425dd63399b19113d9f008ffdb",
+    "ci-arc-target-red-interrupted-2026-10-28.log": "a85b9a4a4f057702008824278e461581c50bce806be82fbcdbcf1b576fc2ddda"
+  },
+  "real_610_second_run_claimed": false,
+  "source_snapshot_sha256": {
+    ".github/workflows/streaming-etl-soak.yml": "7a359fefecaaa9e03299f202e6846943a49329a2ff721210158f8d336e956d7f",
+    "architecture/streaming-etl/prototypes/ci_soak/README.md": "d5b795aa7f92c016e5bcdc41a973036193bf78431ba62d1ab959c17f918ec22e",
+    "architecture/streaming-etl/prototypes/ci_soak/arc_job.py": "e66713c65e04442efab8a92cc8641350487d70e5fdba6aef0d419919cae720b3",
+    "architecture/streaming-etl/prototypes/ci_soak/cli.py": "715c7a7603eba60de386161bdd386213dbbe3e025e6088da92aecfbf5fade461",
+    "architecture/streaming-etl/prototypes/ci_soak/collect_job.py": "63718a20337428e808d3bce83348b616b723affc5351ac208d2df47141a9f272",
+    "architecture/streaming-etl/prototypes/ci_soak/review.py": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+    "architecture/streaming-etl/prototypes/ci_soak/service.py": "ebb771a4b15b7bcff3599ea2cfdfb390b5548722be28d0871c0c80d791f7a50b",
+    "architecture/streaming-etl/prototypes/ci_soak/supervisor.py": "6b347d55d25a52f902f2aabda82d266dde07243fa76836a71b2ef94ad5a4334c",
+    "architecture/streaming-etl/prototypes/ci_soak/test_arc_job.py": "b565ad2666fe03b441b35dd7259fd2d5ea6c4d66b936458ead3f81e343732ecd",
+    "architecture/streaming-etl/prototypes/ci_soak/test_review.py": "0cdd5a52a623c50a9d5a4c57c9081d1e233412444ff6890de10f894d6debfd29",
+    "architecture/streaming-etl/prototypes/ci_soak/test_target_liveness.py": "81007f95cd23d637300b1acb7833be5326e9f797214028c3a69160617b9c33e0",
+    "architecture/streaming-etl/prototypes/ci_soak/test_transport.py": "db3762f21601c1af4a0c3dcaa2378ec28046f16c35f6c3c6b44c1633136e6f8f",
+    "architecture/streaming-etl/prototypes/ci_soak/transport.py": "e20a8a2b2586e888136b3f3f63dd45ba4676eca0c552994abf1e055a7a7271f8"
+  },
+  "trials": [
+    {
+      "accepted": false,
+      "exit_code": 130,
+      "log": "ci-arc-target-red-interrupted-2026-10-28.log",
+      "reason": "Initial negative test used unbounded idle when old code never called renewal; manually interrupted and bounded the test."
+    },
+    {
+      "exit_code": 1,
+      "failures": 2,
+      "log": "ci-arc-target-red-bounded-2026-10-28.log",
+      "role": "Bounded reproduction before the service change.",
+      "test_count": 3
+    },
+    {
+      "exit_code": 0,
+      "failures": 0,
+      "log": "ci-arc-target-green-2026-10-28.log",
+      "role": "Complete focused suite after the service change.",
+      "test_count": 29
+    }
+  ]
+}

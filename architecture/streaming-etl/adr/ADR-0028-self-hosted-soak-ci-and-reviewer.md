@@ -355,6 +355,80 @@ own regression controls and fresh hosted execution. ARC access and the one-job
 smoke are verified. The static runner's real 18-job/72-hour campaign remains
 unstarted, so this ADR and DS-052a remain `progress` with no percentage added.
 
+## Main-branch dispatch observation (2026-10-27)
+
+The user merged PR #1 at `3776be1382d3d047485c6f96a14f9a5c1a1cb458`.
+Its tree exactly matches the accepted branch tip
+`24e49ec87cbcfa20a42f3a53fba2b54d10ff18c0`; no implementation changes were
+introduced by the merge. The workflow is now active on the default branch.
+
+The separate [`72h` dispatch](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+was accepted at 2026-10-27 23:21:54 UTC with campaign ID
+`gh-40601620025-1`. The [dispatch observation](../evidence/ci-long-soak-dispatch-40601620025.json)
+records a queued prepare job requesting `self-hosted`, with no runner assigned
+at that observation. Bootstrap still requires the actual runner name to be
+`k8s-runner`, a shared persistent state root and the existing Docker checks.
+
+As a user, I want the merged source to receive its separate long-duration
+validation on the existing persistent runner. As a developer, I can inspect
+the exact source commit, campaign ID and queued job; this dispatch satisfies
+traceability only. Queue time does not count toward the 259200-second workload.
+Actual startup, all 18 observations and the final independent reviewer remain
+open acceptance criteria. This ADR and DS-052a remain `progress` with no
+additional percentage. See the [operator guide](../soak_ci.md),
+[task lane](../todo.md) and [sprint board](../sprint_board.md).
+The [dispatch evidence graph](../evidence/adr-graph-long-dispatch-40601620025.json)
+checks the retained statuses and local documentation links.
+
+## ARC retrigger and long-profile boundary (2026-10-28)
+
+The user requested a retrigger and confirmed `anacreon-runners`. The existing
+long-profile run was still queued, with no assigned runner and no executed
+steps. It was [cancelled before bootstrap](../evidence/ci-long-soak-cancelled-40601620025.json)
+to release the workflow concurrency group. The earlier dispatch observation
+remains unchanged. A fresh
+[smoke dispatch](https://github.com/Anacreonsystems/ariadne/actions/runs/40650444560)
+uses the exact merged source and requests `anacreon-runners`.
+
+As a user, I want a retrigger to use the confirmed available runner. As a
+developer, I can distinguish this smoke from the unexecuted long campaign.
+Neither cancellation nor a passing replacement smoke satisfies the 72-hour
+acceptance criteria; DS-052a remains `progress` with no additional percentage.
+
+Principal assessment: the current 18-job design requires persistent Docker and
+state across jobs; changing its selector to an ephemeral ARC scale set would
+violate that contract. A single 72-hour ARC job is a possible separate design,
+but its pod/Docker lifetime, disk budget, job timeout and late evidence
+publication have not been verified for this scale set. Repository-token expiry
+alone does not prove that the separate artifact-runtime credentials must fail;
+late upload must be demonstrated rather than assumed. No long-job guard,
+duration, resource threshold or evidence criterion was weakened for this
+retrigger. A future ARC long-profile change needs its own validated execution
+and evidence-lifetime contract.
+
+The [replacement observation](../evidence/ci-arc-smoke-observed-40650444560.json)
+and [raw job log](../evidence/github-arc-smoke-retrigger-40650444560.log)
+record `success` on `anacreon-runners-runner-vf9jp` at the exact merged commit.
+The measured workload lasted 64.830406 seconds and completed 22 source
+documents, seven owner faults and two process boots after the injected process
+loss. All four independent oracles, the reviewer, public export, artifact
+upload and owned cleanup passed. `smoke_passed=true`, `long_soak_passed=false`
+and `violations=[]` preserve the profile boundary. Public report contents were
+retrieved from exact job logs; artifact metadata was retrieved, but its archive
+was not independently downloaded. The
+[retrigger evidence graph](../evidence/adr-graph-arc-retrigger-2026-10-28.json)
+checks retained statuses and links.
+
+## ARC execution follow-up
+
+The user directed execution on the available ARC scale set. The active
+deployment and credential-lifetime solution is specified in
+[ADR-0030](ADR-0030-continuous-arc-soak-and-evidence-collection.md): one
+continuous job, the same 18 monitor segments, and public log frames collected
+by a fresh dependent job. The static chain remains an explicit option.
+Historical observations above remain unchanged. Actual 72-hour acceptance is
+still open; the operator guide and DS-052a track the current implementation.
+
 ## Consequences
 
 The separate campaign occupies the existing static host for at least 72 hours.

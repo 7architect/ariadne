@@ -1,5 +1,17 @@
 # Streaming ETL sprint board
 
+The separate DS-052a lane remains `progress` under
+[ADR-0030](adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md): validate
+the complete short ARC/collector path, then run 72 continuous hours with the
+unchanged duration/fault/resource criteria and final artifact publication.
+This lane adds no short-delivery percentage.
+
+The [actual ARC campaign](https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609)
+has passed startup and is executing monitor 00; the
+[start evidence](evidence/ci-arc-72h-start-40672223609.json) records the exact
+source and verified short control. DS-052a remains `progress` until all 72-hour
+and final publication criteria pass.
+
 Default cadence is one week with parallel owners. A task sized `L` consumes one
 owner for most of the sprint. If staffing cannot satisfy the exit criteria, work
 rolls forward and the cumulative target is not claimed.
@@ -129,6 +141,19 @@ Later ARC acceptance on 2026-10-27: the
 pass after the shared-directory and short-resource-policy repairs. Existing
 runner access and the one-job smoke are verified. DS-052a remains `progress`
 for the unstarted static-runner 72-hour campaign; no percentage is added.
+
+Post-merge dispatch on 2026-10-27: the
+[long-profile run](https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025)
+is queued on the merged `main` source. Its
+[dispatch observation](evidence/ci-long-soak-dispatch-40601620025.json)
+does not yet verify runner assignment or workload startup. DS-052a remains
+`progress` with no percentage added.
+
+2026-10-28 retrigger: the [unassigned static campaign was cancelled](evidence/ci-long-soak-cancelled-40601620025.json)
+at the user's retrigger request; the
+[fresh ARC smoke](evidence/ci-arc-smoke-observed-40650444560.json) passes on
+merged `main`. DS-052a remains `progress` without additional percentage;
+actual 72-hour execution and any ARC long-profile validation remain open.
 
 R1/R2 gate evidence is recorded in
 [ADR-0018](adr/ADR-0018-postgresql-authoritative-data-plane.md),

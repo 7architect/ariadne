@@ -1,0 +1,37 @@
+test_reviewer_still_rejects_expired_lease_at_target (test_target_liveness.TargetLivenessTests.test_reviewer_still_rejects_expired_lease_at_target) ... ok
+test_target_renewal_failure_propagates (test_target_liveness.TargetLivenessTests.test_target_renewal_failure_propagates) ... FAIL
+test_target_tail_longer_than_two_leases_stays_live_without_new_data (test_target_liveness.TargetLivenessTests.test_target_tail_longer_than_two_leases_stays_live_without_new_data) ... FAIL
+
+======================================================================
+FAIL: test_target_renewal_failure_propagates (test_target_liveness.TargetLivenessTests.test_target_renewal_failure_propagates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/ariadne/architecture/streaming-etl/prototypes/ci_soak/test_target_liveness.py", line 95, in test_target_renewal_failure_propagates
+    with self.assertRaisesRegex(RuntimeError, "authority unavailable"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_target_tail_longer_than_two_leases_stays_live_without_new_data (test_target_liveness.TargetLivenessTests.test_target_tail_longer_than_two_leases_stays_live_without_new_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/ariadne/architecture/streaming-etl/prototypes/ci_soak/test_target_liveness.py", line 76, in test_target_tail_longer_than_two_leases_stays_live_without_new_data
+    self.assertTrue(all(v["database"]["release_session_remaining_seconds"] > 0 for v in observed))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.084s
+
+FAILED (failures=2)

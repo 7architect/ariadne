@@ -1,0 +1,222 @@
+﻿2026-10-28T10:26:25.5525034Z Current runner version: '2.338.2'
+2026-10-28T10:26:25.5542198Z Runner name: 'anacreon-runners-runner-r98k6'
+2026-10-28T10:26:25.5545223Z Runner group name: 'default'
+2026-10-28T10:26:25.5547618Z Machine name: 'anacreon-runners-runner-r98k6'
+2026-10-28T10:26:25.5556577Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T10:26:25.5563789Z Actions: read
+2026-10-28T10:26:25.5564698Z Contents: read
+2026-10-28T10:26:25.5565548Z Metadata: read
+2026-10-28T10:26:25.5566530Z ##[endgroup]
+2026-10-28T10:26:25.5572543Z Secret source: Actions
+2026-10-28T10:26:25.5574196Z Cache mode: write
+2026-10-28T10:26:25.5575288Z Prepare workflow directory
+2026-10-28T10:26:25.6724983Z Prepare all required actions
+2026-10-28T10:26:25.6841001Z Getting action download info
+2026-10-28T10:26:26.3953638Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-28T10:26:27.1487149Z Download action repository 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-28T10:26:28.3628766Z Complete job name: Publish ARC evidence with fresh credentials
+2026-10-28T10:26:28.6109619Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-28T10:26:28.6114782Z with:
+2026-10-28T10:26:28.6116683Z   ref: ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:26:28.6119428Z   persist-credentials: false
+2026-10-28T10:26:28.6121652Z   repository: Anacreonsystems/ariadne
+2026-10-28T10:26:28.6139206Z   token: ***
+2026-10-28T10:26:28.6140719Z   ssh-strict: true
+2026-10-28T10:26:28.6141924Z   ssh-user: git
+2026-10-28T10:26:28.6143416Z   clean: true
+2026-10-28T10:26:28.6145383Z   sparse-checkout-cone-mode: true
+2026-10-28T10:26:28.6147294Z   fetch-depth: 1
+2026-10-28T10:26:28.6149334Z   fetch-tags: false
+2026-10-28T10:26:28.6151280Z   show-progress: true
+2026-10-28T10:26:28.6153017Z   lfs: false
+2026-10-28T10:26:28.6154782Z   submodules: false
+2026-10-28T10:26:28.6156276Z   set-safe-directory: true
+2026-10-28T10:26:28.6158530Z   allow-unsafe-pr-checkout: false
+2026-10-28T10:26:28.6163503Z env:
+2026-10-28T10:26:28.6165485Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-28T10:26:28.6168049Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:26:28.6170321Z ##[endgroup]
+2026-10-28T10:26:28.9648833Z Syncing repository: Anacreonsystems/ariadne
+2026-10-28T10:26:28.9656481Z ##[group]Getting Git version info
+2026-10-28T10:26:28.9659445Z Working directory is '/home/runner/_work/ariadne/ariadne'
+2026-10-28T10:26:28.9674411Z [command]/usr/bin/git version
+2026-10-28T10:26:28.9676744Z git version 2.56.0
+2026-10-28T10:26:28.9685144Z ##[endgroup]
+2026-10-28T10:26:28.9712285Z Temporarily overriding HOME='/home/runner/_work/_temp/c3f5c908-699e-4e06-a17e-e975fad1380b' before making global git config changes
+2026-10-28T10:26:28.9718472Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T10:26:28.9723636Z [command]/usr/bin/git config --global --add safe.directory /home/runner/_work/ariadne/ariadne
+2026-10-28T10:26:28.9730451Z Deleting the contents of '/home/runner/_work/ariadne/ariadne'
+2026-10-28T10:26:28.9736072Z ##[group]Determining repository object format
+2026-10-28T10:26:28.9741647Z ##[endgroup]
+2026-10-28T10:26:28.9744991Z ##[group]Initializing the repository
+2026-10-28T10:26:28.9748159Z [command]/usr/bin/git init /home/runner/_work/ariadne/ariadne
+2026-10-28T10:26:28.9838445Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-28T10:26:28.9844982Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-28T10:26:28.9849592Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-28T10:26:28.9851961Z hint: call:
+2026-10-28T10:26:28.9853072Z hint:
+2026-10-28T10:26:28.9855132Z hint: 	git config --global init.defaultBranch <name>
+2026-10-28T10:26:28.9857729Z hint:
+2026-10-28T10:26:28.9860433Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-28T10:26:28.9864566Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-28T10:26:28.9867630Z hint:
+2026-10-28T10:26:28.9870507Z hint: 	git branch -m <name>
+2026-10-28T10:26:28.9872487Z hint:
+2026-10-28T10:26:28.9875154Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-28T10:26:28.9882012Z Initialized empty Git repository in /home/runner/_work/ariadne/ariadne/.git/
+2026-10-28T10:26:28.9889281Z [command]/usr/bin/git remote add origin https://github.com/Anacreonsystems/ariadne
+2026-10-28T10:26:28.9950510Z ##[endgroup]
+2026-10-28T10:26:28.9954613Z ##[group]Disabling automatic garbage collection
+2026-10-28T10:26:28.9956982Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-28T10:26:29.0041511Z ##[endgroup]
+2026-10-28T10:26:29.0046056Z ##[group]Setting up auth
+2026-10-28T10:26:29.0048579Z Removing SSH command configuration
+2026-10-28T10:26:29.0051941Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T10:26:29.0140249Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T10:26:29.0801734Z Removing HTTP extra header
+2026-10-28T10:26:29.0826907Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T10:26:29.0942926Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T10:26:29.1581714Z Removing includeIf entries pointing to credentials config files
+2026-10-28T10:26:29.1592558Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T10:26:29.1726358Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T10:26:29.2495091Z [command]/usr/bin/git config --file /home/runner/_work/_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-28T10:26:29.2538338Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/_work/ariadne/ariadne/.git.path /home/runner/_work/_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:29.2611983Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path /home/runner/_work/_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:29.2712530Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:29.2763671Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:29.2843266Z ##[endgroup]
+2026-10-28T10:26:29.2845983Z ##[group]Fetching the repository
+2026-10-28T10:26:29.2859375Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:26:32.8071081Z From https://github.com/Anacreonsystems/ariadne
+2026-10-28T10:26:32.8073660Z  * branch            ff4972fb2c6df313056e828f72a3cad41dce9258 -> FETCH_HEAD
+2026-10-28T10:26:32.8094150Z [command]/usr/bin/git rev-parse --verify --quiet ff4972fb2c6df313056e828f72a3cad41dce9258^{object}
+2026-10-28T10:26:32.8175712Z ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:26:32.8185025Z ##[endgroup]
+2026-10-28T10:26:32.8186377Z ##[group]Determining the checkout info
+2026-10-28T10:26:32.8187976Z ##[endgroup]
+2026-10-28T10:26:32.8203221Z [command]/usr/bin/git sparse-checkout disable
+2026-10-28T10:26:32.8336538Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-28T10:26:32.8404997Z ##[group]Checking out the ref
+2026-10-28T10:26:32.8416109Z [command]/usr/bin/git checkout --progress --force ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:26:33.8639327Z Updating files:  80% (4701/5840)
+2026-10-28T10:26:33.8700719Z Updating files:  81% (4731/5840)
+2026-10-28T10:26:33.8756950Z Updating files:  82% (4789/5840)
+2026-10-28T10:26:33.8799534Z Updating files:  83% (4848/5840)
+2026-10-28T10:26:33.8852281Z Updating files:  84% (4906/5840)
+2026-10-28T10:26:33.8901179Z Updating files:  85% (4964/5840)
+2026-10-28T10:26:33.8948611Z Updating files:  86% (5023/5840)
+2026-10-28T10:26:33.9004367Z Updating files:  87% (5081/5840)
+2026-10-28T10:26:33.9052648Z Updating files:  88% (5140/5840)
+2026-10-28T10:26:33.9113684Z Updating files:  89% (5198/5840)
+2026-10-28T10:26:33.9164792Z Updating files:  90% (5256/5840)
+2026-10-28T10:26:33.9223684Z Updating files:  91% (5315/5840)
+2026-10-28T10:26:33.9289029Z Updating files:  92% (5373/5840)
+2026-10-28T10:26:33.9352347Z Updating files:  93% (5432/5840)
+2026-10-28T10:26:33.9393884Z Updating files:  94% (5490/5840)
+2026-10-28T10:26:33.9481264Z Updating files:  95% (5548/5840)
+2026-10-28T10:26:33.9578694Z Updating files:  96% (5607/5840)
+2026-10-28T10:26:33.9654965Z Updating files:  97% (5665/5840)
+2026-10-28T10:26:33.9731843Z Updating files:  98% (5724/5840)
+2026-10-28T10:26:33.9890937Z Updating files:  99% (5782/5840)
+2026-10-28T10:26:33.9892293Z Updating files: 100% (5840/5840)
+2026-10-28T10:26:33.9893426Z Updating files: 100% (5840/5840), done.
+2026-10-28T10:26:33.9997487Z Note: switching to 'ff4972fb2c6df313056e828f72a3cad41dce9258'.
+2026-10-28T10:26:33.9999525Z 
+2026-10-28T10:26:34.0000787Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-28T10:26:34.0003007Z changes and commit them, and you can discard any commits you make in this
+2026-10-28T10:26:34.0004701Z state without impacting any branches by switching back to a branch.
+2026-10-28T10:26:34.0005759Z 
+2026-10-28T10:26:34.0006526Z If you want to create a new branch to retain commits you create, you may
+2026-10-28T10:26:34.0008337Z do so (now or later) by using -c with the switch command. Example:
+2026-10-28T10:26:34.0009311Z 
+2026-10-28T10:26:34.0009971Z   git switch -c <new-branch-name>
+2026-10-28T10:26:34.0010991Z 
+2026-10-28T10:26:34.0011531Z Or undo this operation with:
+2026-10-28T10:26:34.0012666Z 
+2026-10-28T10:26:34.0013163Z   git switch -
+2026-10-28T10:26:34.0013727Z 
+2026-10-28T10:26:34.0014562Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-28T10:26:34.0016467Z 
+2026-10-28T10:26:34.0018154Z HEAD is now at ff4972f Keep soak authority live through final observation
+2026-10-28T10:26:34.0093845Z ##[endgroup]
+2026-10-28T10:26:34.0214952Z [command]/usr/bin/git log -1 --format=%H
+2026-10-28T10:26:34.0307245Z ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:26:34.0323927Z ##[group]Removing auth
+2026-10-28T10:26:34.0325375Z Removing SSH command configuration
+2026-10-28T10:26:34.0326567Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T10:26:34.0442967Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T10:26:34.1217484Z Removing HTTP extra header
+2026-10-28T10:26:34.1218676Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T10:26:34.1343050Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T10:26:34.2013609Z Removing includeIf entries pointing to credentials config files
+2026-10-28T10:26:34.2030401Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T10:26:34.2093449Z includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path
+2026-10-28T10:26:34.2097000Z includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path
+2026-10-28T10:26:34.2098749Z includeif.gitdir:/github/workspace/.git.path
+2026-10-28T10:26:34.2100777Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T10:26:34.2118966Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path
+2026-10-28T10:26:34.2212313Z /home/runner/_work/_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:34.2260960Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path \/home\/runner\/_work\/_temp\/git\-credentials\-ebb33138\-8ca7\-4394\-9b71\-9602b4922532\.config
+2026-10-28T10:26:34.2379012Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path
+2026-10-28T10:26:34.2440662Z /home/runner/_work/_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:34.2487194Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path \/home\/runner\/_work\/_temp\/git\-credentials\-ebb33138\-8ca7\-4394\-9b71\-9602b4922532\.config
+2026-10-28T10:26:34.2600714Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-28T10:26:34.2653446Z /github/runner_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:34.2683869Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-ebb33138\-8ca7\-4394\-9b71\-9602b4922532\.config
+2026-10-28T10:26:34.2884829Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T10:26:34.2947874Z /github/runner_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config
+2026-10-28T10:26:34.2981825Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ebb33138\-8ca7\-4394\-9b71\-9602b4922532\.config
+2026-10-28T10:26:34.3106076Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T10:26:34.4039023Z Removing credentials config '/home/runner/_work/_temp/git-credentials-ebb33138-8ca7-4394-9b71-9602b4922532.config'
+2026-10-28T10:26:34.4045884Z ##[endgroup]
+2026-10-28T10:26:34.4605151Z ##[group]Run python3 architecture/streaming-etl/prototypes/ci_soak/collect_job.py --output "$RUNNER_TEMP/soak-collected"
+2026-10-28T10:26:34.4608150Z [36;1mpython3 architecture/streaming-etl/prototypes/ci_soak/collect_job.py --output "$RUNNER_TEMP/soak-collected"[0m
+2026-10-28T10:26:34.4645922Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:26:34.4646630Z env:
+2026-10-28T10:26:34.4647130Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-28T10:26:34.4648289Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:26:34.4661760Z   GH_TOKEN: ***
+2026-10-28T10:26:34.4662476Z ##[endgroup]
+2026-10-28T10:26:37.3144183Z ARC_COLLECTION_RESULT_JSON={"collector_live_review_performed": false, "collector_live_review_reason": "collector runner identity differs from the source runner", "expected_campaign": "gh-40671702946-1", "expected_source_sha": "ff4972fb2c6df313056e828f72a3cad41dce9258", "observed_files": ["manifest.json", "review.json", "review.md", "segments/segment-00.json"], "passed": true, "protocol": "ariadne-soak-transport-review/v1", "segment_count": 1, "source_completed": 20, "source_conclusion": "success", "transport_violations": [], "violations": []}
+2026-10-28T10:26:37.4232151Z ##[group]Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+2026-10-28T10:26:37.4233444Z with:
+2026-10-28T10:26:37.4234052Z   name: streaming-soak-collected-40671702946-1
+2026-10-28T10:26:37.4234915Z   path: /home/runner/_work/_temp/soak-collected/
+2026-10-28T10:26:37.4235608Z   if-no-files-found: error
+2026-10-28T10:26:37.4236127Z   retention-days: 90
+2026-10-28T10:26:37.4237323Z   compression-level: 6
+2026-10-28T10:26:37.4237872Z   overwrite: false
+2026-10-28T10:26:37.4238452Z   include-hidden-files: false
+2026-10-28T10:26:37.4239042Z   archive: true
+2026-10-28T10:26:37.4239530Z env:
+2026-10-28T10:26:37.4240268Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-28T10:26:37.4241266Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:26:37.4242171Z ##[endgroup]
+2026-10-28T10:26:37.8623476Z With the provided path, there will be 5 files uploaded
+2026-10-28T10:26:37.8660880Z Artifact name is valid!
+2026-10-28T10:26:37.8697976Z Root directory input is valid!
+2026-10-28T10:26:38.5599978Z Uploading artifact: streaming-soak-collected-40671702946-1.zip
+2026-10-28T10:26:38.5699834Z Beginning upload of artifact content to blob storage
+2026-10-28T10:26:39.2146512Z Uploaded bytes 9364
+2026-10-28T10:26:39.3519867Z Finished uploading artifact content to blob storage!
+2026-10-28T10:26:39.3534946Z SHA256 digest of uploaded artifact is 04acd1faaccc0cbab3f3d12c43b1863c57acd400cb705b54429fa30446122fc8
+2026-10-28T10:26:39.3536366Z Finalizing artifact upload
+2026-10-28T10:26:40.2278611Z Artifact streaming-soak-collected-40671702946-1 successfully finalized. Artifact ID 12808866587
+2026-10-28T10:26:40.2281484Z Artifact streaming-soak-collected-40671702946-1 has been successfully uploaded! Final size is 9364 bytes. Artifact ID is 12808866587
+2026-10-28T10:26:40.2301091Z Artifact download URL: https://github.com/Anacreonsystems/ariadne/actions/runs/40671702946/artifacts/12808866587
+2026-10-28T10:26:40.2922764Z Post job cleanup.
+2026-10-28T10:26:40.5573089Z [command]/usr/bin/git version
+2026-10-28T10:26:40.5803904Z git version 2.56.0
+2026-10-28T10:26:40.5901462Z Temporarily overriding HOME='/home/runner/_work/_temp/44c5b908-6359-4752-816e-34e36fcfff14' before making global git config changes
+2026-10-28T10:26:40.5903901Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T10:26:40.5916961Z [command]/usr/bin/git config --global --add safe.directory /home/runner/_work/ariadne/ariadne
+2026-10-28T10:26:40.6032520Z Removing SSH command configuration
+2026-10-28T10:26:40.6083478Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T10:26:40.6162874Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T10:26:40.6883172Z Removing HTTP extra header
+2026-10-28T10:26:40.6919864Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T10:26:40.7043828Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T10:26:40.7865466Z Removing includeIf entries pointing to credentials config files
+2026-10-28T10:26:40.7892568Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T10:26:40.7997405Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T10:26:40.9129445Z Cleaning up orphan processes

@@ -1,0 +1,2056 @@
+﻿2026-10-28T10:23:40.0731255Z Current runner version: '2.338.2'
+2026-10-28T10:23:40.0746113Z Runner name: 'anacreon-runners-runner-xr5d7'
+2026-10-28T10:23:40.0747788Z Runner group name: 'default'
+2026-10-28T10:23:40.0749599Z Machine name: 'anacreon-runners-runner-xr5d7'
+2026-10-28T10:23:40.0755283Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T10:23:40.0761078Z Contents: read
+2026-10-28T10:23:40.0762344Z Metadata: read
+2026-10-28T10:23:40.0763345Z ##[endgroup]
+2026-10-28T10:23:40.0769151Z Secret source: Actions
+2026-10-28T10:23:40.0771732Z Cache mode: write
+2026-10-28T10:23:40.0773459Z Prepare workflow directory
+2026-10-28T10:23:40.1994629Z Prepare all required actions
+2026-10-28T10:23:40.2155337Z Getting action download info
+2026-10-28T10:23:40.9464739Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-28T10:23:41.7208504Z Download action repository 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-28T10:23:42.9380417Z Complete job name: Prepare on an existing self-hosted runner
+2026-10-28T10:23:43.2433937Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-28T10:23:43.2440514Z with:
+2026-10-28T10:23:43.2444442Z   ref: ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:23:43.2447886Z   persist-credentials: false
+2026-10-28T10:23:43.2451006Z   repository: Anacreonsystems/ariadne
+2026-10-28T10:23:43.2473618Z   token: ***
+2026-10-28T10:23:43.2634118Z   ssh-strict: true
+2026-10-28T10:23:43.2636737Z   ssh-user: git
+2026-10-28T10:23:43.2638448Z   clean: true
+2026-10-28T10:23:43.2639939Z   sparse-checkout-cone-mode: true
+2026-10-28T10:23:43.2642135Z   fetch-depth: 1
+2026-10-28T10:23:43.2644150Z   fetch-tags: false
+2026-10-28T10:23:43.2646039Z   show-progress: true
+2026-10-28T10:23:43.2647502Z   lfs: false
+2026-10-28T10:23:43.2648666Z   submodules: false
+2026-10-28T10:23:43.2649913Z   set-safe-directory: true
+2026-10-28T10:23:43.2651936Z   allow-unsafe-pr-checkout: false
+2026-10-28T10:23:43.2658341Z env:
+2026-10-28T10:23:43.2660624Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-28T10:23:43.2662969Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:23:43.2665028Z ##[endgroup]
+2026-10-28T10:23:43.5561086Z Syncing repository: Anacreonsystems/ariadne
+2026-10-28T10:23:43.5568142Z ##[group]Getting Git version info
+2026-10-28T10:23:43.5571528Z Working directory is '/home/runner/_work/ariadne/ariadne'
+2026-10-28T10:23:43.5575659Z [command]/usr/bin/git version
+2026-10-28T10:23:43.5577665Z git version 2.56.0
+2026-10-28T10:23:43.5585242Z ##[endgroup]
+2026-10-28T10:23:43.5608871Z Temporarily overriding HOME='/home/runner/_work/_temp/2083df69-0e57-437a-9a43-ef2bf0ea2608' before making global git config changes
+2026-10-28T10:23:43.5615027Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T10:23:43.5619622Z [command]/usr/bin/git config --global --add safe.directory /home/runner/_work/ariadne/ariadne
+2026-10-28T10:23:43.5789060Z Deleting the contents of '/home/runner/_work/ariadne/ariadne'
+2026-10-28T10:23:43.5801551Z ##[group]Determining repository object format
+2026-10-28T10:23:43.5807208Z ##[endgroup]
+2026-10-28T10:23:43.5811890Z ##[group]Initializing the repository
+2026-10-28T10:23:43.5819381Z [command]/usr/bin/git init /home/runner/_work/ariadne/ariadne
+2026-10-28T10:23:43.5953248Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-28T10:23:43.5969185Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-28T10:23:43.5990871Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-28T10:23:43.5998768Z hint: call:
+2026-10-28T10:23:43.6012548Z hint:
+2026-10-28T10:23:43.6022877Z hint: 	git config --global init.defaultBranch <name>
+2026-10-28T10:23:43.6027560Z hint:
+2026-10-28T10:23:43.6032394Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-28T10:23:43.6037516Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-28T10:23:43.6044439Z hint:
+2026-10-28T10:23:43.6048587Z hint: 	git branch -m <name>
+2026-10-28T10:23:43.6051477Z hint:
+2026-10-28T10:23:43.6054791Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-28T10:23:43.6060837Z Initialized empty Git repository in /home/runner/_work/ariadne/ariadne/.git/
+2026-10-28T10:23:43.6071457Z [command]/usr/bin/git remote add origin https://github.com/Anacreonsystems/ariadne
+2026-10-28T10:23:43.6096813Z ##[endgroup]
+2026-10-28T10:23:43.6101393Z ##[group]Disabling automatic garbage collection
+2026-10-28T10:23:43.6105605Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-28T10:23:43.6204852Z ##[endgroup]
+2026-10-28T10:23:43.6210624Z ##[group]Setting up auth
+2026-10-28T10:23:43.6214206Z Removing SSH command configuration
+2026-10-28T10:23:43.6219257Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T10:23:43.6300850Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T10:23:43.7037292Z Removing HTTP extra header
+2026-10-28T10:23:43.7042772Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T10:23:43.7150295Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T10:23:43.7959663Z Removing includeIf entries pointing to credentials config files
+2026-10-28T10:23:43.7976444Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T10:23:43.8118528Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T10:23:43.8984351Z [command]/usr/bin/git config --file /home/runner/_work/_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-28T10:23:43.9106377Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/_work/ariadne/ariadne/.git.path /home/runner/_work/_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:43.9263983Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path /home/runner/_work/_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:43.9374525Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:43.9462723Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:43.9559881Z ##[endgroup]
+2026-10-28T10:23:43.9564122Z ##[group]Fetching the repository
+2026-10-28T10:23:43.9570333Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:23:47.2125781Z From https://github.com/Anacreonsystems/ariadne
+2026-10-28T10:23:47.2127970Z  * branch            ff4972fb2c6df313056e828f72a3cad41dce9258 -> FETCH_HEAD
+2026-10-28T10:23:47.2151982Z [command]/usr/bin/git rev-parse --verify --quiet ff4972fb2c6df313056e828f72a3cad41dce9258^{object}
+2026-10-28T10:23:47.2217827Z ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:23:47.2227719Z ##[endgroup]
+2026-10-28T10:23:47.2229813Z ##[group]Determining the checkout info
+2026-10-28T10:23:47.2231402Z ##[endgroup]
+2026-10-28T10:23:47.2241469Z [command]/usr/bin/git sparse-checkout disable
+2026-10-28T10:23:47.2346831Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-28T10:23:47.2418740Z ##[group]Checking out the ref
+2026-10-28T10:23:47.2428986Z [command]/usr/bin/git checkout --progress --force ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:23:48.2746338Z Updating files:  69% (4054/5840)
+2026-10-28T10:23:48.2844343Z Updating files:  70% (4088/5840)
+2026-10-28T10:23:48.2964709Z Updating files:  71% (4147/5840)
+2026-10-28T10:23:48.3026028Z Updating files:  72% (4205/5840)
+2026-10-28T10:23:48.3070856Z Updating files:  73% (4264/5840)
+2026-10-28T10:23:48.3130293Z Updating files:  74% (4322/5840)
+2026-10-28T10:23:48.3201998Z Updating files:  75% (4380/5840)
+2026-10-28T10:23:48.3302441Z Updating files:  76% (4439/5840)
+2026-10-28T10:23:48.3324701Z Updating files:  77% (4497/5840)
+2026-10-28T10:23:48.3393031Z Updating files:  78% (4556/5840)
+2026-10-28T10:23:48.3462386Z Updating files:  79% (4614/5840)
+2026-10-28T10:23:48.3543263Z Updating files:  80% (4672/5840)
+2026-10-28T10:23:48.3602606Z Updating files:  81% (4731/5840)
+2026-10-28T10:23:48.3692720Z Updating files:  82% (4789/5840)
+2026-10-28T10:23:48.3724104Z Updating files:  83% (4848/5840)
+2026-10-28T10:23:48.3784676Z Updating files:  84% (4906/5840)
+2026-10-28T10:23:48.3848860Z Updating files:  85% (4964/5840)
+2026-10-28T10:23:48.3946204Z Updating files:  86% (5023/5840)
+2026-10-28T10:23:48.4002452Z Updating files:  87% (5081/5840)
+2026-10-28T10:23:48.4066180Z Updating files:  88% (5140/5840)
+2026-10-28T10:23:48.4125406Z Updating files:  89% (5198/5840)
+2026-10-28T10:23:48.4218480Z Updating files:  90% (5256/5840)
+2026-10-28T10:23:48.4305518Z Updating files:  91% (5315/5840)
+2026-10-28T10:23:48.4390666Z Updating files:  92% (5373/5840)
+2026-10-28T10:23:48.4457084Z Updating files:  93% (5432/5840)
+2026-10-28T10:23:48.4502827Z Updating files:  94% (5490/5840)
+2026-10-28T10:23:48.4602065Z Updating files:  95% (5548/5840)
+2026-10-28T10:23:48.4693779Z Updating files:  96% (5607/5840)
+2026-10-28T10:23:48.4853009Z Updating files:  97% (5665/5840)
+2026-10-28T10:23:48.4921516Z Updating files:  98% (5724/5840)
+2026-10-28T10:23:48.5116128Z Updating files:  99% (5782/5840)
+2026-10-28T10:23:48.5142115Z Updating files: 100% (5840/5840)
+2026-10-28T10:23:48.5160368Z Updating files: 100% (5840/5840), done.
+2026-10-28T10:23:48.5305446Z Note: switching to 'ff4972fb2c6df313056e828f72a3cad41dce9258'.
+2026-10-28T10:23:48.5322290Z 
+2026-10-28T10:23:48.5324225Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-28T10:23:48.5328376Z changes and commit them, and you can discard any commits you make in this
+2026-10-28T10:23:48.5330801Z state without impacting any branches by switching back to a branch.
+2026-10-28T10:23:48.5334053Z 
+2026-10-28T10:23:48.5335316Z If you want to create a new branch to retain commits you create, you may
+2026-10-28T10:23:48.5337311Z do so (now or later) by using -c with the switch command. Example:
+2026-10-28T10:23:48.5338208Z 
+2026-10-28T10:23:48.5339774Z   git switch -c <new-branch-name>
+2026-10-28T10:23:48.5340941Z 
+2026-10-28T10:23:48.5341451Z Or undo this operation with:
+2026-10-28T10:23:48.5342186Z 
+2026-10-28T10:23:48.5342632Z   git switch -
+2026-10-28T10:23:48.5343267Z 
+2026-10-28T10:23:48.5344137Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-28T10:23:48.5345329Z 
+2026-10-28T10:23:48.5346545Z HEAD is now at ff4972f Keep soak authority live through final observation
+2026-10-28T10:23:48.5381296Z ##[endgroup]
+2026-10-28T10:23:48.5495251Z [command]/usr/bin/git log -1 --format=%H
+2026-10-28T10:23:48.5515345Z ff4972fb2c6df313056e828f72a3cad41dce9258
+2026-10-28T10:23:48.5583282Z ##[group]Removing auth
+2026-10-28T10:23:48.5585531Z Removing SSH command configuration
+2026-10-28T10:23:48.5593373Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T10:23:48.5663759Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T10:23:48.6372209Z Removing HTTP extra header
+2026-10-28T10:23:48.6374127Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T10:23:48.6527687Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T10:23:48.7180780Z Removing includeIf entries pointing to credentials config files
+2026-10-28T10:23:48.7186488Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T10:23:48.7249432Z includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path
+2026-10-28T10:23:48.7251620Z includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path
+2026-10-28T10:23:48.7252890Z includeif.gitdir:/github/workspace/.git.path
+2026-10-28T10:23:48.7253921Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T10:23:48.7289562Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path
+2026-10-28T10:23:48.7350874Z /home/runner/_work/_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:48.7383503Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git.path \/home\/runner\/_work\/_temp\/git\-credentials\-f12f6bf4\-e211\-4850\-9ac3\-c42e24b8a2b2\.config
+2026-10-28T10:23:48.7482335Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path
+2026-10-28T10:23:48.7553282Z /home/runner/_work/_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:48.7578602Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/_work/ariadne/ariadne/.git/worktrees/*.path \/home\/runner\/_work\/_temp\/git\-credentials\-f12f6bf4\-e211\-4850\-9ac3\-c42e24b8a2b2\.config
+2026-10-28T10:23:48.7672854Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-28T10:23:48.7737593Z /github/runner_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:48.7754921Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-f12f6bf4\-e211\-4850\-9ac3\-c42e24b8a2b2\.config
+2026-10-28T10:23:48.7836038Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T10:23:48.7895700Z /github/runner_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config
+2026-10-28T10:23:48.7912509Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-f12f6bf4\-e211\-4850\-9ac3\-c42e24b8a2b2\.config
+2026-10-28T10:23:48.7994381Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T10:23:48.8663210Z Removing credentials config '/home/runner/_work/_temp/git-credentials-f12f6bf4-e211-4850-9ac3-c42e24b8a2b2.config'
+2026-10-28T10:23:48.8683924Z ##[endgroup]
+2026-10-28T10:23:48.9408880Z ##[group]Run python3 - <<'PY'
+2026-10-28T10:23:48.9410280Z [36;1mpython3 - <<'PY'[0m
+2026-10-28T10:23:48.9410986Z [36;1mimport os[0m
+2026-10-28T10:23:48.9411598Z [36;1mimport sys[0m
+2026-10-28T10:23:48.9412255Z [36;1mfrom pathlib import Path[0m
+2026-10-28T10:23:48.9412981Z [36;1mif sys.version_info < (3, 11):[0m
+2026-10-28T10:23:48.9414208Z [36;1m    raise SystemExit("The existing runner needs Python 3.11 or newer.")[0m
+2026-10-28T10:23:48.9415596Z [36;1mprofile = os.environ["PROFILE"][0m
+2026-10-28T10:23:48.9416994Z [36;1mstatic = profile == "72h" and os.environ["EXECUTION"] == "static"[0m
+2026-10-28T10:23:48.9418425Z [36;1mif static and os.environ["RUNNER_NAME"] != "k8s-runner":[0m
+2026-10-28T10:23:48.9420820Z [36;1m    raise SystemExit("72h requires the existing persistent k8s-runner; ephemeral ARC runners cannot retain this campaign between jobs.")[0m
+2026-10-28T10:23:48.9423498Z [36;1mrun_id = "gh-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"][0m
+2026-10-28T10:23:48.9427597Z [36;1mstate_root = ([0m
+2026-10-28T10:23:48.9428697Z [36;1m    Path(os.environ["ARIADNE_SOAK_ROOT"])[0m
+2026-10-28T10:23:48.9430018Z [36;1m    if static[0m
+2026-10-28T10:23:48.9431397Z [36;1m    else Path(os.environ["RUNNER_TEMP"]) / "ariadne-soak"[0m
+2026-10-28T10:23:48.9432889Z [36;1m).resolve()[0m
+2026-10-28T10:23:48.9433919Z [36;1mstate_root.mkdir(parents=True, exist_ok=True)[0m
+2026-10-28T10:23:48.9435582Z [36;1mwith open(os.environ["GITHUB_ENV"], "a") as environment:[0m
+2026-10-28T10:23:48.9441536Z [36;1m    environment.write(f"ARIADNE_SOAK_ROOT={state_root}\n")[0m
+2026-10-28T10:23:48.9443362Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a") as output:[0m
+2026-10-28T10:23:48.9446221Z [36;1m    output.write(f"long={str(static).lower()}\narc={str(not static).lower()}\nrun_id={run_id}\nstate_root={state_root}\n")[0m
+2026-10-28T10:23:48.9448821Z [36;1mwith open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:[0m
+2026-10-28T10:23:48.9451321Z [36;1m    summary.write(f"Runner: {os.environ['RUNNER_NAME']}\n\nCampaign: {run_id}\n\nProfile: {profile}\n\nState root: {state_root}\n")[0m
+2026-10-28T10:23:48.9453228Z [36;1mPY[0m
+2026-10-28T10:23:48.9454402Z [36;1menv -u DOCKER_HOST -u DOCKER_CONTEXT -u DOCKER_TLS -u DOCKER_TLS_VERIFY -u DOCKER_CERT_PATH \[0m
+2026-10-28T10:23:48.9456858Z [36;1m  docker --host=unix:///var/run/docker.sock info --format '{{.ServerVersion}}'[0m
+2026-10-28T10:23:48.9497045Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:23:48.9497833Z env:
+2026-10-28T10:23:48.9498484Z   ARIADNE_SOAK_ROOT: /var/tmp/ariadne-soak
+2026-10-28T10:23:48.9499616Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:23:48.9501037Z   PROFILE: smoke
+2026-10-28T10:23:48.9501584Z   EXECUTION: arc
+2026-10-28T10:23:48.9502119Z ##[endgroup]
+2026-10-28T10:23:49.2161512Z 29.9.2
+2026-10-28T10:23:49.2409603Z ##[group]Run python3 - <<'PY'
+2026-10-28T10:23:49.2410838Z [36;1mpython3 - <<'PY'[0m
+2026-10-28T10:23:49.2411483Z [36;1mimport json[0m
+2026-10-28T10:23:49.2412118Z [36;1mimport os[0m
+2026-10-28T10:23:49.2412721Z [36;1mimport runpy[0m
+2026-10-28T10:23:49.2413300Z [36;1mimport secrets[0m
+2026-10-28T10:23:49.2413877Z [36;1mimport tempfile[0m
+2026-10-28T10:23:49.2414846Z [36;1mfrom pathlib import Path[0m
+2026-10-28T10:23:49.2415578Z [36;1m[0m
+2026-10-28T10:23:49.2416674Z [36;1mhelpers = runpy.run_path(os.environ["SOAK_CLI"], run_name="soak_mount_probe")[0m
+2026-10-28T10:23:49.2418013Z [36;1mdocker = helpers["docker"][0m
+2026-10-28T10:23:49.2419028Z [36;1mstate_root = Path(os.environ["ARIADNE_SOAK_ROOT"])[0m
+2026-10-28T10:23:49.2419998Z [36;1mprobe_script = ([0m
+2026-10-28T10:23:49.2421033Z [36;1m    "import os; from pathlib import Path; p=Path('/probe'); "[0m
+2026-10-28T10:23:49.2422137Z [36;1m    "nonce=os.environ['PROBE_NONCE']; "[0m
+2026-10-28T10:23:49.2423305Z [36;1m    "assert (p/'request').read_text()==nonce; "[0m
+2026-10-28T10:23:49.2424355Z [36;1m    "(p/'response.tmp').write_text('ack-'+nonce); "[0m
+2026-10-28T10:23:49.2425504Z [36;1m    "(p/'response.tmp').replace(p/'response')"[0m
+2026-10-28T10:23:49.2426413Z [36;1m)[0m
+2026-10-28T10:23:49.2426961Z [36;1m[0m
+2026-10-28T10:23:49.2427475Z [36;1mdef probe(base):[0m
+2026-10-28T10:23:49.2428329Z [36;1m    base.mkdir(parents=True, exist_ok=True)[0m
+2026-10-28T10:23:49.2429572Z [36;1m    outcome = {"bidirectional": False, "source_path_missing": False}[0m
+2026-10-28T10:23:49.2432484Z [36;1m    with tempfile.TemporaryDirectory(prefix="docker-mount-", dir=base) as temporary:[0m
+2026-10-28T10:23:49.2433895Z [36;1m        directory = Path(temporary)[0m
+2026-10-28T10:23:49.2434858Z [36;1m        nonce = secrets.token_hex(16)[0m
+2026-10-28T10:23:49.2435984Z [36;1m        (directory / "request").write_text(nonce)[0m
+2026-10-28T10:23:49.2437198Z [36;1m        name = "ariadne-bind-probe-" + secrets.token_hex(8)[0m
+2026-10-28T10:23:49.2438036Z [36;1m        try:[0m
+2026-10-28T10:23:49.2438709Z [36;1m            result = docker([0m
+2026-10-28T10:23:49.2440519Z [36;1m                "run", "--rm", "--name", name, "--network", "none",[0m
+2026-10-28T10:23:49.2441709Z [36;1m                "--read-only", "--memory", "64m", "--pids-limit", "32",[0m
+2026-10-28T10:23:49.2443022Z [36;1m                "--mount", f"type=bind,src={directory},dst=/probe",[0m
+2026-10-28T10:23:49.2444287Z [36;1m                "-e", f"PROBE_NONCE={nonce}", helpers["PYTHON_IMAGE"],[0m
+2026-10-28T10:23:49.2445527Z [36;1m                "python", "-c", probe_script, check=False,[0m
+2026-10-28T10:23:49.2446585Z [36;1m            )[0m
+2026-10-28T10:23:49.2447327Z [36;1m            response = directory / "response"[0m
+2026-10-28T10:23:49.2448246Z [36;1m            outcome.update([0m
+2026-10-28T10:23:49.2449146Z [36;1m                docker_exit_code=result.returncode,[0m
+2026-10-28T10:23:49.2450885Z [36;1m                source_path_missing="bind source path does not exist" in result.stderr,[0m
+2026-10-28T10:23:49.2452181Z [36;1m                bidirectional=([0m
+2026-10-28T10:23:49.2453076Z [36;1m                    result.returncode == 0 and response.is_file()[0m
+2026-10-28T10:23:49.2454127Z [36;1m                    and response.read_text() == "ack-" + nonce[0m
+2026-10-28T10:23:49.2455029Z [36;1m                ),[0m
+2026-10-28T10:23:49.2455649Z [36;1m            )[0m
+2026-10-28T10:23:49.2456544Z [36;1m        except helpers["DockerCommandError"]:[0m
+2026-10-28T10:23:49.2457736Z [36;1m            outcome["docker_boundary_error"] = True[0m
+2026-10-28T10:23:49.2458467Z [36;1m        finally:[0m
+2026-10-28T10:23:49.2459383Z [36;1m            docker("rm", "-f", name, check=False)[0m
+2026-10-28T10:23:49.2460201Z [36;1m    return outcome[0m
+2026-10-28T10:23:49.2460632Z [36;1m[0m
+2026-10-28T10:23:49.2460952Z [36;1mreport = {[0m
+2026-10-28T10:23:49.2462474Z [36;1m    "protocol": "ariadne-ci-bind-mount/v1",[0m
+2026-10-28T10:23:49.2463470Z [36;1m    "run_id": os.environ["GITHUB_RUN_ID"],[0m
+2026-10-28T10:23:49.2464462Z [36;1m    "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],[0m
+2026-10-28T10:23:49.2465242Z [36;1m    "profile": os.environ["PROFILE"],[0m
+2026-10-28T10:23:49.2466786Z [36;1m    "state_root_kind": "persistent" if os.environ["PROFILE"] == "72h" and os.environ["EXECUTION"] == "static" else "runner_temp",[0m
+2026-10-28T10:23:49.2468306Z [36;1m    "state_root": str(state_root),[0m
+2026-10-28T10:23:49.2468957Z [36;1m}[0m
+2026-10-28T10:23:49.2469461Z [36;1mroots = [("selected_root", state_root)][0m
+2026-10-28T10:23:49.2471098Z [36;1mif os.environ["PROFILE"] == "smoke":[0m
+2026-10-28T10:23:49.2472456Z [36;1m    roots.insert(0, ("legacy_persistent_root_control", Path("/var/tmp/ariadne-soak")))[0m
+2026-10-28T10:23:49.2473778Z [36;1mfor label, base in roots:[0m
+2026-10-28T10:23:49.2474497Z [36;1m    try:[0m
+2026-10-28T10:23:49.2475488Z [36;1m        report[label] = probe(base)[0m
+2026-10-28T10:23:49.2476660Z [36;1m    except (OSError, helpers["DockerCommandError"]) as error:[0m
+2026-10-28T10:23:49.2478211Z [36;1m        report[label] = {"bidirectional": False, "probe_error": type(error).__name__}[0m
+2026-10-28T10:23:49.2479631Z [36;1mtarget = Path(os.environ["RUNNER_TEMP"]) / ([0m
+2026-10-28T10:23:49.2481317Z [36;1m    f"soak-bind-probe-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}.json"[0m
+2026-10-28T10:23:49.2482538Z [36;1m)[0m
+2026-10-28T10:23:49.2483331Z [36;1mtarget.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n")[0m
+2026-10-28T10:23:49.2484753Z [36;1mprint("SOAK_BIND_MOUNT_PROBE_JSON=" + json.dumps(report, sort_keys=True))[0m
+2026-10-28T10:23:49.2486168Z [36;1mif not report["selected_root"]["bidirectional"]:[0m
+2026-10-28T10:23:49.2487708Z [36;1m    raise SystemExit("The selected state directory is not shared bidirectionally with Docker.")[0m
+2026-10-28T10:23:49.2489043Z [36;1mPY[0m
+2026-10-28T10:23:49.2511393Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:23:49.2512165Z env:
+2026-10-28T10:23:49.2512928Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:23:49.2514692Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:23:49.2515717Z   PROFILE: smoke
+2026-10-28T10:23:49.2516438Z   EXECUTION: arc
+2026-10-28T10:23:49.2517015Z ##[endgroup]
+2026-10-28T10:23:57.7532466Z SOAK_BIND_MOUNT_PROBE_JSON={"legacy_persistent_root_control": {"bidirectional": false, "docker_exit_code": 125, "source_path_missing": true}, "profile": "smoke", "protocol": "ariadne-ci-bind-mount/v1", "run_attempt": "1", "run_id": "40671702946", "selected_root": {"bidirectional": true, "docker_exit_code": 0, "source_path_missing": false}, "state_root": "/home/runner/_work/_temp/ariadne-soak", "state_root_kind": "runner_temp"}
+2026-10-28T10:23:57.7942892Z ##[group]Run python3 - <<'PY'
+2026-10-28T10:23:57.7943566Z [36;1mpython3 - <<'PY'[0m
+2026-10-28T10:23:57.7944117Z [36;1mimport os[0m
+2026-10-28T10:23:57.7944707Z [36;1mimport shutil[0m
+2026-10-28T10:23:57.7945535Z [36;1mfrom pathlib import Path[0m
+2026-10-28T10:23:57.7946483Z [36;1mpath = Path(os.environ['RUNNER_TEMP']) / 'soak-public'[0m
+2026-10-28T10:23:57.7947539Z [36;1mshutil.rmtree(path, ignore_errors=True)[0m
+2026-10-28T10:23:57.7948384Z [36;1mpath.mkdir(parents=True)[0m
+2026-10-28T10:23:57.7949131Z [36;1mPY[0m
+2026-10-28T10:23:57.7970693Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:23:57.7971489Z env:
+2026-10-28T10:23:57.7972290Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:23:57.7973777Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:23:57.7975022Z ##[endgroup]
+2026-10-28T10:23:57.8881220Z ##[group]Run python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --preflight --required-free-bytes "$REQUIRED_FREE"
+2026-10-28T10:23:57.8883815Z [36;1mpython3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --preflight --required-free-bytes "$REQUIRED_FREE"[0m
+2026-10-28T10:23:57.8908712Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:23:57.8909386Z env:
+2026-10-28T10:23:57.8910006Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:23:57.8925503Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:23:57.8926576Z   CAMPAIGN: gh-40671702946-1
+2026-10-28T10:23:57.8927051Z   REQUIRED_FREE: 0
+2026-10-28T10:23:57.8927570Z ##[endgroup]
+2026-10-28T10:23:58.5433318Z ARIADNE_SOAK_CAPACITY_JSON={"state_free_bytes": 96128991232, "docker_volume_free_bytes": 96128790528, "required_free_bytes": 0, "passed": true}
+2026-10-28T10:23:58.6439116Z ##[group]Run python3 "$SOAK_CLI" start --bootstrap --run-id "$CAMPAIGN" --require-clean --smoke \
+2026-10-28T10:23:58.6441648Z [36;1mpython3 "$SOAK_CLI" start --bootstrap --run-id "$CAMPAIGN" --require-clean --smoke \[0m
+2026-10-28T10:23:58.6442756Z [36;1m  --target-seconds 45 --segment-seconds 60 --segment-count 1 \[0m
+2026-10-28T10:23:58.6443594Z [36;1m  --records-per-second 2 --checkpoint-every 2 --owner-fault-every 3 \[0m
+2026-10-28T10:23:58.6444575Z [36;1m  --process-loss-segments 0[0m
+2026-10-28T10:23:58.6445655Z [36;1mpython3 "$SOAK_CLI" watch --run-id "$CAMPAIGN" --segment 0 --duration 60 --poll-seconds 3[0m
+2026-10-28T10:23:58.6461571Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:23:58.6461994Z env:
+2026-10-28T10:23:58.6462456Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:23:58.6463295Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:23:58.6463914Z   CAMPAIGN: gh-40671702946-1
+2026-10-28T10:23:58.6464407Z ##[endgroup]
+2026-10-28T10:24:41.7416242Z {
+2026-10-28T10:24:41.7442422Z   "boot_id": "4f62001a3e814401959a974bf878004b",
+2026-10-28T10:24:41.7444375Z   "database": {
+2026-10-28T10:24:41.7447447Z     "database_bytes": 10732047,
+2026-10-28T10:24:41.7448491Z     "release_session_remaining_seconds": 299.311334,
+2026-10-28T10:24:41.7449622Z     "replicas": [
+2026-10-28T10:24:41.7450549Z       {
+2026-10-28T10:24:41.7451366Z         "application_name": "walreceiver",
+2026-10-28T10:24:41.7452344Z         "flush_lag": "0:00:00.001293",
+2026-10-28T10:24:41.7455645Z         "replay_lag": "0:00:00.001302",
+2026-10-28T10:24:41.7456426Z         "state": "streaming",
+2026-10-28T10:24:41.7457253Z         "sync_state": "sync",
+2026-10-28T10:24:41.7457902Z         "write_lag": "0:00:00.000485"
+2026-10-28T10:24:41.7458820Z       }
+2026-10-28T10:24:41.7459297Z     ],
+2026-10-28T10:24:41.7459773Z     "schema_relation_bytes": 3022848.0,
+2026-10-28T10:24:41.7460525Z     "synchronous_commit": "remote_apply"
+2026-10-28T10:24:41.7461184Z   },
+2026-10-28T10:24:41.7461842Z   "elapsed_seconds": 1.340007,
+2026-10-28T10:24:41.7462932Z   "observed_at": "2026-10-28T10:24:41.500664+00:00",
+2026-10-28T10:24:41.7463957Z   "phase": "IDLE",
+2026-10-28T10:24:41.7464513Z   "pressure": [
+2026-10-28T10:24:41.7465156Z     {
+2026-10-28T10:24:41.7465845Z       "channel": "soak",
+2026-10-28T10:24:41.7466517Z       "max_bytes": 16777216,
+2026-10-28T10:24:41.7467187Z       "max_records": 1000,
+2026-10-28T10:24:41.7467812Z       "partition_id": "a",
+2026-10-28T10:24:41.7468645Z       "used_bytes": 10,
+2026-10-28T10:24:41.7469405Z       "used_metadata_records": 1,
+2026-10-28T10:24:41.7469972Z       "used_records": 1
+2026-10-28T10:24:41.7470710Z     },
+2026-10-28T10:24:41.7471361Z     {
+2026-10-28T10:24:41.7471919Z       "channel": "soak",
+2026-10-28T10:24:41.7472494Z       "max_bytes": 16777216,
+2026-10-28T10:24:41.7473368Z       "max_records": 1000,
+2026-10-28T10:24:41.7474103Z       "partition_id": "b",
+2026-10-28T10:24:41.7474715Z       "used_bytes": 10,
+2026-10-28T10:24:41.7475562Z       "used_metadata_records": 1,
+2026-10-28T10:24:41.7476371Z       "used_records": 1
+2026-10-28T10:24:41.7477023Z     },
+2026-10-28T10:24:41.7477652Z     {
+2026-10-28T10:24:41.7478585Z       "channel": "soak",
+2026-10-28T10:24:41.7479235Z       "max_bytes": 16777216,
+2026-10-28T10:24:41.7479763Z       "max_records": 1000,
+2026-10-28T10:24:41.7480435Z       "partition_id": "c",
+2026-10-28T10:24:41.7480941Z       "used_bytes": 10,
+2026-10-28T10:24:41.7481627Z       "used_metadata_records": 1,
+2026-10-28T10:24:41.7482399Z       "used_records": 1
+2026-10-28T10:24:41.7483108Z     },
+2026-10-28T10:24:41.7483529Z     {
+2026-10-28T10:24:41.7483962Z       "channel": "soak",
+2026-10-28T10:24:41.7484453Z       "max_bytes": 16777216,
+2026-10-28T10:24:41.7484964Z       "max_records": 1000,
+2026-10-28T10:24:41.7485481Z       "partition_id": "d",
+2026-10-28T10:24:41.7486288Z       "used_bytes": 10,
+2026-10-28T10:24:41.7487018Z       "used_metadata_records": 2,
+2026-10-28T10:24:41.7488773Z       "used_records": 2
+2026-10-28T10:24:41.7489720Z     },
+2026-10-28T10:24:41.7490590Z     {
+2026-10-28T10:24:41.7491184Z       "channel": "soak",
+2026-10-28T10:24:41.7492009Z       "max_bytes": 16777216,
+2026-10-28T10:24:41.7493005Z       "max_records": 1000,
+2026-10-28T10:24:41.7493895Z       "partition_id": "j",
+2026-10-28T10:24:41.7494733Z       "used_bytes": 10,
+2026-10-28T10:24:41.7495489Z       "used_metadata_records": 2,
+2026-10-28T10:24:41.7496414Z       "used_records": 2
+2026-10-28T10:24:41.7497222Z     },
+2026-10-28T10:24:41.7498427Z     {
+2026-10-28T10:24:41.7499841Z       "channel": "soak",
+2026-10-28T10:24:41.7500749Z       "max_bytes": 16777216,
+2026-10-28T10:24:41.7501532Z       "max_records": 1000,
+2026-10-28T10:24:41.7502240Z       "partition_id": "source",
+2026-10-28T10:24:41.7503851Z       "used_bytes": 10,
+2026-10-28T10:24:41.7504581Z       "used_metadata_records": 1,
+2026-10-28T10:24:41.7505528Z       "used_records": 1
+2026-10-28T10:24:41.7511981Z     }
+2026-10-28T10:24:41.7513087Z   ],
+2026-10-28T10:24:41.7513843Z   "run": {
+2026-10-28T10:24:41.7555744Z     "completed_at": null,
+2026-10-28T10:24:41.7557260Z     "expected_d_digest": "ced72ddf032199edbdabecd60014b9f3a935f3133f94bfc9deab69f5041470d4",
+2026-10-28T10:24:41.7558458Z     "last_checkpoint_source": 0,
+2026-10-28T10:24:41.7559179Z     "last_progress_at": "2026-10-28T10:24:41.477728+00:00",
+2026-10-28T10:24:41.7560794Z     "owner_faults": 0,
+2026-10-28T10:24:41.7561239Z     "process_boots": 1,
+2026-10-28T10:24:41.7561646Z     "run_id": "gh-40671702946-1",
+2026-10-28T10:24:41.7563096Z     "smoke": true,
+2026-10-28T10:24:41.7563479Z     "source_completed": 1,
+2026-10-28T10:24:41.7564029Z     "started_at": "2026-10-28T10:24:40.144205+00:00",
+2026-10-28T10:24:41.7564515Z     "target_seconds": 45
+2026-10-28T10:24:41.7564879Z   },
+2026-10-28T10:24:41.7565190Z   "run_id": "gh-40671702946-1",
+2026-10-28T10:24:41.7565576Z   "states": {
+2026-10-28T10:24:41.7565892Z     "A": {
+2026-10-28T10:24:41.7566190Z       "count": 1,
+2026-10-28T10:24:41.7567015Z       "rolling_digest": "996dd4f781b2018bcbc097d5fdbab9ccf95cc8c77357be71f7945ee983423b8f"
+2026-10-28T10:24:41.7568066Z     },
+2026-10-28T10:24:41.7568439Z     "B": {
+2026-10-28T10:24:41.7568854Z       "count": 1,
+2026-10-28T10:24:41.7569772Z       "rolling_digest": "996dd4f781b2018bcbc097d5fdbab9ccf95cc8c77357be71f7945ee983423b8f"
+2026-10-28T10:24:41.7571209Z     },
+2026-10-28T10:24:41.7571726Z     "C": {
+2026-10-28T10:24:41.7572233Z       "count": 1,
+2026-10-28T10:24:41.7573264Z       "rolling_digest": "996dd4f781b2018bcbc097d5fdbab9ccf95cc8c77357be71f7945ee983423b8f"
+2026-10-28T10:24:41.7574237Z     },
+2026-10-28T10:24:41.7574660Z     "D": {
+2026-10-28T10:24:41.7575123Z       "count": 2,
+2026-10-28T10:24:41.7576062Z       "rolling_digest": "ced72ddf032199edbdabecd60014b9f3a935f3133f94bfc9deab69f5041470d4"
+2026-10-28T10:24:41.7577050Z     },
+2026-10-28T10:24:41.7577483Z     "J": {
+2026-10-28T10:24:41.7577921Z       "count": 2,
+2026-10-28T10:24:41.7578850Z       "rolling_digest": "ced72ddf032199edbdabecd60014b9f3a935f3133f94bfc9deab69f5041470d4"
+2026-10-28T10:24:41.7595019Z     }
+2026-10-28T10:24:41.7595828Z   }
+2026-10-28T10:24:41.7596123Z }
+2026-10-28T10:25:46.0062366Z {
+2026-10-28T10:25:46.0066545Z   "duration_seconds": 63.970819,
+2026-10-28T10:25:46.0069128Z   "ended_at": "2026-10-28T10:25:45.996255+00:00",
+2026-10-28T10:25:46.0077296Z   "manifest_digest": "043be2496b2cb9169efb0a565d96895e55a7a2a093441eab15f5807ad23fcd0f",
+2026-10-28T10:25:46.0079477Z   "oracles": {
+2026-10-28T10:25:46.0081080Z     "barrier": {
+2026-10-28T10:25:46.0082968Z       "observations": {
+2026-10-28T10:25:46.0084133Z         "checkpoint_intents": 1,
+2026-10-28T10:25:46.0085096Z         "completions": 1,
+2026-10-28T10:25:46.0086110Z         "log_entries": 6,
+2026-10-28T10:25:46.0087075Z         "participant_acks": 5,
+2026-10-28T10:25:46.0087896Z         "recovery_plans": 0,
+2026-10-28T10:25:46.0088648Z         "revisions": 1,
+2026-10-28T10:25:46.0089709Z         "source_barriers": 1
+2026-10-28T10:25:46.0091047Z       },
+2026-10-28T10:25:46.0093219Z       "passed": true,
+2026-10-28T10:25:46.0094057Z       "returncode": 0,
+2026-10-28T10:25:46.0094904Z       "violations": []
+2026-10-28T10:25:46.0095713Z     },
+2026-10-28T10:25:46.0096511Z     "join": {
+2026-10-28T10:25:46.0097398Z       "observations": [
+2026-10-28T10:25:46.0098241Z         {
+2026-10-28T10:25:46.0098993Z           "buffered": 0,
+2026-10-28T10:25:46.0100007Z           "participant": "soak-r1:B",
+2026-10-28T10:25:46.0101494Z           "receipts": 0,
+2026-10-28T10:25:46.0102381Z           "turns": 0
+2026-10-28T10:25:46.0103191Z         },
+2026-10-28T10:25:46.0103945Z         {
+2026-10-28T10:25:46.0107276Z           "buffered": 0,
+2026-10-28T10:25:46.0109460Z           "participant": "soak-r1:J",
+2026-10-28T10:25:46.0117792Z           "receipts": 0,
+2026-10-28T10:25:46.0119438Z           "turns": 0
+2026-10-28T10:25:46.0121173Z         },
+2026-10-28T10:25:46.0122165Z         {
+2026-10-28T10:25:46.0123227Z           "buffered": 0,
+2026-10-28T10:25:46.0124676Z           "participant": "soak-r1:A",
+2026-10-28T10:25:46.0126133Z           "receipts": 0,
+2026-10-28T10:25:46.0127243Z           "turns": 0
+2026-10-28T10:25:46.0129080Z         },
+2026-10-28T10:25:46.0130526Z         {
+2026-10-28T10:25:46.0131560Z           "buffered": 0,
+2026-10-28T10:25:46.0132976Z           "participant": "soak-r1:C",
+2026-10-28T10:25:46.0134311Z           "receipts": 0,
+2026-10-28T10:25:46.0135734Z           "turns": 0
+2026-10-28T10:25:46.0136864Z         },
+2026-10-28T10:25:46.0138066Z         {
+2026-10-28T10:25:46.0141281Z           "buffered": 0,
+2026-10-28T10:25:46.0142494Z           "participant": "soak-r1:D",
+2026-10-28T10:25:46.0144029Z           "receipts": 0,
+2026-10-28T10:25:46.0145085Z           "turns": 0
+2026-10-28T10:25:46.0146091Z         }
+2026-10-28T10:25:46.0146819Z       ],
+2026-10-28T10:25:46.0147492Z       "passed": true,
+2026-10-28T10:25:46.0148264Z       "returncode": 0,
+2026-10-28T10:25:46.0149043Z       "violations": []
+2026-10-28T10:25:46.0150006Z     },
+2026-10-28T10:25:46.0150973Z     "release": {
+2026-10-28T10:25:46.0151835Z       "passed": true,
+2026-10-28T10:25:46.0152716Z       "returncode": 0,
+2026-10-28T10:25:46.0153536Z       "violations": []
+2026-10-28T10:25:46.0154331Z     },
+2026-10-28T10:25:46.0155083Z     "stream": {
+2026-10-28T10:25:46.0155860Z       "observations": {
+2026-10-28T10:25:46.0156690Z         "completions": 0,
+2026-10-28T10:25:46.0157591Z         "consumers": 0,
+2026-10-28T10:25:46.0158497Z         "metadata_operations": 1,
+2026-10-28T10:25:46.0159444Z         "metadata_summaries": 6,
+2026-10-28T10:25:46.0160830Z         "object_identities": 0,
+2026-10-28T10:25:46.0161714Z         "partitions": 6,
+2026-10-28T10:25:46.0162601Z         "records": 0,
+2026-10-28T10:25:46.0163436Z         "tombstones": 0
+2026-10-28T10:25:46.0164188Z       },
+2026-10-28T10:25:46.0164939Z       "passed": true,
+2026-10-28T10:25:46.0165762Z       "returncode": 0,
+2026-10-28T10:25:46.0166547Z       "violations": []
+2026-10-28T10:25:46.0167314Z     }
+2026-10-28T10:25:46.0167926Z   },
+2026-10-28T10:25:46.0168635Z   "passed": true,
+2026-10-28T10:25:46.0169497Z   "previous_segment_digest": null,
+2026-10-28T10:25:46.0172587Z   "process_loss_injected": true,
+2026-10-28T10:25:46.0173633Z   "protocol": "ariadne-long-soak-segment/v1",
+2026-10-28T10:25:46.0174728Z   "run_id": "gh-40671702946-1",
+2026-10-28T10:25:46.0176307Z   "runner_identity_digest": "dc866b2bd7e74884319864b83d83c01a3480ddefe728014567a22d09e7d1bd41",
+2026-10-28T10:25:46.0177932Z   "samples": [
+2026-10-28T10:25:46.0178701Z     {
+2026-10-28T10:25:46.0179651Z       "boot_id": "4f62001a3e814401959a974bf878004b",
+2026-10-28T10:25:46.0180874Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0181704Z       "database": {
+2026-10-28T10:25:46.0182538Z         "database_bytes": 10732047,
+2026-10-28T10:25:46.0183643Z         "release_session_remaining_seconds": 299.311334,
+2026-10-28T10:25:46.0184545Z         "replicas": [
+2026-10-28T10:25:46.0185271Z           {
+2026-10-28T10:25:46.0186836Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0187762Z             "flush_lag": "0:00:00.001293",
+2026-10-28T10:25:46.0188595Z             "replay_lag": "0:00:00.001302",
+2026-10-28T10:25:46.0189255Z             "state": "streaming",
+2026-10-28T10:25:46.0190400Z             "sync_state": "sync",
+2026-10-28T10:25:46.0191120Z             "write_lag": "0:00:00.000485"
+2026-10-28T10:25:46.0191680Z           }
+2026-10-28T10:25:46.0192142Z         ],
+2026-10-28T10:25:46.0194901Z         "schema_relation_bytes": 3022848.0,
+2026-10-28T10:25:46.0195814Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0196825Z       },
+2026-10-28T10:25:46.0197344Z       "elapsed_seconds": 1.340007,
+2026-10-28T10:25:46.0197952Z       "last_checkpoint_source": 0,
+2026-10-28T10:25:46.0198715Z       "metrics": {
+2026-10-28T10:25:46.0199631Z         "primary_data_bytes": 68105683,
+2026-10-28T10:25:46.0200448Z         "service": {
+2026-10-28T10:25:46.0201003Z           "BlockIO": "0B / 4.62MB",
+2026-10-28T10:25:46.0201646Z           "CPUPerc": "41.00%",
+2026-10-28T10:25:46.0202672Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0204021Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0204924Z           "MemPerc": "3.57%",
+2026-10-28T10:25:46.0205799Z           "MemUsage": "36.59MiB / 1GiB",
+2026-10-28T10:25:46.0206874Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0207920Z           "NetIO": "620kB / 802kB",
+2026-10-28T10:25:46.0208824Z           "PIDs": "3"
+2026-10-28T10:25:46.0210734Z         },
+2026-10-28T10:25:46.0211394Z         "service_cpu_percent": 41.0,
+2026-10-28T10:25:46.0212327Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0213366Z         "service_rss_bytes": 38367395,
+2026-10-28T10:25:46.0214326Z         "standby_data_bytes": 68348367
+2026-10-28T10:25:46.0215101Z       },
+2026-10-28T10:25:46.0215844Z       "observed_at": "2026-10-28T10:24:43.451380+00:00",
+2026-10-28T10:25:46.0216808Z       "owner_faults": 0,
+2026-10-28T10:25:46.0217751Z       "phase": "IDLE",
+2026-10-28T10:25:46.0218641Z       "pressure": [
+2026-10-28T10:25:46.0219457Z         {
+2026-10-28T10:25:46.0220510Z           "channel": "soak",
+2026-10-28T10:25:46.0221231Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0221767Z           "max_records": 1000,
+2026-10-28T10:25:46.0222296Z           "partition_id": "a",
+2026-10-28T10:25:46.0222812Z           "used_bytes": 10,
+2026-10-28T10:25:46.0223322Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0223858Z           "used_records": 1
+2026-10-28T10:25:46.0224554Z         },
+2026-10-28T10:25:46.0225183Z         {
+2026-10-28T10:25:46.0225683Z           "channel": "soak",
+2026-10-28T10:25:46.0226304Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0226858Z           "max_records": 1000,
+2026-10-28T10:25:46.0227417Z           "partition_id": "b",
+2026-10-28T10:25:46.0227961Z           "used_bytes": 10,
+2026-10-28T10:25:46.0228523Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0229108Z           "used_records": 1
+2026-10-28T10:25:46.0229785Z         },
+2026-10-28T10:25:46.0230736Z         {
+2026-10-28T10:25:46.0231239Z           "channel": "soak",
+2026-10-28T10:25:46.0231807Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0232376Z           "max_records": 1000,
+2026-10-28T10:25:46.0233013Z           "partition_id": "c",
+2026-10-28T10:25:46.0233576Z           "used_bytes": 10,
+2026-10-28T10:25:46.0234224Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0235093Z           "used_records": 1
+2026-10-28T10:25:46.0235645Z         },
+2026-10-28T10:25:46.0236087Z         {
+2026-10-28T10:25:46.0236561Z           "channel": "soak",
+2026-10-28T10:25:46.0237104Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0237652Z           "max_records": 1000,
+2026-10-28T10:25:46.0238251Z           "partition_id": "d",
+2026-10-28T10:25:46.0238826Z           "used_bytes": 10,
+2026-10-28T10:25:46.0239491Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0240441Z           "used_records": 2
+2026-10-28T10:25:46.0241791Z         },
+2026-10-28T10:25:46.0242298Z         {
+2026-10-28T10:25:46.0242807Z           "channel": "soak",
+2026-10-28T10:25:46.0243437Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0244049Z           "max_records": 1000,
+2026-10-28T10:25:46.0244838Z           "partition_id": "j",
+2026-10-28T10:25:46.0245542Z           "used_bytes": 10,
+2026-10-28T10:25:46.0246090Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0246663Z           "used_records": 2
+2026-10-28T10:25:46.0247212Z         },
+2026-10-28T10:25:46.0247688Z         {
+2026-10-28T10:25:46.0248182Z           "channel": "soak",
+2026-10-28T10:25:46.0248740Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0249341Z           "max_records": 1000,
+2026-10-28T10:25:46.0250295Z           "partition_id": "source",
+2026-10-28T10:25:46.0251124Z           "used_bytes": 10,
+2026-10-28T10:25:46.0251888Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0252690Z           "used_records": 1
+2026-10-28T10:25:46.0253410Z         }
+2026-10-28T10:25:46.0254061Z       ],
+2026-10-28T10:25:46.0254715Z       "process_boots": 1,
+2026-10-28T10:25:46.0255604Z       "source_completed": 1
+2026-10-28T10:25:46.0256363Z     },
+2026-10-28T10:25:46.0257012Z     {
+2026-10-28T10:25:46.0257868Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0258980Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0259979Z       "database": {
+2026-10-28T10:25:46.0261198Z         "database_bytes": 11933363,
+2026-10-28T10:25:46.0262279Z         "release_session_remaining_seconds": 296.810263,
+2026-10-28T10:25:46.0263906Z         "replicas": [
+2026-10-28T10:25:46.0264653Z           {
+2026-10-28T10:25:46.0265438Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0266510Z             "flush_lag": "0:00:00.000947",
+2026-10-28T10:25:46.0267392Z             "replay_lag": "0:00:00.001119",
+2026-10-28T10:25:46.0268306Z             "state": "streaming",
+2026-10-28T10:25:46.0269233Z             "sync_state": "sync",
+2026-10-28T10:25:46.0270537Z             "write_lag": "0:00:00.000398"
+2026-10-28T10:25:46.0271401Z           }
+2026-10-28T10:25:46.0272081Z         ],
+2026-10-28T10:25:46.0272875Z         "schema_relation_bytes": 4431872.0,
+2026-10-28T10:25:46.0273888Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0274841Z       },
+2026-10-28T10:25:46.0275544Z       "elapsed_seconds": 12.696276,
+2026-10-28T10:25:46.0276495Z       "last_checkpoint_source": 4,
+2026-10-28T10:25:46.0277393Z       "metrics": {
+2026-10-28T10:25:46.0278239Z         "primary_data_bytes": 68893355,
+2026-10-28T10:25:46.0279216Z         "service": {
+2026-10-28T10:25:46.0280372Z           "BlockIO": "0B / 4.63MB",
+2026-10-28T10:25:46.0281287Z           "CPUPerc": "24.09%",
+2026-10-28T10:25:46.0282400Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0283559Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0284361Z           "MemPerc": "3.27%",
+2026-10-28T10:25:46.0285140Z           "MemUsage": "33.52MiB / 1GiB",
+2026-10-28T10:25:46.0286228Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0287205Z           "NetIO": "1.8MB / 1.94MB",
+2026-10-28T10:25:46.0288075Z           "PIDs": "3"
+2026-10-28T10:25:46.0288865Z         },
+2026-10-28T10:25:46.0289757Z         "service_cpu_percent": 24.09,
+2026-10-28T10:25:46.0291168Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0292118Z         "service_rss_bytes": 35148267,
+2026-10-28T10:25:46.0293001Z         "standby_data_bytes": 68970959
+2026-10-28T10:25:46.0293776Z       },
+2026-10-28T10:25:46.0294522Z       "observed_at": "2026-10-28T10:24:54.508161+00:00",
+2026-10-28T10:25:46.0295524Z       "owner_faults": 1,
+2026-10-28T10:25:46.0296411Z       "phase": "IDLE",
+2026-10-28T10:25:46.0296959Z       "pressure": [
+2026-10-28T10:25:46.0297511Z         {
+2026-10-28T10:25:46.0298270Z           "channel": "soak",
+2026-10-28T10:25:46.0299113Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0300276Z           "max_records": 1000,
+2026-10-28T10:25:46.0302203Z           "partition_id": "a",
+2026-10-28T10:25:46.0302859Z           "used_bytes": 0,
+2026-10-28T10:25:46.0303535Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0304296Z           "used_records": 0
+2026-10-28T10:25:46.0305042Z         },
+2026-10-28T10:25:46.0305825Z         {
+2026-10-28T10:25:46.0306750Z           "channel": "soak",
+2026-10-28T10:25:46.0307570Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0308729Z           "max_records": 1000,
+2026-10-28T10:25:46.0309749Z           "partition_id": "b",
+2026-10-28T10:25:46.0310837Z           "used_bytes": 0,
+2026-10-28T10:25:46.0311715Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0312549Z           "used_records": 0
+2026-10-28T10:25:46.0313348Z         },
+2026-10-28T10:25:46.0314131Z         {
+2026-10-28T10:25:46.0314833Z           "channel": "soak",
+2026-10-28T10:25:46.0315674Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0316703Z           "max_records": 1000,
+2026-10-28T10:25:46.0317634Z           "partition_id": "c",
+2026-10-28T10:25:46.0318349Z           "used_bytes": 0,
+2026-10-28T10:25:46.0319282Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0320572Z           "used_records": 0
+2026-10-28T10:25:46.0321427Z         },
+2026-10-28T10:25:46.0322149Z         {
+2026-10-28T10:25:46.0322812Z           "channel": "soak",
+2026-10-28T10:25:46.0325040Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0326457Z           "max_records": 1000,
+2026-10-28T10:25:46.0381779Z           "partition_id": "d",
+2026-10-28T10:25:46.0383881Z           "used_bytes": 0,
+2026-10-28T10:25:46.0384818Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0385809Z           "used_records": 0
+2026-10-28T10:25:46.0386649Z         },
+2026-10-28T10:25:46.0387357Z         {
+2026-10-28T10:25:46.0388093Z           "channel": "soak",
+2026-10-28T10:25:46.0388942Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0389999Z           "max_records": 1000,
+2026-10-28T10:25:46.0391296Z           "partition_id": "j",
+2026-10-28T10:25:46.0392216Z           "used_bytes": 0,
+2026-10-28T10:25:46.0392957Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0393859Z           "used_records": 0
+2026-10-28T10:25:46.0394606Z         },
+2026-10-28T10:25:46.0395320Z         {
+2026-10-28T10:25:46.0396117Z           "channel": "soak",
+2026-10-28T10:25:46.0396940Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0397807Z           "max_records": 1000,
+2026-10-28T10:25:46.0398583Z           "partition_id": "source",
+2026-10-28T10:25:46.0399414Z           "used_bytes": 0,
+2026-10-28T10:25:46.0402104Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0402968Z           "used_records": 0
+2026-10-28T10:25:46.0404870Z         }
+2026-10-28T10:25:46.0405471Z       ],
+2026-10-28T10:25:46.0406063Z       "process_boots": 2,
+2026-10-28T10:25:46.0406786Z       "source_completed": 4
+2026-10-28T10:25:46.0407474Z     },
+2026-10-28T10:25:46.0407915Z     {
+2026-10-28T10:25:46.0408599Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0409651Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0410750Z       "database": {
+2026-10-28T10:25:46.0411464Z         "database_bytes": 12097203,
+2026-10-28T10:25:46.0412483Z         "release_session_remaining_seconds": 299.334541,
+2026-10-28T10:25:46.0413498Z         "replicas": [
+2026-10-28T10:25:46.0414169Z           {
+2026-10-28T10:25:46.0414972Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0415960Z             "flush_lag": "0:00:00.001169",
+2026-10-28T10:25:46.0416888Z             "replay_lag": "0:00:00.001270",
+2026-10-28T10:25:46.0417871Z             "state": "streaming",
+2026-10-28T10:25:46.0418791Z             "sync_state": "sync",
+2026-10-28T10:25:46.0419708Z             "write_lag": "0:00:00.000419"
+2026-10-28T10:25:46.0420807Z           }
+2026-10-28T10:25:46.0421348Z         ],
+2026-10-28T10:25:46.0421904Z         "schema_relation_bytes": 4620288.0,
+2026-10-28T10:25:46.0422667Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0424276Z       },
+2026-10-28T10:25:46.0424916Z       "elapsed_seconds": 17.320954,
+2026-10-28T10:25:46.0425521Z       "last_checkpoint_source": 6,
+2026-10-28T10:25:46.0426107Z       "metrics": {
+2026-10-28T10:25:46.0426634Z         "primary_data_bytes": 69073579,
+2026-10-28T10:25:46.0427256Z         "service": {
+2026-10-28T10:25:46.0427797Z           "BlockIO": "0B / 4.64MB",
+2026-10-28T10:25:46.0428407Z           "CPUPerc": "41.53%",
+2026-10-28T10:25:46.0429241Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0430889Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0431596Z           "MemPerc": "3.36%",
+2026-10-28T10:25:46.0432272Z           "MemUsage": "34.41MiB / 1GiB",
+2026-10-28T10:25:46.0433043Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0433878Z           "NetIO": "2.77MB / 2.9MB",
+2026-10-28T10:25:46.0434456Z           "PIDs": "3"
+2026-10-28T10:25:46.0434943Z         },
+2026-10-28T10:25:46.0435430Z         "service_cpu_percent": 41.53,
+2026-10-28T10:25:46.0436226Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0436946Z         "service_rss_bytes": 36081500,
+2026-10-28T10:25:46.0437641Z         "standby_data_bytes": 69306831
+2026-10-28T10:25:46.0438277Z       },
+2026-10-28T10:25:46.0438843Z       "observed_at": "2026-10-28T10:24:58.897903+00:00",
+2026-10-28T10:25:46.0439783Z       "owner_faults": 2,
+2026-10-28T10:25:46.0440705Z       "phase": "IDLE",
+2026-10-28T10:25:46.0441293Z       "pressure": [
+2026-10-28T10:25:46.0442583Z         {
+2026-10-28T10:25:46.0443046Z           "channel": "soak",
+2026-10-28T10:25:46.0443618Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0444164Z           "max_records": 1000,
+2026-10-28T10:25:46.0444700Z           "partition_id": "a",
+2026-10-28T10:25:46.0445158Z           "used_bytes": 10,
+2026-10-28T10:25:46.0445611Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0446266Z           "used_records": 1
+2026-10-28T10:25:46.0446683Z         },
+2026-10-28T10:25:46.0447023Z         {
+2026-10-28T10:25:46.0447347Z           "channel": "soak",
+2026-10-28T10:25:46.0447719Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0448106Z           "max_records": 1000,
+2026-10-28T10:25:46.0448492Z           "partition_id": "b",
+2026-10-28T10:25:46.0449054Z           "used_bytes": 10,
+2026-10-28T10:25:46.0449747Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0450625Z           "used_records": 1
+2026-10-28T10:25:46.0451212Z         },
+2026-10-28T10:25:46.0451624Z         {
+2026-10-28T10:25:46.0452035Z           "channel": "soak",
+2026-10-28T10:25:46.0452557Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0453177Z           "max_records": 1000,
+2026-10-28T10:25:46.0453765Z           "partition_id": "c",
+2026-10-28T10:25:46.0454322Z           "used_bytes": 10,
+2026-10-28T10:25:46.0454917Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0455548Z           "used_records": 1
+2026-10-28T10:25:46.0456135Z         },
+2026-10-28T10:25:46.0456448Z         {
+2026-10-28T10:25:46.0456994Z           "channel": "soak",
+2026-10-28T10:25:46.0457507Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0458113Z           "max_records": 1000,
+2026-10-28T10:25:46.0458794Z           "partition_id": "d",
+2026-10-28T10:25:46.0459496Z           "used_bytes": 10,
+2026-10-28T10:25:46.0460513Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0461254Z           "used_records": 2
+2026-10-28T10:25:46.0461822Z         },
+2026-10-28T10:25:46.0462179Z         {
+2026-10-28T10:25:46.0462503Z           "channel": "soak",
+2026-10-28T10:25:46.0462878Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0463410Z           "max_records": 1000,
+2026-10-28T10:25:46.0463983Z           "partition_id": "j",
+2026-10-28T10:25:46.0464626Z           "used_bytes": 10,
+2026-10-28T10:25:46.0465183Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0465835Z           "used_records": 2
+2026-10-28T10:25:46.0466361Z         },
+2026-10-28T10:25:46.0466783Z         {
+2026-10-28T10:25:46.0467918Z           "channel": "soak",
+2026-10-28T10:25:46.0468549Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0469207Z           "max_records": 1000,
+2026-10-28T10:25:46.0469965Z           "partition_id": "source",
+2026-10-28T10:25:46.0471224Z           "used_bytes": 10,
+2026-10-28T10:25:46.0471841Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0472526Z           "used_records": 1
+2026-10-28T10:25:46.0473039Z         }
+2026-10-28T10:25:46.0473508Z       ],
+2026-10-28T10:25:46.0473982Z       "process_boots": 2,
+2026-10-28T10:25:46.0474622Z       "source_completed": 7
+2026-10-28T10:25:46.0475081Z     },
+2026-10-28T10:25:46.0475561Z     {
+2026-10-28T10:25:46.0476141Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0477049Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0477748Z       "database": {
+2026-10-28T10:25:46.0478198Z         "database_bytes": 12334771,
+2026-10-28T10:25:46.0478869Z         "release_session_remaining_seconds": 296.945536,
+2026-10-28T10:25:46.0479831Z         "replicas": [
+2026-10-28T10:25:46.0480595Z           {
+2026-10-28T10:25:46.0481117Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0481954Z             "flush_lag": "0:00:00.001207",
+2026-10-28T10:25:46.0482752Z             "replay_lag": "0:00:00.001216",
+2026-10-28T10:25:46.0483402Z             "state": "streaming",
+2026-10-28T10:25:46.0484099Z             "sync_state": "sync",
+2026-10-28T10:25:46.0484824Z             "write_lag": "0:00:00.000460"
+2026-10-28T10:25:46.0485573Z           }
+2026-10-28T10:25:46.0486948Z         ],
+2026-10-28T10:25:46.0487324Z         "schema_relation_bytes": 4907008.0,
+2026-10-28T10:25:46.0488042Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0488663Z       },
+2026-10-28T10:25:46.0489151Z       "elapsed_seconds": 20.386361,
+2026-10-28T10:25:46.0489996Z       "last_checkpoint_source": 8,
+2026-10-28T10:25:46.0490883Z       "metrics": {
+2026-10-28T10:25:46.0491291Z         "primary_data_bytes": 69521231,
+2026-10-28T10:25:46.0491979Z         "service": {
+2026-10-28T10:25:46.0492532Z           "BlockIO": "0B / 4.65MB",
+2026-10-28T10:25:46.0493222Z           "CPUPerc": "43.12%",
+2026-10-28T10:25:46.0494042Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0494712Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0495274Z           "MemPerc": "3.41%",
+2026-10-28T10:25:46.0495901Z           "MemUsage": "34.89MiB / 1GiB",
+2026-10-28T10:25:46.0496787Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0497507Z           "NetIO": "3.52MB / 3.63MB",
+2026-10-28T10:25:46.0497937Z           "PIDs": "3"
+2026-10-28T10:25:46.0498322Z         },
+2026-10-28T10:25:46.0498673Z         "service_cpu_percent": 43.12,
+2026-10-28T10:25:46.0499149Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0499844Z         "service_rss_bytes": 36584816,
+2026-10-28T10:25:46.0500667Z         "standby_data_bytes": 69667279
+2026-10-28T10:25:46.0501104Z       },
+2026-10-28T10:25:46.0501513Z       "observed_at": "2026-10-28T10:25:03.430217+00:00",
+2026-10-28T10:25:46.0502036Z       "owner_faults": 2,
+2026-10-28T10:25:46.0502440Z       "phase": "IDLE",
+2026-10-28T10:25:46.0502819Z       "pressure": [
+2026-10-28T10:25:46.0503172Z         {
+2026-10-28T10:25:46.0503526Z           "channel": "soak",
+2026-10-28T10:25:46.0503970Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0504395Z           "max_records": 1000,
+2026-10-28T10:25:46.0504816Z           "partition_id": "a",
+2026-10-28T10:25:46.0505238Z           "used_bytes": 0,
+2026-10-28T10:25:46.0505673Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0506347Z           "used_records": 0
+2026-10-28T10:25:46.0506907Z         },
+2026-10-28T10:25:46.0507251Z         {
+2026-10-28T10:25:46.0507600Z           "channel": "soak",
+2026-10-28T10:25:46.0508010Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0508437Z           "max_records": 1000,
+2026-10-28T10:25:46.0508892Z           "partition_id": "b",
+2026-10-28T10:25:46.0510584Z           "used_bytes": 0,
+2026-10-28T10:25:46.0511289Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0511896Z           "used_records": 0
+2026-10-28T10:25:46.0512393Z         },
+2026-10-28T10:25:46.0512816Z         {
+2026-10-28T10:25:46.0513264Z           "channel": "soak",
+2026-10-28T10:25:46.0513838Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0514489Z           "max_records": 1000,
+2026-10-28T10:25:46.0515122Z           "partition_id": "c",
+2026-10-28T10:25:46.0515647Z           "used_bytes": 0,
+2026-10-28T10:25:46.0516225Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0516803Z           "used_records": 0
+2026-10-28T10:25:46.0517345Z         },
+2026-10-28T10:25:46.0517782Z         {
+2026-10-28T10:25:46.0518277Z           "channel": "soak",
+2026-10-28T10:25:46.0518895Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0519629Z           "max_records": 1000,
+2026-10-28T10:25:46.0520663Z           "partition_id": "d",
+2026-10-28T10:25:46.0521271Z           "used_bytes": 0,
+2026-10-28T10:25:46.0521924Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0522611Z           "used_records": 0
+2026-10-28T10:25:46.0523169Z         },
+2026-10-28T10:25:46.0523675Z         {
+2026-10-28T10:25:46.0524168Z           "channel": "soak",
+2026-10-28T10:25:46.0524787Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0525443Z           "max_records": 1000,
+2026-10-28T10:25:46.0526060Z           "partition_id": "j",
+2026-10-28T10:25:46.0526671Z           "used_bytes": 0,
+2026-10-28T10:25:46.0527263Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0528849Z           "used_records": 0
+2026-10-28T10:25:46.0529408Z         },
+2026-10-28T10:25:46.0532248Z         {
+2026-10-28T10:25:46.0532735Z           "channel": "soak",
+2026-10-28T10:25:46.0533350Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0533984Z           "max_records": 1000,
+2026-10-28T10:25:46.0534602Z           "partition_id": "source",
+2026-10-28T10:25:46.0535282Z           "used_bytes": 0,
+2026-10-28T10:25:46.0535894Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0536536Z           "used_records": 0
+2026-10-28T10:25:46.0537098Z         }
+2026-10-28T10:25:46.0537503Z       ],
+2026-10-28T10:25:46.0537948Z       "process_boots": 2,
+2026-10-28T10:25:46.0538527Z       "source_completed": 8
+2026-10-28T10:25:46.0539052Z     },
+2026-10-28T10:25:46.0539483Z     {
+2026-10-28T10:25:46.0540415Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0541164Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0541793Z       "database": {
+2026-10-28T10:25:46.0542278Z         "database_bytes": 12572339,
+2026-10-28T10:25:46.0542958Z         "release_session_remaining_seconds": 299.309117,
+2026-10-28T10:25:46.0543687Z         "replicas": [
+2026-10-28T10:25:46.0544139Z           {
+2026-10-28T10:25:46.0544616Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0545294Z             "flush_lag": null,
+2026-10-28T10:25:46.0545894Z             "replay_lag": null,
+2026-10-28T10:25:46.0546461Z             "state": "streaming",
+2026-10-28T10:25:46.0547033Z             "sync_state": "sync",
+2026-10-28T10:25:46.0547629Z             "write_lag": null
+2026-10-28T10:25:46.0548201Z           }
+2026-10-28T10:25:46.0548673Z         ],
+2026-10-28T10:25:46.0549135Z         "schema_relation_bytes": 5169152.0,
+2026-10-28T10:25:46.0550008Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0551010Z       },
+2026-10-28T10:25:46.0551486Z       "elapsed_seconds": 26.089648,
+2026-10-28T10:25:46.0552105Z       "last_checkpoint_source": 10,
+2026-10-28T10:25:46.0552738Z       "metrics": {
+2026-10-28T10:25:46.0553234Z         "primary_data_bytes": 69726031,
+2026-10-28T10:25:46.0553832Z         "service": {
+2026-10-28T10:25:46.0554397Z           "BlockIO": "0B / 4.66MB",
+2026-10-28T10:25:46.0554991Z           "CPUPerc": "26.67%",
+2026-10-28T10:25:46.0555706Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0556640Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0558219Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.0558920Z           "MemUsage": "35.2MiB / 1GiB",
+2026-10-28T10:25:46.0559745Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0560859Z           "NetIO": "4.32MB / 4.42MB",
+2026-10-28T10:25:46.0561473Z           "PIDs": "3"
+2026-10-28T10:25:46.0561983Z         },
+2026-10-28T10:25:46.0562482Z         "service_cpu_percent": 26.67,
+2026-10-28T10:25:46.0563171Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0563855Z         "service_rss_bytes": 36909875,
+2026-10-28T10:25:46.0564512Z         "standby_data_bytes": 69921231
+2026-10-28T10:25:46.0565119Z       },
+2026-10-28T10:25:46.0565650Z       "observed_at": "2026-10-28T10:25:07.916960+00:00",
+2026-10-28T10:25:46.0566571Z       "owner_faults": 3,
+2026-10-28T10:25:46.0567083Z       "phase": "IDLE",
+2026-10-28T10:25:46.0567594Z       "pressure": [
+2026-10-28T10:25:46.0568035Z         {
+2026-10-28T10:25:46.0568470Z           "channel": "soak",
+2026-10-28T10:25:46.0569053Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0569743Z           "max_records": 1000,
+2026-10-28T10:25:46.0570654Z           "partition_id": "a",
+2026-10-28T10:25:46.0571255Z           "used_bytes": 11,
+2026-10-28T10:25:46.0571981Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0572747Z           "used_records": 1
+2026-10-28T10:25:46.0573412Z         },
+2026-10-28T10:25:46.0573922Z         {
+2026-10-28T10:25:46.0574382Z           "channel": "soak",
+2026-10-28T10:25:46.0574947Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0576589Z           "max_records": 1000,
+2026-10-28T10:25:46.0577194Z           "partition_id": "b",
+2026-10-28T10:25:46.0577747Z           "used_bytes": 11,
+2026-10-28T10:25:46.0578305Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0578945Z           "used_records": 1
+2026-10-28T10:25:46.0579451Z         },
+2026-10-28T10:25:46.0580298Z         {
+2026-10-28T10:25:46.0580739Z           "channel": "soak",
+2026-10-28T10:25:46.0581301Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0581900Z           "max_records": 1000,
+2026-10-28T10:25:46.0582482Z           "partition_id": "c",
+2026-10-28T10:25:46.0583051Z           "used_bytes": 11,
+2026-10-28T10:25:46.0583589Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0584242Z           "used_records": 1
+2026-10-28T10:25:46.0584838Z         },
+2026-10-28T10:25:46.0585304Z         {
+2026-10-28T10:25:46.0585677Z           "channel": "soak",
+2026-10-28T10:25:46.0586139Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0586581Z           "max_records": 1000,
+2026-10-28T10:25:46.0587190Z           "partition_id": "d",
+2026-10-28T10:25:46.0587829Z           "used_bytes": 11,
+2026-10-28T10:25:46.0588409Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0588845Z           "used_records": 2
+2026-10-28T10:25:46.0589205Z         },
+2026-10-28T10:25:46.0589656Z         {
+2026-10-28T10:25:46.0590289Z           "channel": "soak",
+2026-10-28T10:25:46.0590685Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0591106Z           "max_records": 1000,
+2026-10-28T10:25:46.0591666Z           "partition_id": "j",
+2026-10-28T10:25:46.0592396Z           "used_bytes": 11,
+2026-10-28T10:25:46.0592952Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0593637Z           "used_records": 2
+2026-10-28T10:25:46.0594189Z         },
+2026-10-28T10:25:46.0594654Z         {
+2026-10-28T10:25:46.0595171Z           "channel": "soak",
+2026-10-28T10:25:46.0595841Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0596852Z           "max_records": 1000,
+2026-10-28T10:25:46.0597881Z           "partition_id": "source",
+2026-10-28T10:25:46.0598712Z           "used_bytes": 11,
+2026-10-28T10:25:46.0599443Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0600653Z           "used_records": 1
+2026-10-28T10:25:46.0601456Z         }
+2026-10-28T10:25:46.0601964Z       ],
+2026-10-28T10:25:46.0602696Z       "process_boots": 2,
+2026-10-28T10:25:46.0678486Z       "source_completed": 11
+2026-10-28T10:25:46.0679041Z     },
+2026-10-28T10:25:46.0680887Z     {
+2026-10-28T10:25:46.0681514Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0682292Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0682992Z       "database": {
+2026-10-28T10:25:46.0683532Z         "database_bytes": 12768947,
+2026-10-28T10:25:46.0684227Z         "release_session_remaining_seconds": 299.126502,
+2026-10-28T10:25:46.0685020Z         "replicas": [
+2026-10-28T10:25:46.0685531Z           {
+2026-10-28T10:25:46.0686105Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0687838Z             "flush_lag": "0:00:00.003749",
+2026-10-28T10:25:46.0688573Z             "replay_lag": "0:00:00.003761",
+2026-10-28T10:25:46.0689398Z             "state": "streaming",
+2026-10-28T10:25:46.0690491Z             "sync_state": "sync",
+2026-10-28T10:25:46.0691151Z             "write_lag": "0:00:00.000416"
+2026-10-28T10:25:46.0691832Z           }
+2026-10-28T10:25:46.0692302Z         ],
+2026-10-28T10:25:46.0692880Z         "schema_relation_bytes": 5390336.0,
+2026-10-28T10:25:46.0693648Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0694298Z       },
+2026-10-28T10:25:46.0694804Z       "elapsed_seconds": 30.58416,
+2026-10-28T10:25:46.0695480Z       "last_checkpoint_source": 12,
+2026-10-28T10:25:46.0696099Z       "metrics": {
+2026-10-28T10:25:46.0696649Z         "primary_data_bytes": 69930831,
+2026-10-28T10:25:46.0697423Z         "service": {
+2026-10-28T10:25:46.0697951Z           "BlockIO": "0B / 4.67MB",
+2026-10-28T10:25:46.0698579Z           "CPUPerc": "44.20%",
+2026-10-28T10:25:46.0700463Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0701013Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0701394Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.0701873Z           "MemUsage": "35.18MiB / 1GiB",
+2026-10-28T10:25:46.0702695Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0703486Z           "NetIO": "5.16MB / 5.24MB",
+2026-10-28T10:25:46.0703976Z           "PIDs": "3"
+2026-10-28T10:25:46.0704548Z         },
+2026-10-28T10:25:46.0705171Z         "service_cpu_percent": 44.2,
+2026-10-28T10:25:46.0705775Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0706406Z         "service_rss_bytes": 36888903,
+2026-10-28T10:25:46.0707163Z         "standby_data_bytes": 70166991
+2026-10-28T10:25:46.0707850Z       },
+2026-10-28T10:25:46.0708487Z       "observed_at": "2026-10-28T10:25:12.394675+00:00",
+2026-10-28T10:25:46.0708992Z       "owner_faults": 4,
+2026-10-28T10:25:46.0709375Z       "phase": "IDLE",
+2026-10-28T10:25:46.0710261Z       "pressure": [
+2026-10-28T10:25:46.0710771Z         {
+2026-10-28T10:25:46.0711247Z           "channel": "soak",
+2026-10-28T10:25:46.0711952Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0712438Z           "max_records": 1000,
+2026-10-28T10:25:46.0712846Z           "partition_id": "a",
+2026-10-28T10:25:46.0713298Z           "used_bytes": 11,
+2026-10-28T10:25:46.0713811Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0714391Z           "used_records": 1
+2026-10-28T10:25:46.0714758Z         },
+2026-10-28T10:25:46.0715044Z         {
+2026-10-28T10:25:46.0715446Z           "channel": "soak",
+2026-10-28T10:25:46.0715914Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0716598Z           "max_records": 1000,
+2026-10-28T10:25:46.0717093Z           "partition_id": "b",
+2026-10-28T10:25:46.0717513Z           "used_bytes": 11,
+2026-10-28T10:25:46.0717971Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0718417Z           "used_records": 1
+2026-10-28T10:25:46.0718819Z         },
+2026-10-28T10:25:46.0719136Z         {
+2026-10-28T10:25:46.0719644Z           "channel": "soak",
+2026-10-28T10:25:46.0720497Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0721097Z           "max_records": 1000,
+2026-10-28T10:25:46.0721681Z           "partition_id": "c",
+2026-10-28T10:25:46.0722345Z           "used_bytes": 11,
+2026-10-28T10:25:46.0722747Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0724168Z           "used_records": 1
+2026-10-28T10:25:46.0724851Z         },
+2026-10-28T10:25:46.0725377Z         {
+2026-10-28T10:25:46.0725864Z           "channel": "soak",
+2026-10-28T10:25:46.0726502Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0727184Z           "max_records": 1000,
+2026-10-28T10:25:46.0727768Z           "partition_id": "d",
+2026-10-28T10:25:46.0728361Z           "used_bytes": 11,
+2026-10-28T10:25:46.0728933Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0729802Z           "used_records": 2
+2026-10-28T10:25:46.0730649Z         },
+2026-10-28T10:25:46.0731168Z         {
+2026-10-28T10:25:46.0731716Z           "channel": "soak",
+2026-10-28T10:25:46.0732458Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0733042Z           "max_records": 1000,
+2026-10-28T10:25:46.0733584Z           "partition_id": "j",
+2026-10-28T10:25:46.0734207Z           "used_bytes": 11,
+2026-10-28T10:25:46.0734910Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0735611Z           "used_records": 2
+2026-10-28T10:25:46.0736219Z         },
+2026-10-28T10:25:46.0737392Z         {
+2026-10-28T10:25:46.0737939Z           "channel": "soak",
+2026-10-28T10:25:46.0738604Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0739327Z           "max_records": 1000,
+2026-10-28T10:25:46.0740434Z           "partition_id": "source",
+2026-10-28T10:25:46.0741155Z           "used_bytes": 11,
+2026-10-28T10:25:46.0741854Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0742624Z           "used_records": 1
+2026-10-28T10:25:46.0743991Z         }
+2026-10-28T10:25:46.0744469Z       ],
+2026-10-28T10:25:46.0744999Z       "process_boots": 2,
+2026-10-28T10:25:46.0745684Z       "source_completed": 13
+2026-10-28T10:25:46.0746349Z     },
+2026-10-28T10:25:46.0746853Z     {
+2026-10-28T10:25:46.0747520Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0748359Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0749161Z       "database": {
+2026-10-28T10:25:46.0749875Z         "database_bytes": 12965555,
+2026-10-28T10:25:46.0751074Z         "release_session_remaining_seconds": 298.87753,
+2026-10-28T10:25:46.0751777Z         "replicas": [
+2026-10-28T10:25:46.0752274Z           {
+2026-10-28T10:25:46.0752915Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0753727Z             "flush_lag": "0:00:00.001166",
+2026-10-28T10:25:46.0754551Z             "replay_lag": "0:00:00.001236",
+2026-10-28T10:25:46.0755330Z             "state": "streaming",
+2026-10-28T10:25:46.0756071Z             "sync_state": "sync",
+2026-10-28T10:25:46.0756873Z             "write_lag": "0:00:00.000298"
+2026-10-28T10:25:46.0757644Z           }
+2026-10-28T10:25:46.0758178Z         ],
+2026-10-28T10:25:46.0758797Z         "schema_relation_bytes": 5644288.0,
+2026-10-28T10:25:46.0759761Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0760817Z       },
+2026-10-28T10:25:46.0761426Z       "elapsed_seconds": 35.200024,
+2026-10-28T10:25:46.0762053Z       "last_checkpoint_source": 14,
+2026-10-28T10:25:46.0762651Z       "metrics": {
+2026-10-28T10:25:46.0763193Z         "primary_data_bytes": 70127439,
+2026-10-28T10:25:46.0763770Z         "service": {
+2026-10-28T10:25:46.0764310Z           "BlockIO": "0B / 4.67MB",
+2026-10-28T10:25:46.0764880Z           "CPUPerc": "39.39%",
+2026-10-28T10:25:46.0765575Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0766345Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0766943Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.0767628Z           "MemUsage": "35.19MiB / 1GiB",
+2026-10-28T10:25:46.0768473Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0769233Z           "NetIO": "5.99MB / 6.04MB",
+2026-10-28T10:25:46.0769978Z           "PIDs": "3"
+2026-10-28T10:25:46.0770747Z         },
+2026-10-28T10:25:46.0771201Z         "service_cpu_percent": 39.39,
+2026-10-28T10:25:46.0771929Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0772745Z         "service_rss_bytes": 36899389,
+2026-10-28T10:25:46.0774538Z         "standby_data_bytes": 70412751
+2026-10-28T10:25:46.0775287Z       },
+2026-10-28T10:25:46.0775798Z       "observed_at": "2026-10-28T10:25:16.767846+00:00",
+2026-10-28T10:25:46.0776455Z       "owner_faults": 5,
+2026-10-28T10:25:46.0776972Z       "phase": "IDLE",
+2026-10-28T10:25:46.0777469Z       "pressure": [
+2026-10-28T10:25:46.0777961Z         {
+2026-10-28T10:25:46.0778485Z           "channel": "soak",
+2026-10-28T10:25:46.0779068Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0779842Z           "max_records": 1000,
+2026-10-28T10:25:46.0780774Z           "partition_id": "a",
+2026-10-28T10:25:46.0781348Z           "used_bytes": 11,
+2026-10-28T10:25:46.0781954Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0782588Z           "used_records": 1
+2026-10-28T10:25:46.0783209Z         },
+2026-10-28T10:25:46.0783632Z         {
+2026-10-28T10:25:46.0784105Z           "channel": "soak",
+2026-10-28T10:25:46.0784666Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0785247Z           "max_records": 1000,
+2026-10-28T10:25:46.0785856Z           "partition_id": "b",
+2026-10-28T10:25:46.0786499Z           "used_bytes": 11,
+2026-10-28T10:25:46.0787079Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0787727Z           "used_records": 1
+2026-10-28T10:25:46.0788384Z         },
+2026-10-28T10:25:46.0788884Z         {
+2026-10-28T10:25:46.0789392Z           "channel": "soak",
+2026-10-28T10:25:46.0790377Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0791002Z           "max_records": 1000,
+2026-10-28T10:25:46.0792655Z           "partition_id": "c",
+2026-10-28T10:25:46.0793326Z           "used_bytes": 11,
+2026-10-28T10:25:46.0793938Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0794589Z           "used_records": 1
+2026-10-28T10:25:46.0795142Z         },
+2026-10-28T10:25:46.0795554Z         {
+2026-10-28T10:25:46.0795957Z           "channel": "soak",
+2026-10-28T10:25:46.0796508Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0797113Z           "max_records": 1000,
+2026-10-28T10:25:46.0797726Z           "partition_id": "d",
+2026-10-28T10:25:46.0798321Z           "used_bytes": 11,
+2026-10-28T10:25:46.0798909Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0799648Z           "used_records": 2
+2026-10-28T10:25:46.0800471Z         },
+2026-10-28T10:25:46.0800894Z         {
+2026-10-28T10:25:46.0801330Z           "channel": "soak",
+2026-10-28T10:25:46.0801908Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0802473Z           "max_records": 1000,
+2026-10-28T10:25:46.0803091Z           "partition_id": "j",
+2026-10-28T10:25:46.0803660Z           "used_bytes": 11,
+2026-10-28T10:25:46.0804222Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0804855Z           "used_records": 2
+2026-10-28T10:25:46.0805400Z         },
+2026-10-28T10:25:46.0805832Z         {
+2026-10-28T10:25:46.0806303Z           "channel": "soak",
+2026-10-28T10:25:46.0806902Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0807562Z           "max_records": 1000,
+2026-10-28T10:25:46.0808233Z           "partition_id": "source",
+2026-10-28T10:25:46.0808799Z           "used_bytes": 11,
+2026-10-28T10:25:46.0809335Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0810389Z           "used_records": 1
+2026-10-28T10:25:46.0810931Z         }
+2026-10-28T10:25:46.0811329Z       ],
+2026-10-28T10:25:46.0811767Z       "process_boots": 2,
+2026-10-28T10:25:46.0812330Z       "source_completed": 15
+2026-10-28T10:25:46.0812897Z     },
+2026-10-28T10:25:46.0813294Z     {
+2026-10-28T10:25:46.0813785Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0814482Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0815055Z       "database": {
+2026-10-28T10:25:46.0815530Z         "database_bytes": 13186739,
+2026-10-28T10:25:46.0816221Z         "release_session_remaining_seconds": 299.201202,
+2026-10-28T10:25:46.0816983Z         "replicas": [
+2026-10-28T10:25:46.0817535Z           {
+2026-10-28T10:25:46.0818033Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0819833Z             "flush_lag": "0:00:00.000640",
+2026-10-28T10:25:46.0820999Z             "replay_lag": "0:00:00.000842",
+2026-10-28T10:25:46.0821674Z             "state": "streaming",
+2026-10-28T10:25:46.0822352Z             "sync_state": "sync",
+2026-10-28T10:25:46.0822944Z             "write_lag": "0:00:00.000199"
+2026-10-28T10:25:46.0823535Z           }
+2026-10-28T10:25:46.0823936Z         ],
+2026-10-28T10:25:46.0824402Z         "schema_relation_bytes": 5898240.0,
+2026-10-28T10:25:46.0825142Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0825772Z       },
+2026-10-28T10:25:46.0826244Z       "elapsed_seconds": 39.015628,
+2026-10-28T10:25:46.0826945Z       "last_checkpoint_source": 16,
+2026-10-28T10:25:46.0827655Z       "metrics": {
+2026-10-28T10:25:46.0828179Z         "primary_data_bytes": 70517747,
+2026-10-28T10:25:46.0828856Z         "service": {
+2026-10-28T10:25:46.0829369Z           "BlockIO": "0B / 4.69MB",
+2026-10-28T10:25:46.0830417Z           "CPUPerc": "39.47%",
+2026-10-28T10:25:46.0831127Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0831938Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0832539Z           "MemPerc": "3.40%",
+2026-10-28T10:25:46.0833115Z           "MemUsage": "34.81MiB / 1GiB",
+2026-10-28T10:25:46.0833874Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0834587Z           "NetIO": "6.85MB / 6.88MB",
+2026-10-28T10:25:46.0835205Z           "PIDs": "3"
+2026-10-28T10:25:46.0835718Z         },
+2026-10-28T10:25:46.0836272Z         "service_cpu_percent": 39.47,
+2026-10-28T10:25:46.0838117Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0838886Z         "service_rss_bytes": 36500930,
+2026-10-28T10:25:46.0839733Z         "standby_data_bytes": 70724047
+2026-10-28T10:25:46.0840634Z       },
+2026-10-28T10:25:46.0841200Z       "observed_at": "2026-10-28T10:25:21.207493+00:00",
+2026-10-28T10:25:46.0841869Z       "owner_faults": 5,
+2026-10-28T10:25:46.0842487Z       "phase": "IDLE",
+2026-10-28T10:25:46.0843101Z       "pressure": [
+2026-10-28T10:25:46.0843432Z         {
+2026-10-28T10:25:46.0843762Z           "channel": "soak",
+2026-10-28T10:25:46.0844190Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0844587Z           "max_records": 1000,
+2026-10-28T10:25:46.0844986Z           "partition_id": "a",
+2026-10-28T10:25:46.0845377Z           "used_bytes": 11,
+2026-10-28T10:25:46.0845794Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0846223Z           "used_records": 1
+2026-10-28T10:25:46.0846739Z         },
+2026-10-28T10:25:46.0847219Z         {
+2026-10-28T10:25:46.0847552Z           "channel": "soak",
+2026-10-28T10:25:46.0847941Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0848340Z           "max_records": 1000,
+2026-10-28T10:25:46.0848756Z           "partition_id": "b",
+2026-10-28T10:25:46.0849158Z           "used_bytes": 11,
+2026-10-28T10:25:46.0849743Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0850526Z           "used_records": 1
+2026-10-28T10:25:46.0850887Z         },
+2026-10-28T10:25:46.0851316Z         {
+2026-10-28T10:25:46.0851857Z           "channel": "soak",
+2026-10-28T10:25:46.0852285Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0852678Z           "max_records": 1000,
+2026-10-28T10:25:46.0853081Z           "partition_id": "c",
+2026-10-28T10:25:46.0853499Z           "used_bytes": 11,
+2026-10-28T10:25:46.0854083Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0854683Z           "used_records": 1
+2026-10-28T10:25:46.0855236Z         },
+2026-10-28T10:25:46.0855663Z         {
+2026-10-28T10:25:46.0856099Z           "channel": "soak",
+2026-10-28T10:25:46.0856642Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0857045Z           "max_records": 1000,
+2026-10-28T10:25:46.0857433Z           "partition_id": "d",
+2026-10-28T10:25:46.0857843Z           "used_bytes": 11,
+2026-10-28T10:25:46.0858228Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0858658Z           "used_records": 2
+2026-10-28T10:25:46.0859022Z         },
+2026-10-28T10:25:46.0860443Z         {
+2026-10-28T10:25:46.0860996Z           "channel": "soak",
+2026-10-28T10:25:46.0861578Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0861998Z           "max_records": 1000,
+2026-10-28T10:25:46.0862404Z           "partition_id": "j",
+2026-10-28T10:25:46.0862834Z           "used_bytes": 11,
+2026-10-28T10:25:46.0863399Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0864019Z           "used_records": 2
+2026-10-28T10:25:46.0864525Z         },
+2026-10-28T10:25:46.0864842Z         {
+2026-10-28T10:25:46.0865183Z           "channel": "soak",
+2026-10-28T10:25:46.0865790Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0866355Z           "max_records": 1000,
+2026-10-28T10:25:46.0866760Z           "partition_id": "source",
+2026-10-28T10:25:46.0867200Z           "used_bytes": 11,
+2026-10-28T10:25:46.0867589Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0868035Z           "used_records": 1
+2026-10-28T10:25:46.0868525Z         }
+2026-10-28T10:25:46.0868965Z       ],
+2026-10-28T10:25:46.0869661Z       "process_boots": 2,
+2026-10-28T10:25:46.0870502Z       "source_completed": 17
+2026-10-28T10:25:46.0871141Z     },
+2026-10-28T10:25:46.0871652Z     {
+2026-10-28T10:25:46.0872316Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0873111Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0873797Z       "database": {
+2026-10-28T10:25:46.0874321Z         "database_bytes": 13366963,
+2026-10-28T10:25:46.0875202Z         "release_session_remaining_seconds": 299.43237,
+2026-10-28T10:25:46.0876819Z         "replicas": [
+2026-10-28T10:25:46.0877412Z           {
+2026-10-28T10:25:46.0878031Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0878813Z             "flush_lag": "0:00:00.000949",
+2026-10-28T10:25:46.0879461Z             "replay_lag": "0:00:00.001017",
+2026-10-28T10:25:46.0880560Z             "state": "streaming",
+2026-10-28T10:25:46.0881252Z             "sync_state": "sync",
+2026-10-28T10:25:46.0881953Z             "write_lag": "0:00:00.000365"
+2026-10-28T10:25:46.0882528Z           }
+2026-10-28T10:25:46.0882841Z         ],
+2026-10-28T10:25:46.0883204Z         "schema_relation_bytes": 6103040.0,
+2026-10-28T10:25:46.0883695Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0884131Z       },
+2026-10-28T10:25:46.0884457Z       "elapsed_seconds": 42.977197,
+2026-10-28T10:25:46.0884975Z       "last_checkpoint_source": 18,
+2026-10-28T10:25:46.0885575Z       "metrics": {
+2026-10-28T10:25:46.0886212Z         "primary_data_bytes": 70837235,
+2026-10-28T10:25:46.0905432Z         "service": {
+2026-10-28T10:25:46.0906419Z           "BlockIO": "0B / 4.69MB",
+2026-10-28T10:25:46.0906954Z           "CPUPerc": "34.57%",
+2026-10-28T10:25:46.0907648Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0908604Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0909163Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.0909973Z           "MemUsage": "35.27MiB / 1GiB",
+2026-10-28T10:25:46.0910795Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0911546Z           "NetIO": "7.88MB / 7.89MB",
+2026-10-28T10:25:46.0912043Z           "PIDs": "3"
+2026-10-28T10:25:46.0912482Z         },
+2026-10-28T10:25:46.0912838Z         "service_cpu_percent": 34.57,
+2026-10-28T10:25:46.0913294Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0913764Z         "service_rss_bytes": 36983275,
+2026-10-28T10:25:46.0914221Z         "standby_data_bytes": 71035343
+2026-10-28T10:25:46.0914640Z       },
+2026-10-28T10:25:46.0915178Z       "observed_at": "2026-10-28T10:25:25.598549+00:00",
+2026-10-28T10:25:46.0916024Z       "owner_faults": 6,
+2026-10-28T10:25:46.0916659Z       "phase": "IDLE",
+2026-10-28T10:25:46.0917237Z       "pressure": [
+2026-10-28T10:25:46.0917773Z         {
+2026-10-28T10:25:46.0918215Z           "channel": "soak",
+2026-10-28T10:25:46.0918844Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0919715Z           "max_records": 1000,
+2026-10-28T10:25:46.0920591Z           "partition_id": "a",
+2026-10-28T10:25:46.0922236Z           "used_bytes": 11,
+2026-10-28T10:25:46.0922967Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0923396Z           "used_records": 1
+2026-10-28T10:25:46.0923858Z         },
+2026-10-28T10:25:46.0924296Z         {
+2026-10-28T10:25:46.0924628Z           "channel": "soak",
+2026-10-28T10:25:46.0925000Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0925468Z           "max_records": 1000,
+2026-10-28T10:25:46.0926053Z           "partition_id": "b",
+2026-10-28T10:25:46.0926708Z           "used_bytes": 11,
+2026-10-28T10:25:46.0927295Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0927852Z           "used_records": 1
+2026-10-28T10:25:46.0928359Z         },
+2026-10-28T10:25:46.0928746Z         {
+2026-10-28T10:25:46.0929150Z           "channel": "soak",
+2026-10-28T10:25:46.0929832Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0930618Z           "max_records": 1000,
+2026-10-28T10:25:46.0931179Z           "partition_id": "c",
+2026-10-28T10:25:46.0931841Z           "used_bytes": 11,
+2026-10-28T10:25:46.0932475Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0933023Z           "used_records": 1
+2026-10-28T10:25:46.0933531Z         },
+2026-10-28T10:25:46.0933920Z         {
+2026-10-28T10:25:46.0934366Z           "channel": "soak",
+2026-10-28T10:25:46.0934963Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0935539Z           "max_records": 1000,
+2026-10-28T10:25:46.0936107Z           "partition_id": "d",
+2026-10-28T10:25:46.0936650Z           "used_bytes": 11,
+2026-10-28T10:25:46.0938141Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0938754Z           "used_records": 2
+2026-10-28T10:25:46.0939255Z         },
+2026-10-28T10:25:46.0939805Z         {
+2026-10-28T10:25:46.0940434Z           "channel": "soak",
+2026-10-28T10:25:46.0940972Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0941580Z           "max_records": 1000,
+2026-10-28T10:25:46.0942223Z           "partition_id": "j",
+2026-10-28T10:25:46.0942890Z           "used_bytes": 11,
+2026-10-28T10:25:46.0943540Z           "used_metadata_records": 2,
+2026-10-28T10:25:46.0944231Z           "used_records": 2
+2026-10-28T10:25:46.0944822Z         },
+2026-10-28T10:25:46.0945315Z         {
+2026-10-28T10:25:46.0945791Z           "channel": "soak",
+2026-10-28T10:25:46.0946356Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0946950Z           "max_records": 1000,
+2026-10-28T10:25:46.0947518Z           "partition_id": "source",
+2026-10-28T10:25:46.0948169Z           "used_bytes": 11,
+2026-10-28T10:25:46.0948801Z           "used_metadata_records": 1,
+2026-10-28T10:25:46.0949469Z           "used_records": 1
+2026-10-28T10:25:46.0950375Z         }
+2026-10-28T10:25:46.0950838Z       ],
+2026-10-28T10:25:46.0951323Z       "process_boots": 2,
+2026-10-28T10:25:46.0951919Z       "source_completed": 19
+2026-10-28T10:25:46.0952503Z     },
+2026-10-28T10:25:46.0952946Z     {
+2026-10-28T10:25:46.0953507Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0954334Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0955016Z       "database": {
+2026-10-28T10:25:46.0955551Z         "database_bytes": 13555379,
+2026-10-28T10:25:46.0956341Z         "release_session_remaining_seconds": 299.912962,
+2026-10-28T10:25:46.0957139Z         "replicas": [
+2026-10-28T10:25:46.0957676Z           {
+2026-10-28T10:25:46.0958207Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0958952Z             "flush_lag": "0:00:00.001152",
+2026-10-28T10:25:46.0959733Z             "replay_lag": "0:00:00.001254",
+2026-10-28T10:25:46.0960729Z             "state": "streaming",
+2026-10-28T10:25:46.0961594Z             "sync_state": "sync",
+2026-10-28T10:25:46.0962250Z             "write_lag": "0:00:00.000357"
+2026-10-28T10:25:46.0962811Z           }
+2026-10-28T10:25:46.0963250Z         ],
+2026-10-28T10:25:46.0963707Z         "schema_relation_bytes": 6316032.0,
+2026-10-28T10:25:46.0964394Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0965039Z       },
+2026-10-28T10:25:46.0966499Z       "elapsed_seconds": 48.36025,
+2026-10-28T10:25:46.0967167Z       "last_checkpoint_source": 20,
+2026-10-28T10:25:46.0967729Z       "metrics": {
+2026-10-28T10:25:46.0968230Z         "primary_data_bytes": 70845427,
+2026-10-28T10:25:46.0968796Z         "service": {
+2026-10-28T10:25:46.0969298Z           "BlockIO": "0B / 4.72MB",
+2026-10-28T10:25:46.0970357Z           "CPUPerc": "5.18%",
+2026-10-28T10:25:46.0971179Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0972064Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.0972739Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.0973407Z           "MemUsage": "35.27MiB / 1GiB",
+2026-10-28T10:25:46.0974238Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.0975089Z           "NetIO": "8.13MB / 8.11MB",
+2026-10-28T10:25:46.0975335Z           "PIDs": "3"
+2026-10-28T10:25:46.0975560Z         },
+2026-10-28T10:25:46.0975812Z         "service_cpu_percent": 5.18,
+2026-10-28T10:25:46.0976130Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.0976378Z         "service_rss_bytes": 36983275,
+2026-10-28T10:25:46.0976648Z         "standby_data_bytes": 71068111
+2026-10-28T10:25:46.0976841Z       },
+2026-10-28T10:25:46.0977190Z       "observed_at": "2026-10-28T10:25:30.021322+00:00",
+2026-10-28T10:25:46.0977409Z       "owner_faults": 6,
+2026-10-28T10:25:46.0977681Z       "phase": "TARGET_REACHED",
+2026-10-28T10:25:46.0977920Z       "pressure": [
+2026-10-28T10:25:46.0978117Z         {
+2026-10-28T10:25:46.0979084Z           "channel": "soak",
+2026-10-28T10:25:46.0979312Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0980789Z           "max_records": 1000,
+2026-10-28T10:25:46.0981052Z           "partition_id": "a",
+2026-10-28T10:25:46.0981305Z           "used_bytes": 0,
+2026-10-28T10:25:46.0981562Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0981812Z           "used_records": 0
+2026-10-28T10:25:46.0982040Z         },
+2026-10-28T10:25:46.0982236Z         {
+2026-10-28T10:25:46.0982511Z           "channel": "soak",
+2026-10-28T10:25:46.0982731Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0982986Z           "max_records": 1000,
+2026-10-28T10:25:46.0983217Z           "partition_id": "b",
+2026-10-28T10:25:46.0983476Z           "used_bytes": 0,
+2026-10-28T10:25:46.0983727Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0983975Z           "used_records": 0
+2026-10-28T10:25:46.0984205Z         },
+2026-10-28T10:25:46.0984397Z         {
+2026-10-28T10:25:46.0984648Z           "channel": "soak",
+2026-10-28T10:25:46.0984889Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0985139Z           "max_records": 1000,
+2026-10-28T10:25:46.0985377Z           "partition_id": "c",
+2026-10-28T10:25:46.0985635Z           "used_bytes": 0,
+2026-10-28T10:25:46.0985912Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0986132Z           "used_records": 0
+2026-10-28T10:25:46.0986359Z         },
+2026-10-28T10:25:46.0986555Z         {
+2026-10-28T10:25:46.0986815Z           "channel": "soak",
+2026-10-28T10:25:46.0987034Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0987281Z           "max_records": 1000,
+2026-10-28T10:25:46.0987511Z           "partition_id": "d",
+2026-10-28T10:25:46.0987767Z           "used_bytes": 0,
+2026-10-28T10:25:46.0988041Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0988260Z           "used_records": 0
+2026-10-28T10:25:46.0988490Z         },
+2026-10-28T10:25:46.0988682Z         {
+2026-10-28T10:25:46.0988935Z           "channel": "soak",
+2026-10-28T10:25:46.0989157Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0989380Z           "max_records": 1000,
+2026-10-28T10:25:46.0989716Z           "partition_id": "j",
+2026-10-28T10:25:46.0989952Z           "used_bytes": 0,
+2026-10-28T10:25:46.0990419Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0990635Z           "used_records": 0
+2026-10-28T10:25:46.0990836Z         },
+2026-10-28T10:25:46.0991007Z         {
+2026-10-28T10:25:46.0991239Z           "channel": "soak",
+2026-10-28T10:25:46.0992015Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.0992271Z           "max_records": 1000,
+2026-10-28T10:25:46.0992510Z           "partition_id": "source",
+2026-10-28T10:25:46.0992731Z           "used_bytes": 0,
+2026-10-28T10:25:46.0993023Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.0993228Z           "used_records": 0
+2026-10-28T10:25:46.0993424Z         }
+2026-10-28T10:25:46.0993612Z       ],
+2026-10-28T10:25:46.0993839Z       "process_boots": 2,
+2026-10-28T10:25:46.0994054Z       "source_completed": 20
+2026-10-28T10:25:46.0994268Z     },
+2026-10-28T10:25:46.0994431Z     {
+2026-10-28T10:25:46.0994746Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.0995007Z       "container_restart_count": 0,
+2026-10-28T10:25:46.0995192Z       "database": {
+2026-10-28T10:25:46.0995432Z         "database_bytes": 13555379,
+2026-10-28T10:25:46.0995730Z         "release_session_remaining_seconds": 299.916533,
+2026-10-28T10:25:46.0995965Z         "replicas": [
+2026-10-28T10:25:46.0996163Z           {
+2026-10-28T10:25:46.0996443Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.0996683Z             "flush_lag": "0:00:00.001590",
+2026-10-28T10:25:46.0996907Z             "replay_lag": "0:00:00.001818",
+2026-10-28T10:25:46.0997160Z             "state": "streaming",
+2026-10-28T10:25:46.0997361Z             "sync_state": "sync",
+2026-10-28T10:25:46.0997608Z             "write_lag": "0:00:00.000266"
+2026-10-28T10:25:46.0997784Z           }
+2026-10-28T10:25:46.0997990Z         ],
+2026-10-28T10:25:46.0998709Z         "schema_relation_bytes": 6316032.0,
+2026-10-28T10:25:46.0998996Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.0999215Z       },
+2026-10-28T10:25:46.0999433Z       "elapsed_seconds": 52.714277,
+2026-10-28T10:25:46.0999821Z       "last_checkpoint_source": 20,
+2026-10-28T10:25:46.1000249Z       "metrics": {
+2026-10-28T10:25:46.1000521Z         "primary_data_bytes": 70845427,
+2026-10-28T10:25:46.1000717Z         "service": {
+2026-10-28T10:25:46.1000974Z           "BlockIO": "0B / 4.76MB",
+2026-10-28T10:25:46.1001179Z           "CPUPerc": "7.54%",
+2026-10-28T10:25:46.1001567Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.1001802Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.1002006Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.1002264Z           "MemUsage": "35.27MiB / 1GiB",
+2026-10-28T10:25:46.1002563Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.1002801Z           "NetIO": "8.28MB / 8.2MB",
+2026-10-28T10:25:46.1003006Z           "PIDs": "3"
+2026-10-28T10:25:46.1003216Z         },
+2026-10-28T10:25:46.1003467Z         "service_cpu_percent": 7.54,
+2026-10-28T10:25:46.1003721Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.1003984Z         "service_rss_bytes": 36983275,
+2026-10-28T10:25:46.1004206Z         "standby_data_bytes": 71092687
+2026-10-28T10:25:46.1004423Z       },
+2026-10-28T10:25:46.1004713Z       "observed_at": "2026-10-28T10:25:34.504458+00:00",
+2026-10-28T10:25:46.1004955Z       "owner_faults": 6,
+2026-10-28T10:25:46.1005276Z       "phase": "TARGET_REACHED",
+2026-10-28T10:25:46.1005483Z       "pressure": [
+2026-10-28T10:25:46.1005698Z         {
+2026-10-28T10:25:46.1005901Z           "channel": "soak",
+2026-10-28T10:25:46.1006138Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1006346Z           "max_records": 1000,
+2026-10-28T10:25:46.1006589Z           "partition_id": "a",
+2026-10-28T10:25:46.1006795Z           "used_bytes": 0,
+2026-10-28T10:25:46.1007072Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1007310Z           "used_records": 0
+2026-10-28T10:25:46.1007487Z         },
+2026-10-28T10:25:46.1007690Z         {
+2026-10-28T10:25:46.1007889Z           "channel": "soak",
+2026-10-28T10:25:46.1008126Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1008330Z           "max_records": 1000,
+2026-10-28T10:25:46.1008579Z           "partition_id": "b",
+2026-10-28T10:25:46.1008781Z           "used_bytes": 0,
+2026-10-28T10:25:46.1009787Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1010313Z           "used_records": 0
+2026-10-28T10:25:46.1010498Z         },
+2026-10-28T10:25:46.1010694Z         {
+2026-10-28T10:25:46.1010909Z           "channel": "soak",
+2026-10-28T10:25:46.1011133Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1011342Z           "max_records": 1000,
+2026-10-28T10:25:46.1011576Z           "partition_id": "c",
+2026-10-28T10:25:46.1011771Z           "used_bytes": 0,
+2026-10-28T10:25:46.1012007Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1012245Z           "used_records": 0
+2026-10-28T10:25:46.1012434Z         },
+2026-10-28T10:25:46.1012638Z         {
+2026-10-28T10:25:46.1012840Z           "channel": "soak",
+2026-10-28T10:25:46.1013077Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1013277Z           "max_records": 1000,
+2026-10-28T10:25:46.1013513Z           "partition_id": "d",
+2026-10-28T10:25:46.1013728Z           "used_bytes": 0,
+2026-10-28T10:25:46.1013986Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1014210Z           "used_records": 0
+2026-10-28T10:25:46.1014402Z         },
+2026-10-28T10:25:46.1014593Z         {
+2026-10-28T10:25:46.1014799Z           "channel": "soak",
+2026-10-28T10:25:46.1015033Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1015255Z           "max_records": 1000,
+2026-10-28T10:25:46.1015477Z           "partition_id": "j",
+2026-10-28T10:25:46.1015688Z           "used_bytes": 0,
+2026-10-28T10:25:46.1015935Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1016666Z           "used_records": 0
+2026-10-28T10:25:46.1016873Z         },
+2026-10-28T10:25:46.1017086Z         {
+2026-10-28T10:25:46.1017288Z           "channel": "soak",
+2026-10-28T10:25:46.1017535Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1017736Z           "max_records": 1000,
+2026-10-28T10:25:46.1017982Z           "partition_id": "source",
+2026-10-28T10:25:46.1018215Z           "used_bytes": 0,
+2026-10-28T10:25:46.1018452Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1018687Z           "used_records": 0
+2026-10-28T10:25:46.1018874Z         }
+2026-10-28T10:25:46.1019082Z       ],
+2026-10-28T10:25:46.1019295Z       "process_boots": 2,
+2026-10-28T10:25:46.1019652Z       "source_completed": 20
+2026-10-28T10:25:46.1019839Z     },
+2026-10-28T10:25:46.1020226Z     {
+2026-10-28T10:25:46.1020576Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.1020813Z       "container_restart_count": 0,
+2026-10-28T10:25:46.1021027Z       "database": {
+2026-10-28T10:25:46.1021275Z         "database_bytes": 13555379,
+2026-10-28T10:25:46.1021632Z         "release_session_remaining_seconds": 299.882757,
+2026-10-28T10:25:46.1021858Z         "replicas": [
+2026-10-28T10:25:46.1022054Z           {
+2026-10-28T10:25:46.1022478Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.1022722Z             "flush_lag": "0:00:00.002220",
+2026-10-28T10:25:46.1022957Z             "replay_lag": "0:00:00.002965",
+2026-10-28T10:25:46.1023190Z             "state": "streaming",
+2026-10-28T10:25:46.1023426Z             "sync_state": "sync",
+2026-10-28T10:25:46.1023661Z             "write_lag": "0:00:00.001697"
+2026-10-28T10:25:46.1023861Z           }
+2026-10-28T10:25:46.1024051Z         ],
+2026-10-28T10:25:46.1024324Z         "schema_relation_bytes": 6316032.0,
+2026-10-28T10:25:46.1024594Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.1024784Z       },
+2026-10-28T10:25:46.1025030Z       "elapsed_seconds": 57.077892,
+2026-10-28T10:25:46.1025273Z       "last_checkpoint_source": 20,
+2026-10-28T10:25:46.1025497Z       "metrics": {
+2026-10-28T10:25:46.1025729Z         "primary_data_bytes": 70845427,
+2026-10-28T10:25:46.1025970Z         "service": {
+2026-10-28T10:25:46.1026199Z           "BlockIO": "0B / 4.78MB",
+2026-10-28T10:25:46.1026429Z           "CPUPerc": "7.60%",
+2026-10-28T10:25:46.1026831Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.1027024Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.1027778Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.1028066Z           "MemUsage": "35.27MiB / 1GiB",
+2026-10-28T10:25:46.1028440Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.1028687Z           "NetIO": "8.42MB / 8.28MB",
+2026-10-28T10:25:46.1028937Z           "PIDs": "3"
+2026-10-28T10:25:46.1029116Z         },
+2026-10-28T10:25:46.1029386Z         "service_cpu_percent": 7.6,
+2026-10-28T10:25:46.1029828Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.1030290Z         "service_rss_bytes": 36983275,
+2026-10-28T10:25:46.1030583Z         "standby_data_bytes": 71092687
+2026-10-28T10:25:46.1030784Z       },
+2026-10-28T10:25:46.1031119Z       "observed_at": "2026-10-28T10:25:38.952845+00:00",
+2026-10-28T10:25:46.1031339Z       "owner_faults": 6,
+2026-10-28T10:25:46.1031618Z       "phase": "TARGET_REACHED",
+2026-10-28T10:25:46.1031841Z       "pressure": [
+2026-10-28T10:25:46.1032047Z         {
+2026-10-28T10:25:46.1032292Z           "channel": "soak",
+2026-10-28T10:25:46.1032516Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1032762Z           "max_records": 1000,
+2026-10-28T10:25:46.1032988Z           "partition_id": "a",
+2026-10-28T10:25:46.1033208Z           "used_bytes": 0,
+2026-10-28T10:25:46.1033436Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1033695Z           "used_records": 0
+2026-10-28T10:25:46.1033912Z         },
+2026-10-28T10:25:46.1034122Z         {
+2026-10-28T10:25:46.1034373Z           "channel": "soak",
+2026-10-28T10:25:46.1034597Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1035440Z           "max_records": 1000,
+2026-10-28T10:25:46.1035650Z           "partition_id": "b",
+2026-10-28T10:25:46.1035904Z           "used_bytes": 0,
+2026-10-28T10:25:46.1036156Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1036395Z           "used_records": 0
+2026-10-28T10:25:46.1036609Z         },
+2026-10-28T10:25:46.1036813Z         {
+2026-10-28T10:25:46.1037062Z           "channel": "soak",
+2026-10-28T10:25:46.1037283Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1037534Z           "max_records": 1000,
+2026-10-28T10:25:46.1037764Z           "partition_id": "c",
+2026-10-28T10:25:46.1038010Z           "used_bytes": 0,
+2026-10-28T10:25:46.1038265Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1038484Z           "used_records": 0
+2026-10-28T10:25:46.1038706Z         },
+2026-10-28T10:25:46.1038905Z         {
+2026-10-28T10:25:46.1039151Z           "channel": "soak",
+2026-10-28T10:25:46.1039374Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1040610Z           "max_records": 1000,
+2026-10-28T10:25:46.1040887Z           "partition_id": "d",
+2026-10-28T10:25:46.1041128Z           "used_bytes": 0,
+2026-10-28T10:25:46.1041375Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1041631Z           "used_records": 0
+2026-10-28T10:25:46.1041856Z         },
+2026-10-28T10:25:46.1042035Z         {
+2026-10-28T10:25:46.1042271Z           "channel": "soak",
+2026-10-28T10:25:46.1042482Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1042750Z           "max_records": 1000,
+2026-10-28T10:25:46.1042962Z           "partition_id": "j",
+2026-10-28T10:25:46.1043188Z           "used_bytes": 0,
+2026-10-28T10:25:46.1043431Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1043666Z           "used_records": 0
+2026-10-28T10:25:46.1043889Z         },
+2026-10-28T10:25:46.1044063Z         {
+2026-10-28T10:25:46.1044292Z           "channel": "soak",
+2026-10-28T10:25:46.1044487Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1044710Z           "max_records": 1000,
+2026-10-28T10:25:46.1044916Z           "partition_id": "source",
+2026-10-28T10:25:46.1045137Z           "used_bytes": 0,
+2026-10-28T10:25:46.1045379Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1045563Z           "used_records": 0
+2026-10-28T10:25:46.1045753Z         }
+2026-10-28T10:25:46.1045953Z       ],
+2026-10-28T10:25:46.1046164Z       "process_boots": 2,
+2026-10-28T10:25:46.1046362Z       "source_completed": 20
+2026-10-28T10:25:46.1046560Z     },
+2026-10-28T10:25:46.1047324Z     {
+2026-10-28T10:25:46.1047662Z       "boot_id": "1f06ec242e724005884f35278ab83b8e",
+2026-10-28T10:25:46.1047890Z       "container_restart_count": 0,
+2026-10-28T10:25:46.1048069Z       "database": {
+2026-10-28T10:25:46.1048292Z         "database_bytes": 12632591,
+2026-10-28T10:25:46.1048585Z         "release_session_remaining_seconds": 299.911559,
+2026-10-28T10:25:46.1048804Z         "replicas": [
+2026-10-28T10:25:46.1048975Z           {
+2026-10-28T10:25:46.1049229Z             "application_name": "walreceiver",
+2026-10-28T10:25:46.1049437Z             "flush_lag": "0:00:00.001915",
+2026-10-28T10:25:46.1049794Z             "replay_lag": "0:00:00.002026",
+2026-10-28T10:25:46.1050001Z             "state": "streaming",
+2026-10-28T10:25:46.1050418Z             "sync_state": "sync",
+2026-10-28T10:25:46.1050648Z             "write_lag": "0:00:00.000545"
+2026-10-28T10:25:46.1050812Z           }
+2026-10-28T10:25:46.1051007Z         ],
+2026-10-28T10:25:46.1051264Z         "schema_relation_bytes": 5537792.0,
+2026-10-28T10:25:46.1051533Z         "synchronous_commit": "remote_apply"
+2026-10-28T10:25:46.1051699Z       },
+2026-10-28T10:25:46.1051935Z       "elapsed_seconds": 61.52598,
+2026-10-28T10:25:46.1052169Z       "last_checkpoint_source": 20,
+2026-10-28T10:25:46.1052350Z       "metrics": {
+2026-10-28T10:25:46.1052595Z         "primary_data_bytes": 69893915,
+2026-10-28T10:25:46.1052771Z         "service": {
+2026-10-28T10:25:46.1052990Z           "BlockIO": "0B / 4.81MB",
+2026-10-28T10:25:46.1053589Z           "CPUPerc": "8.61%",
+2026-10-28T10:25:46.1053946Z           "Container": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.1054171Z           "ID": "e1c511368879",
+2026-10-28T10:25:46.1054366Z           "MemPerc": "3.44%",
+2026-10-28T10:25:46.1054598Z           "MemUsage": "35.27MiB / 1GiB",
+2026-10-28T10:25:46.1054917Z           "Name": "ariadne-soak-40daebcdca51-service",
+2026-10-28T10:25:46.1055176Z           "NetIO": "8.55MB / 8.36MB",
+2026-10-28T10:25:46.1055381Z           "PIDs": "3"
+2026-10-28T10:25:46.1055610Z         },
+2026-10-28T10:25:46.1055843Z         "service_cpu_percent": 8.61,
+2026-10-28T10:25:46.1056144Z         "service_memory_limit_bytes": 1073741824,
+2026-10-28T10:25:46.1056395Z         "service_rss_bytes": 36983275,
+2026-10-28T10:25:46.1056643Z         "standby_data_bytes": 70109647
+2026-10-28T10:25:46.1056866Z       },
+2026-10-28T10:25:46.1057175Z       "observed_at": "2026-10-28T10:25:43.318436+00:00",
+2026-10-28T10:25:46.1057442Z       "owner_faults": 6,
+2026-10-28T10:25:46.1057679Z       "phase": "TARGET_REACHED",
+2026-10-28T10:25:46.1057925Z       "pressure": [
+2026-10-28T10:25:46.1058147Z         {
+2026-10-28T10:25:46.1058371Z           "channel": "soak",
+2026-10-28T10:25:46.1058603Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1058825Z           "max_records": 1000,
+2026-10-28T10:25:46.1059065Z           "partition_id": "a",
+2026-10-28T10:25:46.1059287Z           "used_bytes": 0,
+2026-10-28T10:25:46.1059670Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1059915Z           "used_records": 0
+2026-10-28T10:25:46.1060415Z         },
+2026-10-28T10:25:46.1060645Z         {
+2026-10-28T10:25:46.1060859Z           "channel": "soak",
+2026-10-28T10:25:46.1061103Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1061335Z           "max_records": 1000,
+2026-10-28T10:25:46.1061591Z           "partition_id": "b",
+2026-10-28T10:25:46.1061800Z           "used_bytes": 0,
+2026-10-28T10:25:46.1062057Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1062286Z           "used_records": 0
+2026-10-28T10:25:46.1062480Z         },
+2026-10-28T10:25:46.1062686Z         {
+2026-10-28T10:25:46.1062887Z           "channel": "soak",
+2026-10-28T10:25:46.1063133Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1063350Z           "max_records": 1000,
+2026-10-28T10:25:46.1063592Z           "partition_id": "c",
+2026-10-28T10:25:46.1063798Z           "used_bytes": 0,
+2026-10-28T10:25:46.1064058Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1064718Z           "used_records": 0
+2026-10-28T10:25:46.1064942Z         },
+2026-10-28T10:25:46.1065150Z         {
+2026-10-28T10:25:46.1065357Z           "channel": "soak",
+2026-10-28T10:25:46.1065596Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1065806Z           "max_records": 1000,
+2026-10-28T10:25:46.1066061Z           "partition_id": "d",
+2026-10-28T10:25:46.1066265Z           "used_bytes": 0,
+2026-10-28T10:25:46.1066523Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1066734Z           "used_records": 0
+2026-10-28T10:25:46.1066945Z         },
+2026-10-28T10:25:46.1067141Z         {
+2026-10-28T10:25:46.1067337Z           "channel": "soak",
+2026-10-28T10:25:46.1067587Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1067802Z           "max_records": 1000,
+2026-10-28T10:25:46.1068058Z           "partition_id": "j",
+2026-10-28T10:25:46.1068256Z           "used_bytes": 0,
+2026-10-28T10:25:46.1068551Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1068783Z           "used_records": 0
+2026-10-28T10:25:46.1068992Z         },
+2026-10-28T10:25:46.1069234Z         {
+2026-10-28T10:25:46.1069449Z           "channel": "soak",
+2026-10-28T10:25:46.1069793Z           "max_bytes": 16777216,
+2026-10-28T10:25:46.1069992Z           "max_records": 1000,
+2026-10-28T10:25:46.1070617Z           "partition_id": "source",
+2026-10-28T10:25:46.1070811Z           "used_bytes": 0,
+2026-10-28T10:25:46.1071084Z           "used_metadata_records": 0,
+2026-10-28T10:25:46.1071319Z           "used_records": 0
+2026-10-28T10:25:46.1072017Z         }
+2026-10-28T10:25:46.1072243Z       ],
+2026-10-28T10:25:46.1072484Z       "process_boots": 2,
+2026-10-28T10:25:46.1072738Z       "source_completed": 20
+2026-10-28T10:25:46.1072915Z     }
+2026-10-28T10:25:46.1073140Z   ],
+2026-10-28T10:25:46.1073344Z   "segment": 0,
+2026-10-28T10:25:46.1074200Z   "source_manifest_digest": "bbb0ef8cb20ee24ba2ca2bd9cb35e4ef56c64a23ad5be17ff2df9c1168f2e722",
+2026-10-28T10:25:46.1074500Z   "started_at": "2026-10-28T10:24:42.025436+00:00"
+2026-10-28T10:25:46.1074698Z }
+2026-10-28T10:25:46.1249171Z ##[group]Run python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+2026-10-28T10:25:46.1250870Z [36;1mpython3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"[0m
+2026-10-28T10:25:46.1251881Z [36;1mpython3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind bootstrap[0m
+2026-10-28T10:25:46.1276124Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:46.1276363Z env:
+2026-10-28T10:25:46.1276851Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:46.1277295Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:46.1277523Z   CAMPAIGN: gh-40671702946-1
+2026-10-28T10:25:46.1277765Z ##[endgroup]
+2026-10-28T10:25:46.2669033Z {
+2026-10-28T10:25:46.2669418Z   "complete": false,
+2026-10-28T10:25:46.2669798Z   "credentials_exported": false,
+2026-10-28T10:25:46.2670324Z   "expected_segments": 1,
+2026-10-28T10:25:46.2670708Z   "files": [
+2026-10-28T10:25:46.2670901Z     "manifest.json",
+2026-10-28T10:25:46.2671594Z     "segments/segment-00.json"
+2026-10-28T10:25:46.2671809Z   ],
+2026-10-28T10:25:46.2672080Z   "observed_segments": 1,
+2026-10-28T10:25:46.2672477Z   "output": "/home/runner/_work/_temp/soak-public",
+2026-10-28T10:25:46.2672735Z   "run_id": "gh-40671702946-1"
+2026-10-28T10:25:46.2672971Z }
+2026-10-28T10:25:46.4456760Z ARIADNE_SOAK_EVIDENCE_V1:{"attempt":1,"chunks":1,"compressed_sha256":"1369b66dc3a01c1f56dad7026345efd2f7b43d6f9779fdcc9fb7bc6e7f487f2f","compressed_size":4470,"frame_id":"51d638d69c996f92e91c92d3fb78b5f1302a632353e1ce0c8573ede80f0b5b4f","kind":"bootstrap","plain_sha256":"17177c7399165577af5128b23d0c6c6b7974cc25b991238f84cc8ea2fe880dba","plain_size":10035,"run_id":"40671702946","segment":null,"source_sha":"ff4972fb2c6df313056e828f72a3cad41dce9258","type":"BEGIN","version":1}
+2026-10-28T10:25:46.4587850Z ARIADNE_SOAK_EVIDENCE_V1:{"chunk_sha256":"1369b66dc3a01c1f56dad7026345efd2f7b43d6f9779fdcc9fb7bc6e7f487f2f","chunks":1,"data":"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","frame_id":"51d638d69c996f92e91c92d3fb78b5f1302a632353e1ce0c8573ede80f0b5b4f","index":0,"type":"CHUNK"}
+2026-10-28T10:25:46.4606724Z ARIADNE_SOAK_EVIDENCE_V1:{"chunks":1,"compressed_sha256":"1369b66dc3a01c1f56dad7026345efd2f7b43d6f9779fdcc9fb7bc6e7f487f2f","frame_id":"51d638d69c996f92e91c92d3fb78b5f1302a632353e1ce0c8573ede80f0b5b4f","type":"END"}
+2026-10-28T10:25:46.4824390Z ##[group]Run python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 0
+2026-10-28T10:25:46.4827371Z [36;1mpython3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 0[0m
+2026-10-28T10:25:46.4847108Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:46.4847601Z env:
+2026-10-28T10:25:46.4848105Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:46.4848820Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:46.4849421Z ##[endgroup]
+2026-10-28T10:25:46.6348588Z ARIADNE_SOAK_EVIDENCE_V1:{"attempt":1,"chunks":1,"compressed_sha256":"d912ea0390137a090b49c8bae104fe6ff460c036ff5dc55f5a2f7398c503ecf9","compressed_size":2936,"frame_id":"a0bc4f76397296a2ea23d4910eb3769752cfa06e24247779db7ad337022bd0df","kind":"segment","plain_sha256":"d13bc30dfbb0d05c4e3b5809db8f0d39ddc139b24ba434011757398b61de3c79","plain_size":44645,"run_id":"40671702946","segment":0,"source_sha":"ff4972fb2c6df313056e828f72a3cad41dce9258","type":"BEGIN","version":1}
+2026-10-28T10:25:46.6415531Z ARIADNE_SOAK_EVIDENCE_V1:{"chunk_sha256":"d912ea0390137a090b49c8bae104fe6ff460c036ff5dc55f5a2f7398c503ecf9","chunks":1,"data":"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","frame_id":"a0bc4f76397296a2ea23d4910eb3769752cfa06e24247779db7ad337022bd0df","index":0,"type":"CHUNK"}
+2026-10-28T10:25:46.6485198Z ARIADNE_SOAK_EVIDENCE_V1:{"chunks":1,"compressed_sha256":"d912ea0390137a090b49c8bae104fe6ff460c036ff5dc55f5a2f7398c503ecf9","frame_id":"a0bc4f76397296a2ea23d4910eb3769752cfa06e24247779db7ad337022bd0df","type":"END"}
+2026-10-28T10:25:46.7054726Z ##[group]Run python3 "$SOAK_CLI" review --run-id "$CAMPAIGN"
+2026-10-28T10:25:46.7055536Z [36;1mpython3 "$SOAK_CLI" review --run-id "$CAMPAIGN"[0m
+2026-10-28T10:25:46.7073092Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:46.7073639Z env:
+2026-10-28T10:25:46.7074351Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:46.7075479Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:46.7076394Z   CAMPAIGN: gh-40671702946-1
+2026-10-28T10:25:46.7077025Z ##[endgroup]
+2026-10-28T10:25:46.9463339Z {
+2026-10-28T10:25:46.9464431Z   "actual_prefect_in_72h": false,
+2026-10-28T10:25:46.9465053Z   "elapsed_seconds": 66.375115,
+2026-10-28T10:25:46.9465747Z   "generated_at": "2026-10-28T10:25:46.944622+00:00",
+2026-10-28T10:25:46.9466635Z   "long_soak_passed": false,
+2026-10-28T10:25:46.9467930Z   "manifest_digest": "043be2496b2cb9169efb0a565d96895e55a7a2a093441eab15f5807ad23fcd0f",
+2026-10-28T10:25:46.9469031Z   "owner_faults": 6,
+2026-10-28T10:25:46.9470782Z   "process_boots": 2,
+2026-10-28T10:25:46.9471578Z   "protocol": "ariadne-long-soak-review/v1",
+2026-10-28T10:25:46.9472498Z   "resource_measurements": {
+2026-10-28T10:25:46.9473537Z     "latter_half_primary_bytes_per_hour": -31933746.299659546,
+2026-10-28T10:25:46.9474600Z     "latter_half_schema_bytes_per_hour": -14563026.695022965,
+2026-10-28T10:25:46.9475258Z     "latter_half_service_rss_bytes_per_hour": 11471173.164613662,
+2026-10-28T10:25:46.9475961Z     "max_primary_data_bytes": 70845427,
+2026-10-28T10:25:46.9476817Z     "max_schema_relation_bytes": 6316032,
+2026-10-28T10:25:46.9477477Z     "max_service_rss_bytes": 38367395
+2026-10-28T10:25:46.9478178Z   },
+2026-10-28T10:25:46.9478721Z   "resource_policy": {
+2026-10-28T10:25:46.9479392Z     "absolute_caps_bytes": {
+2026-10-28T10:25:46.9482837Z       "primary_data": 8589934592,
+2026-10-28T10:25:46.9484611Z       "schema_relation": 536870912,
+2026-10-28T10:25:46.9485322Z       "service_rss": 805306368
+2026-10-28T10:25:46.9485926Z     },
+2026-10-28T10:25:46.9486450Z     "absolute_caps_enforced": true,
+2026-10-28T10:25:46.9487190Z     "growth_rate_caps_bytes_per_hour": {
+2026-10-28T10:25:46.9487946Z       "primary_data": 33554432,
+2026-10-28T10:25:46.9488653Z       "schema_relation": 8388608,
+2026-10-28T10:25:46.9489423Z       "service_rss": 16777216
+2026-10-28T10:25:46.9490326Z     },
+2026-10-28T10:25:46.9490830Z     "growth_rate_caps_enforced": false,
+2026-10-28T10:25:46.9491635Z     "growth_rates_descriptive": true,
+2026-10-28T10:25:46.9492457Z     "profile": "smoke_absolute_caps"
+2026-10-28T10:25:46.9493174Z   },
+2026-10-28T10:25:46.9493645Z   "run_id": "gh-40671702946-1",
+2026-10-28T10:25:46.9494312Z   "scope": [
+2026-10-28T10:25:46.9495024Z     "real PostgreSQL 17 synchronous remote_apply pair",
+2026-10-28T10:25:46.9496120Z     "ordinary Python yield DAG source->A->{B,C}->J->D",
+2026-10-28T10:25:46.9497313Z     "periodic barriers and bounded retirement/GC",
+2026-10-28T10:25:46.9498326Z     "release-session storage guard",
+2026-10-28T10:25:46.9499393Z     "owner loss and externally scheduled service-process loss",
+2026-10-28T10:25:46.9500926Z     "actual Prefect integration remains separate short R4-B evidence"
+2026-10-28T10:25:46.9501630Z   ],
+2026-10-28T10:25:46.9501963Z   "segment_count": 1,
+2026-10-28T10:25:46.9502326Z   "smoke_passed": true,
+2026-10-28T10:25:46.9502696Z   "source_completed": 20,
+2026-10-28T10:25:46.9503074Z   "violations": []
+2026-10-28T10:25:46.9503492Z }
+2026-10-28T10:25:46.9927195Z ##[group]Run python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+2026-10-28T10:25:46.9928925Z [36;1mpython3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"[0m
+2026-10-28T10:25:46.9930564Z [36;1mif [ -f "$RUNNER_TEMP/soak-public/review.md" ]; then[0m
+2026-10-28T10:25:46.9931455Z [36;1m  cat "$RUNNER_TEMP/soak-public/review.md" >> "$GITHUB_STEP_SUMMARY"[0m
+2026-10-28T10:25:46.9932098Z [36;1mfi[0m
+2026-10-28T10:25:46.9951790Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:46.9952259Z env:
+2026-10-28T10:25:46.9952691Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:46.9953562Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:46.9954413Z   CAMPAIGN: gh-40671702946-1
+2026-10-28T10:25:46.9954791Z ##[endgroup]
+2026-10-28T10:25:47.1173236Z {
+2026-10-28T10:25:47.1174445Z   "complete": true,
+2026-10-28T10:25:47.1175394Z   "credentials_exported": false,
+2026-10-28T10:25:47.1176487Z   "expected_segments": 1,
+2026-10-28T10:25:47.1177198Z   "files": [
+2026-10-28T10:25:47.1177839Z     "manifest.json",
+2026-10-28T10:25:47.1178569Z     "review.json",
+2026-10-28T10:25:47.1179079Z     "review.md",
+2026-10-28T10:25:47.1179908Z     "segments/segment-00.json"
+2026-10-28T10:25:47.1180872Z   ],
+2026-10-28T10:25:47.1181467Z   "observed_segments": 1,
+2026-10-28T10:25:47.1182087Z   "output": "/home/runner/_work/_temp/soak-public",
+2026-10-28T10:25:47.1182787Z   "run_id": "gh-40671702946-1"
+2026-10-28T10:25:47.1183572Z }
+2026-10-28T10:25:47.1553317Z ##[group]Run python3 - <<'PY'
+2026-10-28T10:25:47.1554346Z [36;1mpython3 - <<'PY'[0m
+2026-10-28T10:25:47.1555061Z [36;1mimport json[0m
+2026-10-28T10:25:47.1555720Z [36;1mimport os[0m
+2026-10-28T10:25:47.1556398Z [36;1mfrom pathlib import Path[0m
+2026-10-28T10:25:47.1557456Z [36;1mtarget = Path(os.environ['RUNNER_TEMP']) / 'soak-public'[0m
+2026-10-28T10:25:47.1558692Z [36;1mtarget.mkdir(parents=True, exist_ok=True)[0m
+2026-10-28T10:25:47.1560642Z [36;1mvalue = {key: os.environ.get(key) for key in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'RUNNER_NAME', 'JOB_STATUS')}[0m
+2026-10-28T10:25:47.1562388Z [36;1mprobe = Path(os.environ["RUNNER_TEMP"]) / ([0m
+2026-10-28T10:25:47.1563892Z [36;1m    f"soak-bind-probe-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}.json"[0m
+2026-10-28T10:25:47.1564815Z [36;1m)[0m
+2026-10-28T10:25:47.1566011Z [36;1mif probe.is_file():[0m
+2026-10-28T10:25:47.1567045Z [36;1m    value["bind_mount_probe"] = json.loads(probe.read_text())[0m
+2026-10-28T10:25:47.1568167Z [36;1m(target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')[0m
+2026-10-28T10:25:47.1569285Z [36;1mPY[0m
+2026-10-28T10:25:47.1588100Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:47.1588570Z env:
+2026-10-28T10:25:47.1589022Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:47.1590005Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:47.1590895Z   JOB_STATUS: success
+2026-10-28T10:25:47.1591285Z ##[endgroup]
+2026-10-28T10:25:47.2465426Z ##[group]Run python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind final
+2026-10-28T10:25:47.2468368Z [36;1mpython3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind final[0m
+2026-10-28T10:25:47.2497676Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:47.2498329Z env:
+2026-10-28T10:25:47.2499011Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:47.2500458Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:47.2501412Z ##[endgroup]
+2026-10-28T10:25:47.3913089Z ARIADNE_SOAK_EVIDENCE_V1:{"attempt":1,"chunks":1,"compressed_sha256":"9b4a2d0d514c953cdc0b2602444375dd2d7d5fabc7c7940a87604ce131746c89","compressed_size":5286,"frame_id":"d57185100c39dc4fca0cf01b8745c3255ac7282ec59fd9d9a53e2350361108d6","kind":"final","plain_sha256":"8e90ef9885fca705318e1dbb46625bcb2ed6d141eb07be8cf8c672d6df9dcbd7","plain_size":12446,"run_id":"40671702946","segment":null,"source_sha":"ff4972fb2c6df313056e828f72a3cad41dce9258","type":"BEGIN","version":1}
+2026-10-28T10:25:47.4018810Z ARIADNE_SOAK_EVIDENCE_V1:{"chunk_sha256":"9b4a2d0d514c953cdc0b2602444375dd2d7d5fabc7c7940a87604ce131746c89","chunks":1,"data":"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","frame_id":"d57185100c39dc4fca0cf01b8745c3255ac7282ec59fd9d9a53e2350361108d6","index":0,"type":"CHUNK"}
+2026-10-28T10:25:47.4115188Z ARIADNE_SOAK_EVIDENCE_V1:{"chunks":1,"compressed_sha256":"9b4a2d0d514c953cdc0b2602444375dd2d7d5fabc7c7940a87604ce131746c89","frame_id":"d57185100c39dc4fca0cf01b8745c3255ac7282ec59fd9d9a53e2350361108d6","type":"END"}
+2026-10-28T10:25:47.4362151Z ##[group]Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+2026-10-28T10:25:47.4363479Z with:
+2026-10-28T10:25:47.4364126Z   name: streaming-soak-smoke-40671702946-1
+2026-10-28T10:25:47.4365003Z   path: /home/runner/_work/_temp/soak-public/
+2026-10-28T10:25:47.4365853Z   if-no-files-found: error
+2026-10-28T10:25:47.4366550Z   retention-days: 30
+2026-10-28T10:25:47.4367291Z   compression-level: 6
+2026-10-28T10:25:47.4367925Z   overwrite: false
+2026-10-28T10:25:47.4368534Z   include-hidden-files: false
+2026-10-28T10:25:47.4369134Z   archive: true
+2026-10-28T10:25:47.4369719Z env:
+2026-10-28T10:25:47.4371358Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:47.4372498Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:47.4373490Z ##[endgroup]
+2026-10-28T10:25:47.8277996Z With the provided path, there will be 5 files uploaded
+2026-10-28T10:25:47.8293177Z Artifact name is valid!
+2026-10-28T10:25:47.8294481Z Root directory input is valid!
+2026-10-28T10:25:48.4678376Z Uploading artifact: streaming-soak-smoke-40671702946-1.zip
+2026-10-28T10:25:48.4760668Z Beginning upload of artifact content to blob storage
+2026-10-28T10:25:49.1171868Z Uploaded bytes 9377
+2026-10-28T10:25:49.2563283Z Finished uploading artifact content to blob storage!
+2026-10-28T10:25:49.2565665Z SHA256 digest of uploaded artifact is 8a47714dfac31ff93e735459b2fa45913efd722c34e1261abce19429bc62ac1d
+2026-10-28T10:25:49.2567601Z Finalizing artifact upload
+2026-10-28T10:25:50.1435212Z Artifact streaming-soak-smoke-40671702946-1 successfully finalized. Artifact ID 12808188305
+2026-10-28T10:25:50.1437616Z Artifact streaming-soak-smoke-40671702946-1 has been successfully uploaded! Final size is 9377 bytes. Artifact ID is 12808188305
+2026-10-28T10:25:50.1440512Z Artifact download URL: https://github.com/Anacreonsystems/ariadne/actions/runs/40671702946/artifacts/12808188305
+2026-10-28T10:25:50.1848590Z ##[group]Run python3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup
+2026-10-28T10:25:50.1853772Z [36;1mpython3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup[0m
+2026-10-28T10:25:50.1875241Z shell: /usr/bin/bash -e {0}
+2026-10-28T10:25:50.1875999Z env:
+2026-10-28T10:25:50.1876762Z   ARIADNE_SOAK_ROOT: /home/runner/_work/_temp/ariadne-soak
+2026-10-28T10:25:50.1878018Z   SOAK_CLI: architecture/streaming-etl/prototypes/ci_soak/cli.py
+2026-10-28T10:25:50.1879030Z   CAMPAIGN: gh-40671702946-1
+2026-10-28T10:25:50.1879812Z ##[endgroup]
+2026-10-28T10:25:52.0822327Z {
+2026-10-28T10:25:52.0822933Z   "cleanup": true,
+2026-10-28T10:25:52.0823597Z   "manifest_present": true,
+2026-10-28T10:25:52.0824271Z   "run_id": "gh-40671702946-1",
+2026-10-28T10:25:52.0824948Z   "service_stopped": true
+2026-10-28T10:25:52.0825551Z }
+2026-10-28T10:25:52.1513669Z Post job cleanup.
+2026-10-28T10:25:52.4218124Z [command]/usr/bin/git version
+2026-10-28T10:25:52.4372813Z git version 2.56.0
+2026-10-28T10:25:52.4515729Z Temporarily overriding HOME='/home/runner/_work/_temp/717c6384-1d3c-4ceb-8d6b-b0b3110ff238' before making global git config changes
+2026-10-28T10:25:52.4536035Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T10:25:52.4572826Z [command]/usr/bin/git config --global --add safe.directory /home/runner/_work/ariadne/ariadne
+2026-10-28T10:25:52.4661427Z Removing SSH command configuration
+2026-10-28T10:25:52.4678515Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T10:25:52.4811853Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T10:25:52.5654399Z Removing HTTP extra header
+2026-10-28T10:25:52.5683492Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T10:25:52.5837793Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T10:25:52.6658683Z Removing includeIf entries pointing to credentials config files
+2026-10-28T10:25:52.6660276Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T10:25:52.6741001Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T10:25:52.7844715Z Evaluate and set job outputs
+2026-10-28T10:25:52.7862220Z Set output 'long'
+2026-10-28T10:25:52.7868226Z Set output 'arc'
+2026-10-28T10:25:52.7870015Z Set output 'run_id'
+2026-10-28T10:25:52.7873526Z Cleaning up orphan processes

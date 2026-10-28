@@ -1,0 +1,36 @@
+test_failed_oracle_preserves_public_export_and_stops_only_service (test_arc_job.ArcObservationTests.test_failed_oracle_preserves_public_export_and_stops_only_service) ... ok
+test_insufficient_daemon_capacity_fails_and_removes_only_probe_volume (test_arc_job.ArcObservationTests.test_insufficient_daemon_capacity_fails_and_removes_only_probe_volume) ... ARIADNE_SOAK_CAPACITY_JSON={"state_free_bytes": 32212254720, "docker_volume_free_bytes": 1024, "required_free_bytes": 21474836480, "passed": false}
+ok
+test_progress_excludes_arbitrary_status_and_credentials (test_arc_job.ArcObservationTests.test_progress_excludes_arbitrary_status_and_credentials) ... ok
+test_signal_interruption_preserves_partial_export (test_arc_job.ArcObservationTests.test_signal_interruption_preserves_partial_export) ... ok
+test_log_download_is_bounded (test_arc_job.FreshCollectorTests.test_log_download_is_bounded) ... ok
+test_signed_storage_download_receives_no_repository_token (test_arc_job.FreshCollectorTests.test_signed_storage_download_receives_no_repository_token) ... ok
+test_source_sha_mismatch_exports_a_failed_diagnostic (test_arc_job.FreshCollectorTests.test_source_sha_mismatch_exports_a_failed_diagnostic) ... ok
+test_unexpected_redirect_is_rejected (test_arc_job.FreshCollectorTests.test_unexpected_redirect_is_rejected) ... ok
+test_cleanup_removes_partial_bootstrap_without_manifest (test_review.LongSoakReviewerTests.test_cleanup_removes_partial_bootstrap_without_manifest) ... ok
+test_cold_smoke_reports_rates_and_enforces_absolute_caps (test_review.LongSoakReviewerTests.test_cold_smoke_reports_rates_and_enforces_absolute_caps) ... ok
+test_docker_failure_redacts_environment_sql_and_dsn (test_review.LongSoakReviewerTests.test_docker_failure_redacts_environment_sql_and_dsn) ... ok
+test_missing_independent_oracle_fails (test_review.LongSoakReviewerTests.test_missing_independent_oracle_fails) ... ok
+test_non_smoke_keeps_all_growth_rate_limits (test_review.LongSoakReviewerTests.test_non_smoke_keeps_all_growth_rate_limits) ... ok
+test_partial_public_export_excludes_credentials (test_review.LongSoakReviewerTests.test_partial_public_export_excludes_credentials) ... ok
+test_smoke_passes_without_claiming_long_duration (test_review.LongSoakReviewerTests.test_smoke_passes_without_claiming_long_duration) ... ok
+test_smoke_rejects_each_absolute_resource_budget_overrun (test_review.LongSoakReviewerTests.test_smoke_rejects_each_absolute_resource_budget_overrun) ... ok
+test_reviewer_still_rejects_expired_lease_at_target (test_target_liveness.TargetLivenessTests.test_reviewer_still_rejects_expired_lease_at_target) ... ok
+test_target_renewal_failure_propagates (test_target_liveness.TargetLivenessTests.test_target_renewal_failure_propagates) ... ok
+test_target_tail_longer_than_two_leases_stays_live_without_new_data (test_target_liveness.TargetLivenessTests.test_target_tail_longer_than_two_leases_stays_live_without_new_data) ... ok
+test_collect_preserves_valid_partial_on_malformed_later_frame (test_transport.EvidenceTransportTests.test_collect_preserves_valid_partial_on_malformed_later_frame) ... ok
+test_corrupt_chunk_preserves_an_earlier_valid_frame (test_transport.EvidenceTransportTests.test_corrupt_chunk_preserves_an_earlier_valid_frame) ... ok
+test_declared_plain_size_above_limit_is_rejected_without_allocation (test_transport.EvidenceTransportTests.test_declared_plain_size_above_limit_is_rejected_without_allocation) ... ok
+test_failed_source_job_rejects_otherwise_complete_evidence (test_transport.EvidenceTransportTests.test_failed_source_job_rejects_otherwise_complete_evidence) ... ok
+test_full_eighteen_segment_campaign_round_trips_and_collects (test_transport.EvidenceTransportTests.test_full_eighteen_segment_campaign_round_trips_and_collects) ... ok
+test_missing_final_review_is_partial_and_fails (test_transport.EvidenceTransportTests.test_missing_final_review_is_partial_and_fails) ... ok
+test_path_traversal_payload_is_rejected (test_transport.EvidenceTransportTests.test_path_traversal_payload_is_rejected) ... ok
+test_smoke_campaign_uses_its_original_review_verdict (test_transport.EvidenceTransportTests.test_smoke_campaign_uses_its_original_review_verdict) ... ok
+test_weakened_numeric_resource_caps_fail_despite_embedded_pass (test_transport.EvidenceTransportTests.test_weakened_numeric_resource_caps_fail_despite_embedded_pass) ... ok
+test_wrong_run_binding_is_rejected (test_transport.EvidenceTransportTests.test_wrong_run_binding_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.179s
+
+OK
+ARC evidence collection failed: ValueError

@@ -42,3 +42,7 @@ The persistent state directory contains `credentials.json`; it must never be
 uploaded. CI artifacts are restricted to `manifest.json`, `segments/*.json`,
 `review.json`, and `review.md`. The manifest records dirty local provenance;
 `--require-clean` makes CI bootstrap fail unless the pinned checkout is clean.
+
+After the workload target is reached, the service keeps its storage authority
+live until shutdown while producing no further data or checkpoints. This
+allows monitor/oracle/export overhead without relaxing final lease checks.

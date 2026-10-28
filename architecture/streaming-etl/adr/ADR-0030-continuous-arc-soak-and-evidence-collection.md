@@ -118,6 +118,39 @@ checks retained statuses and links.
 Hosted controls and the actual dispatch will be linked after execution. This
 ADR remains `progress` until the real long run and all criteria have evidence.
 
+The first [hosted transport control](../evidence/ci-arc-transport-smoke-observed-40669929793.json)
+passed on source `77cbaa2`. The
+[numeric-threshold successor](../evidence/ci-arc-transport-smoke-observed-40670304409.json)
+passed on source `fd701b6`. Both original and fresh collector jobs passed,
+including artifact upload. They observed about 89.5 GiB free on both probed
+filesystems. These are short transport observations, not long-duration PASS.
+
+## Target-tail authority correction
+
+Principal review identified a separate harness defect before long dispatch:
+after reaching the workload target, the service kept emitting final samples
+but stopped renewing its 300-second release authority. Accumulated monitor and
+oracle overhead could therefore produce an expired final sample even after
+correct processing. The active path already renews this authority normally.
+
+The service now also renews it in `TARGET_REACHED`, before its final snapshot,
+until explicit shutdown. It produces no further DATA or checkpoints and
+retains the existing completion timestamp logic. Renewal failure propagates.
+The reviewer and all numeric bounds remain unchanged.
+
+The [reproduction and correction](../evidence/ci-arc-target-tail-validation-2026-10-28.json)
+preserve the initial interrupted test-harness trial, a bounded three-test red
+run with two failures, and the full 29-test green successor. A virtual clock
+crosses 610 seconds with a 300-second lease and checks multiple positive-lease
+snapshots, unchanged cursors/state, and no DATA/checkpoint calls. Separate
+controls reject an expired target sample and fail on renewal error. This is a
+model-clock test, not a claim of 610 measured production seconds.
+
+Principal review accepts the correction for a fresh hosted successor. The
+earlier hosted controls remain valid transport observations; their service
+hash precedes this correction, so another hosted short control is required
+before actual 72-hour dispatch.
+
 ## Consequences
 
 No external durable environment or extra credential is required for this

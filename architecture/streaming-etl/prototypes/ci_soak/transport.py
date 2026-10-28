@@ -95,9 +95,13 @@ class FrameBinding:
     segment: int | None = None
 
     def __post_init__(self) -> None:
-        if not self.run_id or not self.run_id.isdecimal():
+        if not isinstance(self.run_id, str) or not self.run_id.isdecimal():
             raise ValueError("run ID must be decimal")
-        if isinstance(self.attempt, bool) or self.attempt <= 0:
+        if (
+            isinstance(self.attempt, bool)
+            or not isinstance(self.attempt, int)
+            or self.attempt <= 0
+        ):
             raise ValueError("run attempt must be positive")
         object.__setattr__(self, "source_sha", _checked_sha(self.source_sha))
         if self.kind not in {"bootstrap", "segment", "final"}:
@@ -463,9 +467,7 @@ def decode_log(
                 declared_plain_total += active.begin["plain_size"]
                 if declared_compressed_total > MAX_COMPRESSED_BYTES:
                     active.invalid = True
-                    violations.append(
-                        f"line_{line_number}:aggregate_compressed_limit"
-                    )
+                    violations.append(f"line_{line_number}:aggregate_compressed_limit")
                 if declared_plain_total > MAX_PLAIN_BYTES:
                     active.invalid = True
                     violations.append(f"line_{line_number}:aggregate_plain_limit")
@@ -822,6 +824,21 @@ def _validate_evidence(
             != expected_policy
         ):
             violations.append("review_resource_policy")
+        if isinstance(policy, dict) and (
+            policy.get("absolute_caps_bytes")
+            != {
+                "primary_data": 8 * 1024**3,
+                "schema_relation": 512 * 1024**2,
+                "service_rss": 768 * 1024**2,
+            }
+            or policy.get("growth_rate_caps_bytes_per_hour")
+            != {
+                "primary_data": 32 * 1024**2,
+                "schema_relation": 8 * 1024**2,
+                "service_rss": 16 * 1024**2,
+            }
+        ):
+            violations.append("review_resource_thresholds")
         if isinstance(manifest, dict):
             schedule = manifest.get("fault_schedule")
             owner_every = (

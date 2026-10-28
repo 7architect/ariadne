@@ -106,6 +106,15 @@ binds the tested source bytes and
 [25 passing regressions](../evidence/ci-arc-single-job-tests-2026-10-28.log).
 Actionlint and all four profile/backend configuration cases pass. The existing
 ETL workload, CLI, supervisor and reviewer bytes remain unchanged.
+The [Principal review](../evidence/ci-arc-single-job-principal-review-2026-10-28.json)
+requires exact numeric resource-threshold binding in the collector. The
+[successor validation](../evidence/ci-arc-single-job-successor-validation-2026-10-28.json)
+adds that check and a negative control; all
+[26 regressions pass](../evidence/ci-arc-single-job-successor-tests-2026-10-28.log).
+The first hosted transport control at source `77cbaa2` remains a distinct
+observation; a fresh successor control is required before long dispatch.
+The [documentation graph](../evidence/adr-graph-arc-single-job-2026-10-28.json)
+checks retained statuses and links.
 Hosted controls and the actual dispatch will be linked after execution. This
 ADR remains `progress` until the real long run and all criteria have evidence.
 

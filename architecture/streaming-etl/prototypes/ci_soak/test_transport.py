@@ -128,6 +128,16 @@ class EvidenceFixture:
                 "absolute_caps_enforced": True,
                 "growth_rate_caps_enforced": not self.smoke,
                 "growth_rates_descriptive": self.smoke,
+                "absolute_caps_bytes": {
+                    "primary_data": 8 * 1024**3,
+                    "schema_relation": 512 * 1024**2,
+                    "service_rss": 768 * 1024**2,
+                },
+                "growth_rate_caps_bytes_per_hour": {
+                    "primary_data": 32 * 1024**2,
+                    "schema_relation": 8 * 1024**2,
+                    "service_rss": 16 * 1024**2,
+                },
             },
         }
         (self.root / "review.json").write_bytes(json_bytes(review))
@@ -248,6 +258,24 @@ class EvidenceTransportTests(unittest.TestCase):
         self.assertFalse(report["passed"])
         self.assertIn("missing:review.json", report["violations"])
         self.assertIn("missing:review.md", report["violations"])
+
+    def test_weakened_numeric_resource_caps_fail_despite_embedded_pass(self):
+        for smoke in (False, True):
+            for group in ("absolute_caps_bytes", "growth_rate_caps_bytes_per_hour"):
+                with self.subTest(smoke=smoke, group=group):
+                    fixture = self.fixture(smoke=smoke)
+                    path = fixture.root / "review.json"
+                    review = json.loads(path.read_text())
+                    review["resource_policy"][group]["primary_data"] *= 2
+                    path.write_bytes(json_bytes(review))
+                    files = transport.decode_log(
+                        fixture.emit_log(), RUN_ID, ATTEMPT, SOURCE_SHA
+                    )
+                    report = transport.validate_evidence(
+                        files, "success", CAMPAIGN, SOURCE_SHA
+                    )
+                    self.assertFalse(report["passed"])
+                    self.assertIn("review_resource_thresholds", report["violations"])
 
     def test_failed_source_job_rejects_otherwise_complete_evidence(self):
         fixture = self.fixture()

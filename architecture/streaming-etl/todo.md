@@ -11,6 +11,12 @@ are a short end-to-end publication control, the real 72-hour workload, and
 successful final reconstruction/upload. It remains `progress` and contributes
 no additional short-delivery percentage.
 
+Actual execution: [72-hour ARC run 40672223609](https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609)
+passed bootstrap and entered monitor 00 on 2026-10-28 at 10:28:36 UTC. Its
+[start record](evidence/ci-arc-72h-start-40672223609.json) binds the source and
+[passing short successor](evidence/ci-arc-transport-smoke-observed-40671702946.json).
+DS-052a remains `progress` pending full duration, final review and publication.
+
 Delivery states are separate from ADR statuses. Sizes assume `S` ≤ 2 engineer
 days, `M` = 3–4 days, and `L` ≈ one engineer week. `H` and `M` denote high and
 medium delivery risk.

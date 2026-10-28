@@ -8,6 +8,14 @@ remains in force.
 
 ## Existing runner requirements
 
+Current execution: [72-hour ARC run 40672223609](https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609)
+is running on source `ff4972f`; its
+[start observation](evidence/ci-arc-72h-start-40672223609.json) confirms readiness,
+early artifact publication and monitor 00. The
+[same-source short control](evidence/ci-arc-transport-smoke-observed-40671702946.json)
+passes both original and fresh collector jobs. Final long acceptance is open.
+Do not cancel or retrigger this campaign merely to request status.
+
 Use the existing inventory: `anacreon-runners` is the ARC ephemeral scale set;
 `k8s-runner` is the optional static runner. Both profiles require Linux x64,
 Python 3.11 or newer, a working local Docker socket, outbound image/dependency

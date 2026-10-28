@@ -151,6 +151,32 @@ earlier hosted controls remain valid transport observations; their service
 hash precedes this correction, so another hosted short control is required
 before actual 72-hour dispatch.
 
+## Hosted successor and actual campaign start
+
+The [final short successor](../evidence/ci-arc-transport-smoke-observed-40671702946.json)
+passes on `ff4972fb2c6df313056e828f72a3cad41dce9258`: original pod, recovery,
+independent reviewer, fresh collector and artifact publication all succeed.
+It measured 66.375115 seconds and completed 20 source documents. Repository
+hooks, type checking and both CodeQL language analyses also passed on this
+source. The 29-test target-tail validation binds the same source bytes.
+
+The actual [72-hour ARC campaign](https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609)
+was dispatched at that exact source with `profile=72h, execution=arc`.
+The [start observation](../evidence/ci-arc-72h-start-40672223609.json)
+confirms runner `anacreon-runners-runner-8xffs`, successful mount/capacity and
+readiness checks, successful early artifact publication and monitor 00
+executing from 2026-10-28 10:28:36 UTC. The start command completed readiness
+by 10:28:32 UTC; this observation does not infer the exact database start time
+from workflow creation time.
+
+This is an executing real long campaign, not its final acceptance. The
+259200-second target, 18 segments, faults 5/11 and all caps remain unchanged.
+The final original-pod reviewer and fresh collector must both pass before
+`long_soak_passed=true` can be accepted. This ADR and DS-052a remain `progress`
+with no additional delivery percentage. The implementation is reviewable in
+[PR #2](https://github.com/Anacreonsystems/ariadne/pull/2); the job pins its
+source SHA independently of later documentation commits.
+
 ## Consequences
 
 No external durable environment or extra credential is required for this

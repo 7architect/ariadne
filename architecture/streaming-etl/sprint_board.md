@@ -6,6 +6,12 @@ the complete short ARC/collector path, then run 72 continuous hours with the
 unchanged duration/fault/resource criteria and final artifact publication.
 This lane adds no short-delivery percentage.
 
+The [actual ARC campaign](https://github.com/Anacreonsystems/ariadne/actions/runs/40672223609)
+has passed startup and is executing monitor 00; the
+[start evidence](evidence/ci-arc-72h-start-40672223609.json) records the exact
+source and verified short control. DS-052a remains `progress` until all 72-hour
+and final publication criteria pass.
+
 Default cadence is one week with parallel owners. A task sized `L` consumes one
 owner for most of the sprint. If staffing cannot satisfy the exit criteria, work
 rolls forward and the cumulative target is not claimed.

@@ -36,7 +36,7 @@
     "ADR-0092-split-safety-state-machines.md": "rejected",
     "ADR-0093-implicit-regeneration-of-missing-durable-output.md": "rejected"
   },
-  "local_links": 747,
+  "local_links": 754,
   "markdown_documents": 43,
   "passed": true,
   "violations": []

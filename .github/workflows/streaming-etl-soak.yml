@@ -9,6 +9,11 @@ on:
         type: choice
         options: [smoke, 72h]
         default: smoke
+      execution:
+        description: "ARC uses one continuous job; static retains the existing host chain"
+        type: choice
+        options: [arc, static]
+        default: arc
   push:
     branches: [streaming-etl-adrs]
     paths:
@@ -30,10 +35,11 @@ env:
 jobs:
   prepare:
     name: Prepare on an existing self-hosted runner
-    runs-on: ${{ inputs.profile == '72h' && 'self-hosted' || 'anacreon-runners' }}
-    timeout-minutes: 30
+    runs-on: ${{ inputs.profile == '72h' && inputs.execution == 'static' && 'self-hosted' || 'anacreon-runners' }}
+    timeout-minutes: ${{ inputs.profile == '72h' && inputs.execution != 'static' && 4500 || 30 }}
     outputs:
       long: ${{ steps.config.outputs.long }}
+      arc: ${{ steps.config.outputs.arc }}
       run_id: ${{ steps.config.outputs.run_id }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -44,6 +50,7 @@ jobs:
         id: config
         env:
           PROFILE: ${{ inputs.profile || 'smoke' }}
+          EXECUTION: ${{ inputs.execution || 'arc' }}
         run: |
           python3 - <<'PY'
           import os
@@ -52,19 +59,20 @@ jobs:
           if sys.version_info < (3, 11):
               raise SystemExit("The existing runner needs Python 3.11 or newer.")
           profile = os.environ["PROFILE"]
-          if profile == "72h" and os.environ["RUNNER_NAME"] != "k8s-runner":
+          static = profile == "72h" and os.environ["EXECUTION"] == "static"
+          if static and os.environ["RUNNER_NAME"] != "k8s-runner":
               raise SystemExit("72h requires the existing persistent k8s-runner; ephemeral ARC runners cannot retain this campaign between jobs.")
           run_id = "gh-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
           state_root = (
               Path(os.environ["ARIADNE_SOAK_ROOT"])
-              if profile == "72h"
+              if static
               else Path(os.environ["RUNNER_TEMP"]) / "ariadne-soak"
           ).resolve()
           state_root.mkdir(parents=True, exist_ok=True)
           with open(os.environ["GITHUB_ENV"], "a") as environment:
               environment.write(f"ARIADNE_SOAK_ROOT={state_root}\n")
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
-              output.write(f"long={str(profile == '72h').lower()}\nrun_id={run_id}\nstate_root={state_root}\n")
+              output.write(f"long={str(static).lower()}\narc={str(not static).lower()}\nrun_id={run_id}\nstate_root={state_root}\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
               summary.write(f"Runner: {os.environ['RUNNER_NAME']}\n\nCampaign: {run_id}\n\nProfile: {profile}\n\nState root: {state_root}\n")
           PY
@@ -73,6 +81,7 @@ jobs:
       - name: Verify bidirectional state sharing with Docker
         env:
           PROFILE: ${{ inputs.profile || 'smoke' }}
+          EXECUTION: ${{ inputs.execution || 'arc' }}
         run: |
           python3 - <<'PY'
           import json
@@ -129,7 +138,7 @@ jobs:
               "run_id": os.environ["GITHUB_RUN_ID"],
               "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
               "profile": os.environ["PROFILE"],
-              "state_root_kind": "persistent" if os.environ["PROFILE"] == "72h" else "runner_temp",
+              "state_root_kind": "persistent" if os.environ["PROFILE"] == "72h" and os.environ["EXECUTION"] == "static" else "runner_temp",
               "state_root": str(state_root),
           }
           roots = [("selected_root", state_root)]
@@ -159,8 +168,14 @@ jobs:
           shutil.rmtree(path, ignore_errors=True)
           path.mkdir(parents=True)
           PY
+      - name: Observe Docker volume and state capacity
+        if: steps.config.outputs.arc == 'true'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+          REQUIRED_FREE: ${{ inputs.profile == '72h' && '21474836480' || '0' }}
+        run: python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --preflight --required-free-bytes "$REQUIRED_FREE"
       - name: Start immutable continuous campaign
-        if: steps.config.outputs.long == 'true'
+        if: inputs.profile == '72h'
         env:
           CAMPAIGN: ${{ steps.config.outputs.run_id }}
         run: |
@@ -168,7 +183,7 @@ jobs:
             --target-seconds 259200 --segment-seconds 14400 --segment-count 18 \
             --process-loss-segments 5,11
       - name: Start smoke and exercise process recovery
-        if: steps.config.outputs.long == 'false'
+        if: (inputs.profile || 'smoke') == 'smoke'
         env:
           CAMPAIGN: ${{ steps.config.outputs.run_id }}
         run: |
@@ -177,13 +192,193 @@ jobs:
             --records-per-second 2 --checkpoint-every 2 --owner-fault-every 3 \
             --process-loss-segments 0
           python3 "$SOAK_CLI" watch --run-id "$CAMPAIGN" --segment 0 --duration 60 --poll-seconds 3
-      - name: Review smoke independently
-        if: always() && (inputs.profile || 'smoke') == 'smoke'
+      - name: Export and frame initial ARC evidence
+        if: steps.config.outputs.arc == 'true'
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind bootstrap
+      - name: Upload early long-profile evidence
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: streaming-soak-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/soak-public/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Frame the completed smoke segment
+        if: (inputs.profile || 'smoke') == 'smoke'
+        run: python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 0
+      - name: Run ARC monitor 00 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 0 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 0
+      - name: Run ARC monitor 01 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 1 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 1
+      - name: Run ARC monitor 02 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 2 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 2
+      - name: Run ARC monitor 03 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 3 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 3
+      - name: Run ARC monitor 04 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 4 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 4
+      - name: Run ARC monitor 05 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 5 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 5
+      - name: Run ARC monitor 06 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 6 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 6
+      - name: Run ARC monitor 07 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 7 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 7
+      - name: Run ARC monitor 08 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 8 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 8
+      - name: Run ARC monitor 09 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 9 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 9
+      - name: Run ARC monitor 10 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 10 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 10
+      - name: Run ARC monitor 11 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 11 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 11
+      - name: Run ARC monitor 12 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 12 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 12
+      - name: Run ARC monitor 13 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 13 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 13
+      - name: Run ARC monitor 14 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 14 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 14
+      - name: Run ARC monitor 15 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 15 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 15
+      - name: Run ARC monitor 16 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 16 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 16
+      - name: Run ARC monitor 17 of 17
+        if: inputs.profile == '72h' && steps.config.outputs.arc == 'true'
+        timeout-minutes: 270
+        env:
+          CAMPAIGN: ${{ steps.config.outputs.run_id }}
+        run: |
+          python3 architecture/streaming-etl/prototypes/ci_soak/arc_job.py --run-id "$CAMPAIGN" --segment 17 --public-output "$RUNNER_TEMP/soak-public"
+          python3 "$SOAK_CLI" export-public --run-id "$CAMPAIGN" --output "$RUNNER_TEMP/soak-public"
+          python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind segment --segment 17
+      - name: Review ARC campaign independently
+        if: always() && steps.config.outputs.arc == 'true'
         env:
           CAMPAIGN: ${{ steps.config.outputs.run_id }}
         run: python3 "$SOAK_CLI" review --run-id "$CAMPAIGN"
-      - name: Export smoke public evidence
-        if: always() && (inputs.profile || 'smoke') == 'smoke'
+      - name: Export ARC public evidence
+        if: always() && steps.config.outputs.arc == 'true'
         env:
           CAMPAIGN: ${{ steps.config.outputs.run_id }}
         run: |
@@ -192,7 +387,7 @@ jobs:
             cat "$RUNNER_TEMP/soak-public/review.md" >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Preserve a bounded CI diagnostic even if bootstrap failed
-        if: always() && (inputs.profile || 'smoke') == 'smoke'
+        if: always() && steps.config.outputs.arc == 'true'
         env:
           JOB_STATUS: ${{ job.status }}
         run: |
@@ -210,6 +405,9 @@ jobs:
               value["bind_mount_probe"] = json.loads(probe.read_text())
           (target / 'ci-status.json').write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
           PY
+      - name: Frame final ARC evidence before owned cleanup
+        if: always() && steps.config.outputs.arc == 'true'
+        run: python3 architecture/streaming-etl/prototypes/ci_soak/transport.py emit --root "$RUNNER_TEMP/soak-public" --kind final
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always() && (inputs.profile || 'smoke') == 'smoke'
         with:
@@ -217,11 +415,38 @@ jobs:
           path: ${{ runner.temp }}/soak-public/
           if-no-files-found: error
           retention-days: 30
-      - name: Remove only smoke-owned Docker resources
-        if: always() && (inputs.profile || 'smoke') == 'smoke'
+      - name: Remove only this ARC campaign's Docker resources
+        if: always() && steps.config.outputs.arc == 'true'
         env:
           CAMPAIGN: ${{ steps.config.outputs.run_id || format('gh-{0}-{1}', github.run_id, github.run_attempt) }}
         run: python3 "$SOAK_CLI" stop --run-id "$CAMPAIGN" --cleanup
+
+  collect-arc:
+    name: Publish ARC evidence with fresh credentials
+    needs: [prepare]
+    if: always() && needs.prepare.outputs.arc == 'true'
+    runs-on: anacreon-runners
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Retrieve original job logs and validate bound public evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 architecture/streaming-etl/prototypes/ci_soak/collect_job.py --output "$RUNNER_TEMP/soak-collected"
+      - name: Publish complete or rejected partial evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: streaming-soak-collected-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/soak-collected/
+          if-no-files-found: error
+          retention-days: 90
 
   segment-00:
     name: Monitor 00 of 17

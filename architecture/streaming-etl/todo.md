@@ -4,6 +4,13 @@ This registry slices the [ADR graph](adr/README.md) into delivery tasks. Task
 completion does not make an ADR `accepted`; evidence for every criterion in
 the declared ADR scope must be linked back to it.
 
+Current separate DS-052a work follows
+[ADR-0030](adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md): one
+continuous ARC job, 18 monitor steps and a fresh evidence collector. Its gates
+are a short end-to-end publication control, the real 72-hour workload, and
+successful final reconstruction/upload. It remains `progress` and contributes
+no additional short-delivery percentage.
+
 Delivery states are separate from ADR statuses. Sizes assume `S` ≤ 2 engineer
 days, `M` = 3–4 days, and `L` ≈ one engineer week. `H` and `M` denote high and
 medium delivery risk.

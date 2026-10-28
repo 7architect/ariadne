@@ -1,0 +1,48 @@
+{
+  "actionlint": {
+    "confirmed_custom_runner_label": "anacreon-runners",
+    "job_timeout_minutes": 4500,
+    "monitor_steps": 18,
+    "passed": true,
+    "step_timeout_minutes": 270,
+    "version": "1.7.12"
+  },
+  "existing_cli_review_service_supervisor_unchanged": true,
+  "hosted_control_status": "not_yet_dispatched",
+  "long_soak_passed": false,
+  "prefect_core_changed": false,
+  "principal_review_status": "pending_final_workflow_review",
+  "process_loss_segments": [
+    5,
+    11
+  ],
+  "profile_config_cases": {
+    "72h/arc": "PASS",
+    "72h/static": "PASS",
+    "smoke/arc": "PASS",
+    "smoke/static": "PASS"
+  },
+  "scope": "ARC single-job wrapper, bounded public log transport and fresh collector; existing ETL/reviewer algorithms unchanged",
+  "segment_seconds": 14400,
+  "target_seconds": 259200,
+  "tested_worktree_sha256": {
+    ".github/workflows/streaming-etl-soak.yml": "7a359fefecaaa9e03299f202e6846943a49329a2ff721210158f8d336e956d7f",
+    "architecture/streaming-etl/prototypes/ci_soak/README.md": "ac32a0ca5647b8318eaf602312a6ce7a18ba5c8abed817b4c26d8f796f597815",
+    "architecture/streaming-etl/prototypes/ci_soak/arc_job.py": "e66713c65e04442efab8a92cc8641350487d70e5fdba6aef0d419919cae720b3",
+    "architecture/streaming-etl/prototypes/ci_soak/cli.py": "715c7a7603eba60de386161bdd386213dbbe3e025e6088da92aecfbf5fade461",
+    "architecture/streaming-etl/prototypes/ci_soak/collect_job.py": "63718a20337428e808d3bce83348b616b723affc5351ac208d2df47141a9f272",
+    "architecture/streaming-etl/prototypes/ci_soak/review.py": "56c8c35aa251d8cf9914912e6df72ca26a8c0301cea9e2b7f9236f4df5fdbf82",
+    "architecture/streaming-etl/prototypes/ci_soak/service.py": "c41e959c00234b32c70188da1aa63adb4313c210504d62481d0eb9c06b73aa6e",
+    "architecture/streaming-etl/prototypes/ci_soak/supervisor.py": "6b347d55d25a52f902f2aabda82d266dde07243fa76836a71b2ef94ad5a4334c",
+    "architecture/streaming-etl/prototypes/ci_soak/test_arc_job.py": "b565ad2666fe03b441b35dd7259fd2d5ea6c4d66b936458ead3f81e343732ecd",
+    "architecture/streaming-etl/prototypes/ci_soak/test_review.py": "0cdd5a52a623c50a9d5a4c57c9081d1e233412444ff6890de10f894d6debfd29",
+    "architecture/streaming-etl/prototypes/ci_soak/test_transport.py": "1ee2b9a82a343c730dbf27eb42a39c4d6478c87afd6e71123fdc78a19713c669",
+    "architecture/streaming-etl/prototypes/ci_soak/transport.py": "066a8b2f83a6798287ac67a860fb16d807bc2e58f493cba0f0afb7d9919efd52"
+  },
+  "tests": {
+    "count": 25,
+    "passed": true,
+    "raw_log": "ci-arc-single-job-tests-2026-10-28.log",
+    "raw_log_sha256": "f148fc988d1733f00290abf976cd5ba195f1af61ef3dc0b56f39915bd5e92ab3"
+  }
+}

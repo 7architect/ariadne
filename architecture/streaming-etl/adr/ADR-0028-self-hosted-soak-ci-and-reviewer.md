@@ -419,6 +419,16 @@ was not independently downloaded. The
 [retrigger evidence graph](../evidence/adr-graph-arc-retrigger-2026-10-28.json)
 checks retained statuses and links.
 
+## ARC execution follow-up
+
+The user directed execution on the available ARC scale set. The active
+deployment and credential-lifetime solution is specified in
+[ADR-0030](ADR-0030-continuous-arc-soak-and-evidence-collection.md): one
+continuous job, the same 18 monitor segments, and public log frames collected
+by a fresh dependent job. The static chain remains an explicit option.
+Historical observations above remain unchanged. Actual 72-hour acceptance is
+still open; the operator guide and DS-052a track the current implementation.
+
 ## Consequences
 
 The separate campaign occupies the existing static host for at least 72 hours.

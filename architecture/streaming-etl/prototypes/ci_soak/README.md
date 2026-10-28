@@ -1,8 +1,12 @@
 # Segmented 72-hour streaming soak
 
 This harness runs one detached, immutable Docker workload across 18 sequential
-four-hour monitor jobs on a dedicated self-hosted runner. Refreshing CI jobs do
-not restart the ETL process, PostgreSQL primary, or synchronous standby.
+four-hour monitor steps in one ARC job, or across monitor jobs on the existing
+static runner when explicitly selected. Monitor boundaries do not restart the
+ETL process, PostgreSQL primary, or synchronous standby. The ARC profile uses
+a fresh dependent job to reconstruct public evidence from bound log frames
+and publish its artifact without relying on a 72-hour-old repository token.
+See [ADR-0030](../../adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md).
 
 The selected profile is a real PostgreSQL-backed Python yield DAG
 `source -> A -> {B,C} -> J -> D`, periodic global barriers, bounded retirement

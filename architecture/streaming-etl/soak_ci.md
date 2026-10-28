@@ -1,78 +1,89 @@
 # Streaming ETL soak CI operator guide
 
-Decision: [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md).
-The [harness](prototypes/ci_soak/README.md) runs one persistent workload; the
-separate [short-delivery agreement](adr/ADR-0027-short-acceptance-and-separate-long-soak.md)
+Decisions: [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md) and the
+current [ARC execution contract](adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md).
+The [harness](prototypes/ci_soak/README.md) runs one persistent workload. The
+[short-delivery agreement](adr/ADR-0027-short-acceptance-and-separate-long-soak.md)
 remains in force.
 
 ## Existing runner requirements
 
-Use the existing runner inventory supplied by the user: `anacreon-runners` is
-an ARC ephemeral scale set; `k8s-runner` is the static self-hosted runner. The
-selected profile requires
-Linux x64, Python 3.11 or newer, a working local Docker socket accessible to the
-runner account, outbound image/dependency access, and a writable state root
-shared bidirectionally with Docker. Smoke uses `$RUNNER_TEMP/ariadne-soak`;
-the long profile uses `/var/tmp/ariadne-soak`. A long campaign must run on the persistent static host;
-the short smoke can complete within one ephemeral ARC job. The configured
-containers can consume up to 5 GiB RAM and five CPU equivalents in total; allow
-at least 20 GiB free disk for images, two PostgreSQL volumes and evidence. These
-are campaign prerequisites, not a production capacity claim.
+Use the existing inventory: `anacreon-runners` is the ARC ephemeral scale set;
+`k8s-runner` is the optional static runner. Both profiles require Linux x64,
+Python 3.11 or newer, a working local Docker socket, outbound image/dependency
+access and a writable state root shared bidirectionally with Docker.
 
-Long jobs request `[self-hosted, Linux, X64]` and verify the reported name is
-`k8s-runner`. No custom label is required for the confirmed inventory. The
-harness also verifies machine and Docker identity throughout the campaign.
+ARC uses `$RUNNER_TEMP/ariadne-soak` for both profiles. Its long campaign stays
+in one pod and one job. The explicit static backend uses
+`/var/tmp/ariadne-soak` across jobs and verifies `RUNNER_NAME=k8s-runner`.
+The harness verifies machine and Docker identity throughout either campaign.
+Containers can consume up to 5 GiB RAM and five CPU equivalents in total.
+The long admission probe requires at least 20 GiB free on the observed state
+filesystem and temporary Docker volume. These are campaign prerequisites,
+not a production capacity claim or protection against later node pressure.
 
 ## Start a short check
 
-The [Streaming ETL soak workflow](../../.github/workflows/streaming-etl-soak.yml)
-defaults to `profile=smoke`, routed to `anacreon-runners`. A push of the workflow
-or harness on `streaming-etl-adrs` also requests this smoke profile. It
-selects an existing ARC runner and performs the complete short
-start/recovery/review/export/cleanup sequence within that job.
-
-The result must say `smoke_passed=true` and `long_soak_passed=false`. A successful
-smoke does not close DS-052a or establish long-duration capacity.
+The [workflow](../../.github/workflows/streaming-etl-soak.yml) defaults to
+`profile=smoke`, routed to `anacreon-runners`. A matching push on
+`streaming-etl-adrs` also requests this profile. The original job performs
+start/recovery/review/export/cleanup, while a dependent fresh ARC job verifies
+and publishes reconstructed public evidence from the original job log.
+The original reviewer must report `smoke_passed=true` and
+`long_soak_passed=false`; the collector must also pass. A successful short
+control does not close DS-052a or establish long-duration capacity.
 
 ## Start the separate long campaign
 
-After the workflow is available for manual dispatch, choose `profile=72h`.
-It routes to the existing static runner. Manual dispatch availability normally requires
-the workflow to exist on the repository's default branch. Publishing a feature
-branch alone does not establish that availability; the branch push smoke is a
-separate trigger.
+Choose `profile=72h`, `execution=arc` (the default). Manual dispatch requires
+the workflow to be available on the default branch; an existing workflow can
+then be dispatched at the reviewed feature-branch ref. Every job checks out
+the exact triggering SHA with persisted Git credentials disabled.
 
-Bootstrap copies the exact committed source into an immutable Docker image.
-The workflow then runs monitor segments 0 through 17 in an explicit dependency
-chain. Each four-hour job obtains fresh GitHub credentials and uploads public
-evidence. The service and database pair continue through job boundaries.
-Scheduled process-loss injections occur in segments 5 and 11. Final review
-checks actual elapsed duration, source/state checksums, faults, synchronous
-replication, authority, pressure and measured resource limits.
+Bootstrap copies committed source into an immutable Docker image. Eighteen
+sequential four-hour monitor steps run inside one 4500-minute ARC job. The
+service and PostgreSQL pair continue through step boundaries. Scheduled process
+losses occur in segments 5 and 11. The original pod runs the independent final
+review with unchanged duration, source/state checksums, faults, synchronous
+replication, authority, pressure, and absolute/rate resource checks.
 
-Read the final job summary and the `streaming-soak-final-*` artifact. The harness
-public files are `manifest.json`, `segments/segment-*.json`, `review.json`, and
-`review.md`. CI adds a bounded `ci-status.json` containing only run/attempt
-identifiers, runner name and job outcome. Failed or interrupted runs can export incomplete public evidence;
-the reviewer still fails them. Never upload the full persistent directory or
-`credentials.json`.
+The early partial artifact tests initial publication. Each segment and the
+final review emit bounded, compressed public frames to the job log. The
+original long job performs no late repository API or artifact operation.
+A dependent ARC job gets fresh `actions: read` credentials, downloads the
+completed original job log, verifies frame integrity, source identity,
+segment chain and original verdict, and uploads `streaming-soak-collected-*`.
+Both the original job and collector/publication must pass. Read
+`transport-review.json` and `review.json` in that artifact.
+
+The whitelist contains `manifest.json`, `segments/segment-*.json`, `review.json`
+and `review.md`; the collector adds `transport-review.json`. Native short
+artifacts also include bounded `ci-status.json` diagnostics. Failed runs
+publish available partial evidence with a failed transport verdict. Never
+upload the private state directory, `credentials.json`, or the unfiltered
+original job log.
+
+`execution=static` retains the 18-job chain and `streaming-soak-final-*`
+artifact. That option requires `k8s-runner`; it does not route to ARC.
 
 ## Failure, retry and cleanup
 
-The campaign ID is `gh-<GitHub run ID>-<GitHub run attempt>`. Rerun all jobs to
-start a fresh campaign; old evidence is never counted as a fresh long test.
-Individual completed segments are immutable within a campaign. Source and
-machine identity must match. Retrying an individual monitor after the final
-job stopped the workload cannot resume the campaign: rerun all jobs instead.
-Time lost between segments remains visible to the reviewer.
+Campaign ID is `gh-<GitHub run ID>-<GitHub run attempt>`. Rerun all jobs for a
+fresh campaign. Individual completed segments are immutable; an ARC pod cannot
+resume a prior pod's campaign. Queue time is not measured workload duration.
 
-On success the final job removes this campaign's Docker resources. On failure
-it stops the workload but retains databases and public evidence. Cancellation
-can prevent finalization. Use
-[Streaming ETL soak cleanup](../../.github/workflows/streaming-etl-soak-cleanup.yml)
-with the explicit campaign ID; it verifies the static runner name. Check the
-job result. It removes only named resources from that campaign manifest and its
-credentials file; it does not prune Docker globally or touch unrelated tests.
+The original ARC job attempts public partial export and owned Docker cleanup
+after its final frame, including on failure. TERM/INT also attempts partial
+export and stops its service. Hard pod loss can destroy state and prevent
+finalization; this fails the campaign. The fresh collector preserves public
+frames when it can retrieve the job log. Missing, altered, oversized or
+truncated evidence and final artifact failure all prevent acceptance.
+
+For the static backend, success cleans owned resources; failure stops the
+workload and retains databases. Cancellation can prevent finalization. Use the
+[cleanup workflow](../../.github/workflows/streaming-etl-soak-cleanup.yml) with
+the exact campaign ID on its owning static runner. It removes only that
+campaign's named resources and credentials, without global Docker cleanup.
 
 ## Initial execution status (2026-10-26)
 

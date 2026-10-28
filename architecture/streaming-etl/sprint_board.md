@@ -1,5 +1,11 @@
 # Streaming ETL sprint board
 
+The separate DS-052a lane remains `progress` under
+[ADR-0030](adr/ADR-0030-continuous-arc-soak-and-evidence-collection.md): validate
+the complete short ARC/collector path, then run 72 continuous hours with the
+unchanged duration/fault/resource criteria and final artifact publication.
+This lane adds no short-delivery percentage.
+
 Default cadence is one week with parallel owners. A task sized `L` consumes one
 owner for most of the sprint. If staffing cannot satisfy the exit criteria, work
 rolls forward and the cumulative target is not claimed.

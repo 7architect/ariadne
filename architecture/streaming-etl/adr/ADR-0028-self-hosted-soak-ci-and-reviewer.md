@@ -380,6 +380,45 @@ additional percentage. See the [operator guide](../soak_ci.md),
 The [dispatch evidence graph](../evidence/adr-graph-long-dispatch-40601620025.json)
 checks the retained statuses and local documentation links.
 
+## ARC retrigger and long-profile boundary (2026-10-28)
+
+The user requested a retrigger and confirmed `anacreon-runners`. The existing
+long-profile run was still queued, with no assigned runner and no executed
+steps. It was [cancelled before bootstrap](../evidence/ci-long-soak-cancelled-40601620025.json)
+to release the workflow concurrency group. The earlier dispatch observation
+remains unchanged. A fresh
+[smoke dispatch](https://github.com/Anacreonsystems/ariadne/actions/runs/40650444560)
+uses the exact merged source and requests `anacreon-runners`.
+
+As a user, I want a retrigger to use the confirmed available runner. As a
+developer, I can distinguish this smoke from the unexecuted long campaign.
+Neither cancellation nor a passing replacement smoke satisfies the 72-hour
+acceptance criteria; DS-052a remains `progress` with no additional percentage.
+
+Principal assessment: the current 18-job design requires persistent Docker and
+state across jobs; changing its selector to an ephemeral ARC scale set would
+violate that contract. A single 72-hour ARC job is a possible separate design,
+but its pod/Docker lifetime, disk budget, job timeout and late evidence
+publication have not been verified for this scale set. Repository-token expiry
+alone does not prove that the separate artifact-runtime credentials must fail;
+late upload must be demonstrated rather than assumed. No long-job guard,
+duration, resource threshold or evidence criterion was weakened for this
+retrigger. A future ARC long-profile change needs its own validated execution
+and evidence-lifetime contract.
+
+The [replacement observation](../evidence/ci-arc-smoke-observed-40650444560.json)
+and [raw job log](../evidence/github-arc-smoke-retrigger-40650444560.log)
+record `success` on `anacreon-runners-runner-vf9jp` at the exact merged commit.
+The measured workload lasted 64.830406 seconds and completed 22 source
+documents, seven owner faults and two process boots after the injected process
+loss. All four independent oracles, the reviewer, public export, artifact
+upload and owned cleanup passed. `smoke_passed=true`, `long_soak_passed=false`
+and `violations=[]` preserve the profile boundary. Public report contents were
+retrieved from exact job logs; artifact metadata was retrieved, but its archive
+was not independently downloaded. The
+[retrigger evidence graph](../evidence/adr-graph-arc-retrigger-2026-10-28.json)
+checks retained statuses and links.
+
 ## Consequences
 
 The separate campaign occupies the existing static host for at least 72 hours.

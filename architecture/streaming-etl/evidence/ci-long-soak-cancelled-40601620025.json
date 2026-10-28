@@ -1,0 +1,211 @@
+{
+  "jobs": [
+    {
+      "conclusion": "cancelled",
+      "id": 122530886147,
+      "labels": [
+        "self-hosted"
+      ],
+      "name": "Prepare on an existing self-hosted runner",
+      "runner_name": "",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688928883,
+      "labels": [],
+      "name": "Monitor 00 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688929283,
+      "labels": [],
+      "name": "Monitor 01 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688929296,
+      "labels": [],
+      "name": "Monitor 02 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688929951,
+      "labels": [],
+      "name": "Monitor 03 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688930099,
+      "labels": [],
+      "name": "Monitor 05 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688930156,
+      "labels": [],
+      "name": "Monitor 04 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688930711,
+      "labels": [],
+      "name": "Monitor 07 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688930827,
+      "labels": [],
+      "name": "Monitor 06 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688930963,
+      "labels": [],
+      "name": "Monitor 08 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688931714,
+      "labels": [],
+      "name": "Monitor 09 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688931921,
+      "labels": [],
+      "name": "Monitor 10 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932267,
+      "labels": [],
+      "name": "Monitor 11 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932346,
+      "labels": [],
+      "name": "Monitor 14 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932700,
+      "labels": [],
+      "name": "Monitor 12 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932789,
+      "labels": [],
+      "name": "Monitor 13 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932875,
+      "labels": [],
+      "name": "Monitor 16 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932882,
+      "labels": [],
+      "name": "Monitor 15 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "skipped",
+      "id": 122688932989,
+      "labels": [],
+      "name": "Monitor 17 of 17",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "cancelled",
+      "id": 122688933314,
+      "labels": [
+        "self-hosted",
+        "Linux",
+        "X64"
+      ],
+      "name": "Final independent review and evidence",
+      "runner_name": null,
+      "status": "completed",
+      "steps": []
+    }
+  ],
+  "long_profile_reconfigured": false,
+  "long_soak_passed": false,
+  "observed_at": "2026-10-28T07:31:04.977226+00:00",
+  "original_dispatch_observation": "ci-long-soak-dispatch-40601620025.json",
+  "protocol": "ariadne-long-soak-cancellation-observation/v1",
+  "reason": "User requested a retrigger and confirmed anacreon-runners; the queued long profile targets the distinct static runner.",
+  "replacement_profile": "smoke",
+  "replacement_run_id": 40650444560,
+  "run": {
+    "conclusion": "cancelled",
+    "created_at": "2026-10-27T23:21:54Z",
+    "event": "workflow_dispatch",
+    "head_branch": "main",
+    "head_sha": "3776be1382d3d047485c6f96a14f9a5c1a1cb458",
+    "html_url": "https://github.com/Anacreonsystems/ariadne/actions/runs/40601620025",
+    "id": 40601620025,
+    "run_attempt": 1,
+    "status": "completed",
+    "updated_at": "2026-10-28T07:29:32Z"
+  },
+  "workload_start_verified": false
+}

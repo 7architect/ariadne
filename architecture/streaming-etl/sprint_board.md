@@ -137,6 +137,12 @@ is queued on the merged `main` source. Its
 does not yet verify runner assignment or workload startup. DS-052a remains
 `progress` with no percentage added.
 
+2026-10-28 retrigger: the [unassigned static campaign was cancelled](evidence/ci-long-soak-cancelled-40601620025.json)
+at the user's retrigger request; the
+[fresh ARC smoke](evidence/ci-arc-smoke-observed-40650444560.json) passes on
+merged `main`. DS-052a remains `progress` without additional percentage;
+actual 72-hour execution and any ARC long-profile validation remain open.
+
 R1/R2 gate evidence is recorded in
 [ADR-0018](adr/ADR-0018-postgresql-authoritative-data-plane.md),
 [ADR-0019](adr/ADR-0019-production-generator-state-and-replacement.md), and

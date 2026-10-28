@@ -209,3 +209,21 @@ is queued. Assignment is verified from the actual job, and measured workload
 duration begins at service startup, not dispatch time. This is a dispatch
 record, not a long-duration PASS. Follow [ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md)
 for acceptance and retained evidence.
+
+## User-requested ARC retrigger (2026-10-28)
+
+The user requested a fresh trigger and confirmed `anacreon-runners`. The
+[unassigned long run](evidence/ci-long-soak-cancelled-40601620025.json) was
+cancelled before bootstrap, releasing the workflow concurrency group. Its
+initial dispatch record remains unchanged. The fresh
+[main-branch smoke](https://github.com/Anacreonsystems/ariadne/actions/runs/40650444560)
+passed on `anacreon-runners-runner-vf9jp`, including process recovery, all four
+oracles, review, public export, artifact upload and owned cleanup. Its
+[retrieved observation](evidence/ci-arc-smoke-observed-40650444560.json)
+reports `smoke_passed=true` and `long_soak_passed=false`.
+
+The current 18-job long profile still requires the existing persistent static
+runner. Retrying it cannot route it to the distinct ARC scale-set selector.
+An ARC long profile requires a separately verified workload/state and late
+evidence-publication contract; changing only `runs-on` does not establish it.
+See the [Principal assessment in ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md).

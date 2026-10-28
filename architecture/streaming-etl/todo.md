@@ -266,6 +266,14 @@ now exists on `main`; the [dispatch record](evidence/ci-long-soak-dispatch-40601
 shows its prepare job queued without an assigned persistent runner. DS-052a
 remains `progress`; startup and actual long-duration acceptance are still open.
 
+2026-10-28 retrigger: the user confirmed ARC availability and requested a fresh
+trigger. The [unstarted static-profile run was cancelled](evidence/ci-long-soak-cancelled-40601620025.json),
+and the [fresh merged-source ARC smoke](evidence/ci-arc-smoke-observed-40650444560.json)
+passes recovery, four oracles, review/export and cleanup. DS-052a remains
+`progress`: no 72-hour workload ran, and an ARC long profile requires the
+separate state/lifetime/evidence validation recorded in
+[ADR-0028](adr/ADR-0028-self-hosted-soak-ci-and-reviewer.md).
+
 Exit: workload, configuration, raw results, and invariant report are archived;
 only this complete gate earns 100% and permits eligible ADRs to become
 `accepted`.
